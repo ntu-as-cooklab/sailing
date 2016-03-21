@@ -3,6 +3,7 @@
 
 #include <latlon.hpp>
 #include <uv.hpp>
+#include <kml.hpp>
 
 struct Voyage
 {
@@ -19,8 +20,8 @@ struct Voyage
 	LatLon bounds = { -32, 255 }; 	// { -16.5, 177.5 }; // beyond --> out of range
 
 	/* Constructor */
-	
-	Voyage(LatLon orig, LatLon dest) : orig(orig), dest(dest) {}
+
+	Voyage(LatLon orig, LatLon dest) : orig(orig), dest(dest), kml("voyage.kml") {}
 
 	/* Functions */
 
@@ -35,6 +36,8 @@ struct Voyage
 	LatLon calcu_next_place(LatLon curr, UV speed);
 
 	bool sail();
+
+	KML kml;
 };
 
 #endif

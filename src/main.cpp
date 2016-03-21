@@ -2,6 +2,7 @@
 
 #include <cfsr.hpp>
 #include <sailing.hpp>
+#include <kml.hpp>
 
 int main()
 {

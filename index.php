@@ -1,6 +1,6 @@
 <?php
 
-$command = escapeshellcmd('./nc-read');
+$command = escapeshellcmd('./sailing');
 $output = shell_exec($command);
 echo $output;
 

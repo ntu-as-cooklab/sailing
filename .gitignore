@@ -1,5 +1,6 @@
 build/
 lib/
 cfsr/
-*.exe
 ftpserver.txt
+*.exe
+*.kml

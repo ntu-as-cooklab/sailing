@@ -66,6 +66,7 @@ bool Voyage::sail() // result: whether we reached our destination
 					printf("Wind:        %5f, %5f\n", wind.x, wind.y);
 					printf("Wind gain:   %5f, %5f\n", wind_gain.x, wind_gain.y);
 					printf("Total gain:   %5f, %5f\n", gain.x, gain.y);
+					kml.writeLatLon(curr);
 
 					// increment total speed
 					Total_Ocean_Sp         += norm(ocean);
