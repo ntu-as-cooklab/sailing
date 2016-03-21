@@ -17,11 +17,7 @@ struct Float2
 
 	// compound assignment (does not need to be a member, but often is, to modify the private members)
 	// return the result by reference
-	Derived& operator+=(const Derived& rhs)
-  	{
-    	x += rhs.x; y += rhs.y;
-    	return *static_cast<Derived*>(this);
-  	}
+	Derived& operator+=(const Derived& rhs) { return x += rhs.x, y += rhs.y, *static_cast<Derived*>(this); }
 
 	// friends defined inside class body are inline and are hidden from non-ADL lookup
 	// passing lhs by value helps optimize chained a+b+c; otherwise, both parameters may be const references
@@ -30,30 +26,18 @@ struct Float2
 
 	/* Subtraction */
 
-	Derived& operator-=(const Derived& rhs)
-	{
-		x -= rhs.x; y -= rhs.y;
-		return *static_cast<Derived*>(this);
-	}
+	Derived& operator-=(const Derived& rhs) { return x -= rhs.x, y -= rhs.y, *static_cast<Derived*>(this); }
 	friend Derived operator-(Derived lhs, const Derived& rhs) { return lhs -= rhs; }
 
 	/* Multiplication */
 
-	Derived& operator*=(const float& rhs)
-	{
-		x *= rhs; y *= rhs;
-		return *static_cast<Derived*>(this);
-	}
+	Derived& operator*=(const float& rhs) { return x *= rhs, y *= rhs, *static_cast<Derived*>(this); }
 	friend Derived operator*(Derived lhs, const float& rhs) { return lhs *= rhs; }
 	friend Derived operator*(const float& lhs, Derived rhs) { return rhs *= lhs; }
 
 	/* Division */
 
-	Derived& operator/=(const float& rhs)
-	{
-		x /= rhs; y /= rhs;
-		return *static_cast<Derived*>(this);
-	}
+	Derived& operator/=(const float& rhs) { return x /= rhs, y /= rhs, *static_cast<Derived*>(this); }
 	friend Derived operator/(Derived lhs, const float& rhs) { return lhs /= rhs; }
 
 	/* Comparison */
@@ -72,11 +56,7 @@ struct Float2
 
 	/* Normalization */
 
-	Derived& normalize()
-	{
-		x /= fabs(x); y /= fabs(y);
-		return *static_cast<Derived*>(this);
-	}
+	Derived& normalize() { return x /= fabs(x), y /= fabs(y), *static_cast<Derived*>(this); }
 	friend Derived normalize(Derived v) { return v.normalize(); }
 };
 

@@ -1,6 +1,10 @@
 #ifndef CFSR_H
 #define CFSR_H
 
+#ifdef  __cplusplus
+extern  "C" {
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <netcdf.h>
@@ -28,5 +32,9 @@ int openCFSR(CFSR type, int year, int month);
 int closeCFSR(int ncid);
 float getOUV(int ncid, int day, float lat, float lon);
 float getAUV(int ncid, int day, float lat, float lon);
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif

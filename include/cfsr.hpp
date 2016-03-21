@@ -1,10 +1,7 @@
 #ifndef CFSR_HPP
 #define CFSR_HPP
 
-extern "C"
-{
-	#include <cfsr.h>
-}
+#include <cfsr.h>
 #include <latlon.hpp>
 #include <uv.hpp>
 
