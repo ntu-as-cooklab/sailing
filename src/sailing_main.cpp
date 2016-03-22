@@ -1,5 +1,6 @@
 #include <sailing.hpp>
 #include <cfsr.hpp>
+#include <iostream>
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // 給予經緯度、順推逆推、推算時間、推算方式(瓶中信、動力與否)
@@ -56,16 +57,17 @@ bool Voyage::sail() // result: whether we reached our destination
 					UV wind_gain = boat_sp * boat_dir;
 
 					// total speed
-					UV gain = ocean + wind; //wind_gain;
+					UV gain = ocean + wind_gain;
 
 					// calculate next place
 					curr = calcu_next_place(curr, gain);
 					printf("\n[Timestep %03d]  %d/%02d/%02d %02d:00\n", runhour, year, month, day, hour);
-					printf("(%6f, %6f)\n", curr.lat(), curr.lon());
+					printf("Position:    (%6f, %6f)\n", curr.lat(), curr.lon());
+					printf("Heading:     %5f\n", boat_dir.heading());
 					printf("Ocean gain:  %5f, %5f\n", ocean.x, ocean.y);
 					printf("Wind:        %5f, %5f\n", wind.x, wind.y);
 					printf("Wind gain:   %5f, %5f\n", wind_gain.x, wind_gain.y);
-					printf("Total gain:   %5f, %5f\n", gain.x, gain.y);
+					printf("Total gain:  %5f, %5f\n", gain.x, gain.y);
 					kml.writeLatLon(curr);
 
 					// increment total speed

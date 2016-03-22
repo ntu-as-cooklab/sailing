@@ -22,42 +22,42 @@ struct Float2
 	// friends defined inside class body are inline and are hidden from non-ADL lookup
 	// passing lhs by value helps optimize chained a+b+c; otherwise, both parameters may be const references
 	// reuse compound assignment; return the result by value (uses move constructor)
-  	friend Derived operator+(Derived lhs, const Derived& rhs) { return lhs += rhs; }
+  	constexpr friend Derived operator+(Derived lhs, const Derived& rhs) { return lhs += rhs; }
 
 	/* Subtraction */
 
 	Derived& operator-=(const Derived& rhs) { return x -= rhs.x, y -= rhs.y, *static_cast<Derived*>(this); }
-	friend Derived operator-(Derived lhs, const Derived& rhs) { return lhs -= rhs; }
+	constexpr friend Derived operator-(Derived lhs, const Derived& rhs) { return lhs -= rhs; }
 
 	/* Multiplication */
 
 	Derived& operator*=(const float& rhs) { return x *= rhs, y *= rhs, *static_cast<Derived*>(this); }
-	friend Derived operator*(Derived lhs, const float& rhs) { return lhs *= rhs; }
-	friend Derived operator*(const float& lhs, Derived rhs) { return rhs *= lhs; }
+	constexpr friend Derived operator*(Derived lhs, const float& rhs) { return lhs *= rhs; }
+	constexpr friend Derived operator*(const float& lhs, Derived rhs) { return rhs *= lhs; }
 
 	/* Division */
 
 	Derived& operator/=(const float& rhs) { return x /= rhs, y /= rhs, *static_cast<Derived*>(this); }
-	friend Derived operator/(Derived lhs, const float& rhs) { return lhs /= rhs; }
+	constexpr friend Derived operator/(Derived lhs, const float& rhs) { return lhs /= rhs; }
 
 	/* Comparison */
 
-	friend bool operator==(const Derived& lhs, const Derived& rhs){ return lhs.x == rhs.x && lhs.y == rhs.y; }
-	friend bool operator!=(const Derived& lhs, const Derived& rhs){ return !(lhs == rhs); }
+	constexpr friend bool operator==(const Derived& lhs, const Derived& rhs){ return lhs.x == rhs.x && lhs.y == rhs.y; }
+	constexpr friend bool operator!=(const Derived& lhs, const Derived& rhs){ return !(lhs == rhs); }
 
 	/* Dot product */
 
-	friend float dot(const Derived& lhs, const Derived& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
+	constexpr friend float dot(const Derived& lhs, const Derived& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
 
 	/* Norm */
 
-	float norm() const { return sqrt(x*x + y*y); }
-	friend float norm(const Derived& v) { return v.norm(); }
+	constexpr float norm() const { return sqrt(x*x + y*y); }
+	constexpr friend float norm(const Derived& v) { return v.norm(); }
 
 	/* Normalization */
 
-	Derived& normalize() { return x /= fabs(x), y /= fabs(y), *static_cast<Derived*>(this); }
-	friend Derived normalize(Derived v) { return v.normalize(); }
+	Derived& normalize() { return *static_cast<Derived*>(&(*this/=norm())); }
+	constexpr friend Derived normalize(Derived v) { return v.normalize(); }
 };
 
 #endif
