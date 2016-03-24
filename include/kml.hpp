@@ -12,7 +12,7 @@ struct KML
 	~KML() { writeFooter(); kmlfile.close(); }
 	void writeHeader();
 	void writeFooter();
-	void writeLatLon(LatLon latlon);
+	void writeLatLon(LatLon latlon, float altitude);
 };
 
 #endif

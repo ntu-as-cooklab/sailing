@@ -1,4 +1,4 @@
-#include <sailing.hpp>
+#include <voyage.hpp>
 
 UV Voyage::adj_direction(LatLon curr, LatLon dest)
 {
@@ -30,6 +30,7 @@ float Voyage::boat_speed(UV wind, UV dir)
 	else if (angle_diff <= 180 && angle_diff > 150)
 	    return ( 0.0022*pow(wind_speed,3) - 0.0780*pow(wind_speed,2) + 0.9223*wind_speed ) * ( -0.0333*angle_diff+6 ) +
 	              ( 0.0030*pow(wind_speed,3) - 0.0871*pow(wind_speed,2) + 0.8549*wind_speed ) * ( 0.0333*angle_diff-5 );
+	return 0;
 }
 
 // 給予初始經緯度,應該往南北與東西移動的速度(m/s),時間步距 --> 計算出下一點的位置

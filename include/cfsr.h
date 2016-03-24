@@ -13,7 +13,7 @@ extern  "C" {
 // NetCDF error handling
 extern int err;
 #define ERRCODE 2
-#define ERR(e) { printf("Error: %s\n", nc_strerror(e)); exit(ERRCODE); }
+#define ERR(e) { printf("NetCDF error: %s\n", nc_strerror(e)); exit(ERRCODE); }
 
 // CFSR data types
 typedef enum
@@ -29,7 +29,7 @@ extern const char* CFSR_filename[4];
 
 // CFSR functions
 int openCFSR(CFSR type, int year, int month);
-int closeCFSR(int ncid);
+void closeCFSR(int ncid);
 float getOUV(int ncid, int day, float lat, float lon);
 float getAUV(int ncid, int day, float lat, float lon);
 

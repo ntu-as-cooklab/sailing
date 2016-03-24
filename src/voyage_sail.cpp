@@ -1,4 +1,4 @@
-#include <sailing.hpp>
+#include <voyage.hpp>
 #include <cfsr.hpp>
 #include <iostream>
 
@@ -30,7 +30,7 @@ bool Voyage::sail() // result: whether we reached our destination
 
 			int daymax = 26; // TODO
 			for (int day=1; day<=daymax; day++, runday++)
-				for (int hour=1; hour<=24; hour++, runhour++) // hour
+				for (int hour=1; hour<=24; hour++, runhour++, sail_open=hour<=12) // only open sail for half a day
 				{
 					// TODO: interpolate ocean & wind in space and time using data from two days
 					// (hour-1)/24
@@ -40,47 +40,51 @@ bool Voyage::sail() // result: whether we reached our destination
 
 					// Wind speed:
 					UV wind =
-						hour <=12 ? // hours when sail is open, TODO: check model
-						getAUV(auid, avid, day, curr) / pow(5,alpha) :	// open sail for hours <= 12
-						0; 												// no sail for hours > 12
-					/*// calculate wind speed at 2m from wind speed at 10m
-					wind = OUV(curr, (hour-1)/24);
+						sail_open ? // if sail is open
+						getAUV(auid, avid, day, curr) * pow(altitude/10.0,alpha) :
+						0;
+					// calculate wind speed at (2m) from wind speed at 10m using wind profile power law
+					/*wind = OUV(curr, (hour-1)/24);
 					WindSP_10m = norm(wind);
 					WindSP_2m  = WindSP_10m / pow(5,alpha); // wind profile power law
 					wind *= (WindSP_2m / WindSP_10m);*/
 
 					// adjust boat direction and calculate boat speed gain due to wind
-					UV 		boat_dir 	= adj_direction(curr, dest);
-					float 	boat_sp 	= boat_speed(wind, boat_dir); // boat speed gain due to wind
+					// TODO: path finding
+					dir = new UV(1, -1); // specify direction to sail
+					UV 		sail_dir 	= (dir ? *dir : adj_direction(curr, dest)).normalize();
+					float 	sail_sp 	= boat_speed(wind, sail_dir); // boat speed gain due to wind
 
 					// boat movement vector due to wind from direction and speed
-					UV wind_gain = boat_sp * boat_dir;
+					UV wind_gain = sail_sp * sail_dir;
 
 					// total speed
 					UV gain = ocean + wind_gain;
 
 					// calculate next place
 					curr = calcu_next_place(curr, gain);
-					printf("\n[Timestep %03d]  %d/%02d/%02d %02d:00\n", runhour, year, month, day, hour);
+					/*printf("\n[Timestep %03d]  %d/%02d/%02d %02d:00\n", runhour, year, month, day, hour);
 					printf("Position:    (%6f, %6f)\n", curr.lat(), curr.lon());
-					printf("Heading:     %5f\n", boat_dir.heading());
-					printf("Ocean gain:  %5f, %5f\n", ocean.x, ocean.y);
+					printf("Heading:     %5f\n", sail_dir.heading());
+					printf("Ocean gain:  %5f (%5f, %5f)\n", ocean.norm(), ocean.x, ocean.y);
+					printf("Ocean angle: %5f\n", anglediff(ocean, sail_dir));
 					printf("Wind:        %5f, %5f\n", wind.x, wind.y);
-					printf("Wind gain:   %5f, %5f\n", wind_gain.x, wind_gain.y);
-					printf("Total gain:  %5f, %5f\n", gain.x, gain.y);
-					kml.writeLatLon(curr);
+					printf("Wind angle:  %5f\n", anglediff(wind, sail_dir));
+					printf("Wind gain:   %5f (%5f, %5f)\n", sail_sp, wind_gain.x, wind_gain.y);
+					printf("Total gain:  %5f, %5f\n", gain.x, gain.y);*/
+					kml.writeLatLon(curr, altitude);
 
 					// increment total speed
 					Total_Ocean_Sp         += norm(ocean);
 					Total_Wind_Sp          += norm(wind);
 
 					// increment total angle with boat (in degrees)
-					Total_Ocean_Angle_Diff += anglediff(ocean, boat_dir);
-					Total_Wind_Angle_Diff  += anglediff(wind,  boat_dir);
+					Total_Ocean_Angle_Diff += anglediff(ocean, sail_dir);
+					Total_Wind_Angle_Diff  += anglediff(wind,  sail_dir);
 
 					// increment total speed gain
-					Total_Ocean_Gain       += dot(boat_dir, ocean);
-					Total_Wind_Gain        += boat_sp;
+					Total_Ocean_Gain       += dot(sail_dir, ocean);
+					Total_Wind_Gain        += sail_sp;
 
 					// calculate averages from start of simulation up to now
 					float 	Avg_Wind_Gain 			= Total_Wind_Gain*2 		/ runhour,
@@ -98,7 +102,7 @@ bool Voyage::sail() // result: whether we reached our destination
 					}
 
 					// check if current position is out of bounds --> travel failed
-					if (curr.lon() > bounds.lon() || bounds.lat() > curr.lat())
+					if (curr.lon() > bounds.lon() || curr.lat() < bounds.lat() )
 					{ // TODO: generalize
 						printf("\nSailed out of bounds\n");
 						return false;
@@ -110,6 +114,7 @@ bool Voyage::sail() // result: whether we reached our destination
 			closeCFSR(avid);
 		}
 
+	printf("\nReached end of time range\n");
 	return false;
 }
 

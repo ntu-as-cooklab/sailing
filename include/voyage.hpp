@@ -15,13 +15,20 @@ struct Voyage
 	int movement_factor = 1; 	// movement factor (forward = 1, reverse = -1)
 
 	float alpha = 0.11;			// parameter for wind profile power law
+	float altitude = 2;
 
 	float range = 1.1; 				// for checking if within range of destination
 	LatLon bounds = { -32, 255 }; 	// { -16.5, 177.5 }; // beyond --> out of range
 
+	bool sail_open = true;
+	UV* dir;
+
 	/* Constructor */
 
 	Voyage(LatLon orig, LatLon dest) : orig(orig), dest(dest), kml("voyage.kml") {}
+
+	// start thread
+	void operator()() { sail(); }
 
 	/* Functions */
 

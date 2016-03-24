@@ -30,7 +30,7 @@ void KML::writeFooter()
 	</kml>";
 }
 
-void KML::writeLatLon(LatLon latlon)
+void KML::writeLatLon(LatLon latlon, float altitude)
 {
-	kmlfile << latlon.lon() << "," << latlon.lat() << ",2\n";
+	kmlfile << latlon.lon() << "," << latlon.lat() << "," << altitude << "\n";
 }

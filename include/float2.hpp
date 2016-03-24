@@ -3,15 +3,16 @@
 
 #include <math.h>
 #define PI 3.14159265358979
+#include <iostream>
 
 template<class Derived>
 struct Float2
 {
-	float x = 0, y = 0;
+	float x, y;
 
 	Float2(float x, float y) : x(x), y(y) {}
 	Float2(float c) : x(c), y(c) {}
-	Float2() {}
+	Float2() : x(0), y(0) {}
 
 	/* Addition */
 
@@ -59,6 +60,13 @@ struct Float2
 
 	Derived& normalize() { return *static_cast<Derived*>(&(*this/=norm())); }
 	constexpr friend Derived normalize(Derived v) { return v.normalize(); }
+
+	/* Stream extraction */
+
+	friend std::ostream& operator<<(std::ostream& os, const Derived& v)
+	{
+    	return os << v.x << ", " << v.y;
+	}
 };
 
 #endif

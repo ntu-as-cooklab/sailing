@@ -13,6 +13,11 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 include_directories("include")
 
+# Dependencies
+
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost COMPONENTS system thread REQUIRED)
+
 # Sources
 
 file(GLOB CFSR_SRC "src/cfsr.c")
@@ -21,9 +26,11 @@ target_link_libraries(cfsr netcdf curl) #netcdf_c++4
 
 file(GLOB SAILING_SRC "src/*.cpp")
 add_executable(sailing ${SAILING_SRC})
-target_link_libraries(sailing cfsr)
+target_link_libraries(sailing cfsr ws2_32 wsock32 ${Boost_LIBRARIES})
 
 # Flags
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -O3")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -s -static -save-temps")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -pedantic -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -s -static -save-temps")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")
