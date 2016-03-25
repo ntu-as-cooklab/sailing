@@ -1,5 +1,5 @@
-#ifndef SERVER_HPP_INCLUDED
-#define SERVER_HPP_INCLUDED
+#ifndef TCP_HPP_INCLUDED
+#define TCP_HPP_INCLUDED
 
 #include <cstdlib>
 #include <iostream>

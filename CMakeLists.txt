@@ -20,13 +20,17 @@ find_package(Boost COMPONENTS system thread REQUIRED)
 
 # Sources
 
+file(GLOB HTTP_SERVER_SRC "src/server/*.cpp")
+add_library(http_server ${HTTP_SERVER_SRC})
+target_link_libraries(http_server ws2_32 wsock32 ${Boost_LIBRARIES}) #netcdf_c++4
+
 file(GLOB CFSR_SRC "src/cfsr.c")
 add_library(cfsr ${CFSR_SRC})
 target_link_libraries(cfsr netcdf curl) #netcdf_c++4
 
 file(GLOB SAILING_SRC "src/*.cpp")
 add_executable(sailing ${SAILING_SRC})
-target_link_libraries(sailing cfsr ws2_32 wsock32 ${Boost_LIBRARIES})
+target_link_libraries(sailing cfsr http_server ws2_32 wsock32 ${Boost_LIBRARIES})
 
 # Flags
 

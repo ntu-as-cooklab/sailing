@@ -2,6 +2,47 @@
 #include <cfsr.hpp>
 #include <iostream>
 
+UV Voyage::adj_direction(LatLon curr, LatLon dest)
+{
+	return UV(	lon2km((curr+dest).lat()/2) * (dest-curr).lon(),
+				lat2km((curr+dest).lat()/2) * (dest-curr).lat()
+			).normalize();
+}
+
+float Voyage::boat_speed(UV wind, UV dir)
+{
+	float wind_speed = norm(wind)<8 ? norm(wind) : 0;
+	float angle_diff = anglediff(wind, dir);
+
+	if (angle_diff <= 30)
+	    return (-0.0008*pow(wind_speed,3) - 0.0037*pow(wind_speed,2) + 0.5548*wind_speed ) * ( -0.0333*angle_diff+1 ) +
+	              ( 0.0023*pow(wind_speed,3) - 0.0699*pow(wind_speed,2) + 0.9546*wind_speed ) * ( 0.0333*angle_diff );
+	else if (angle_diff <= 60 && angle_diff > 30)
+	    return ( 0.0023*pow(wind_speed,3) - 0.0699*pow(wind_speed,2) + 0.9546*wind_speed ) * ( -0.0333*angle_diff+2 ) +
+	              ( 0.0065*pow(wind_speed,3) - 0.1715*pow(wind_speed,2) + 1.5687*wind_speed ) * ( 0.0333*angle_diff-1 ) ;
+	else if (angle_diff <= 90 && angle_diff > 60)
+	    return ( 0.0065*pow(wind_speed,3) - 0.1715*pow(wind_speed,2) + 1.5687*wind_speed ) * ( -0.0333*angle_diff+3 ) +
+	              ( 0.0057*pow(wind_speed,3) - 0.1596*pow(wind_speed,2) + 1.5091*wind_speed ) * ( 0.0333*angle_diff-2 );
+	else if (angle_diff <= 120 && angle_diff > 90)
+	    return ( 0.0057*pow(wind_speed,3) - 0.1596*pow(wind_speed,2) + 1.5091*wind_speed  ) * ( -0.0333*angle_diff+4 ) +
+	              ( 0.0062*pow(wind_speed,3) - 0.1684*pow(wind_speed,2) + 1.4957*wind_speed ) * ( 0.0333*angle_diff-3 );
+	else if (angle_diff <= 150 && angle_diff > 120)
+	    return ( 0.0062*pow(wind_speed,3) - 0.1684*pow(wind_speed,2) + 1.4957*wind_speed ) * ( -0.0333*angle_diff+5 ) +
+	              ( 0.0022*pow(wind_speed,3) - 0.0780*pow(wind_speed,2) + 0.9223*wind_speed ) * ( 0.0333*angle_diff-4 );
+	else if (angle_diff <= 180 && angle_diff > 150)
+	    return ( 0.0022*pow(wind_speed,3) - 0.0780*pow(wind_speed,2) + 0.9223*wind_speed ) * ( -0.0333*angle_diff+6 ) +
+	              ( 0.0030*pow(wind_speed,3) - 0.0871*pow(wind_speed,2) + 0.8549*wind_speed ) * ( 0.0333*angle_diff-5 );
+	return 0;
+}
+
+// 給予初始經緯度,應該往南北與東西移動的速度(m/s),時間步距 --> 計算出下一點的位置
+LatLon Voyage::calcu_next_place(LatLon curr, UV speed)
+{
+	// speed: in (m/s)
+	return curr + movement_factor * timestep/1000
+		* LatLon(speed.y/lat2km(curr.lat()), speed.x/lon2km(curr.lat()));
+}
+
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // 給予經緯度、順推逆推、推算時間、推算方式(瓶中信、動力與否)
 // 讀取資料
@@ -9,6 +50,7 @@
 
 bool Voyage::sail() // result: whether we reached our destination
 {
+	kml.writeHeader();
 	int	runday = 0, runhour = 0; // count simulation time
 	LatLon curr = orig; // current position
 
@@ -30,7 +72,7 @@ bool Voyage::sail() // result: whether we reached our destination
 
 			int daymax = 26; // TODO
 			for (int day=1; day<=daymax; day++, runday++)
-				for (int hour=1; hour<=24; hour++, runhour++, sail_open=hour<=12) // only open sail for half a day
+				for (int hour=1; hour<=24; hour++, runhour++, sail_open = hour<=12) // only open sail for half a day
 				{
 					// TODO: interpolate ocean & wind in space and time using data from two days
 					// (hour-1)/24
@@ -51,7 +93,7 @@ bool Voyage::sail() // result: whether we reached our destination
 
 					// adjust boat direction and calculate boat speed gain due to wind
 					// TODO: path finding
-					dir = new UV(1, -1); // specify direction to sail
+					//dir = new UV(1,-1);
 					UV 		sail_dir 	= (dir ? *dir : adj_direction(curr, dest)).normalize();
 					float 	sail_sp 	= boat_speed(wind, sail_dir); // boat speed gain due to wind
 
@@ -102,11 +144,11 @@ bool Voyage::sail() // result: whether we reached our destination
 					}
 
 					// check if current position is out of bounds --> travel failed
-					if (curr.lon() > bounds.lon() || curr.lat() < bounds.lat() )
-					{ // TODO: generalize
-						printf("\nSailed out of bounds\n");
-						return false;
-					}
+					//if (curr.lon() > bounds.lon() || curr.lat() < bounds.lat() )
+					//{ // TODO: generalize
+					//	printf("\nSailed out of bounds\n");
+					//	return false;
+					//}
 				}
 			closeCFSR(ouid);
 			closeCFSR(ovid);
@@ -115,7 +157,6 @@ bool Voyage::sail() // result: whether we reached our destination
 		}
 
 	printf("\nReached end of time range\n");
+	kml.writeFooter();
 	return false;
 }
-
-// xlswrite("所羅門至斐濟", final);
