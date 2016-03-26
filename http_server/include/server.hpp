@@ -13,9 +13,9 @@
 
 #include <boost/asio.hpp>
 #include <string>
-#include "server/connection.hpp"
-#include "server/connection_manager.hpp"
-#include "server/request_handler.hpp"
+#include <connection.hpp>
+#include <connection_manager.hpp>
+#include <request_handler.hpp>
 
 namespace http {
   namespace server {

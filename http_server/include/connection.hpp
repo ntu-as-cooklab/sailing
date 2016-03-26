@@ -14,10 +14,10 @@
 #include <array>
 #include <memory>
 #include <boost/asio.hpp>
-#include "server/reply.hpp"
-#include "server/request.hpp"
-#include "server/request_handler.hpp"
-#include "server/request_parser.hpp"
+#include <reply.hpp>
+#include <request.hpp>
+#include <request_handler.hpp>
+#include <request_parser.hpp>
 
 namespace http {
   namespace server {

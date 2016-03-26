@@ -28,11 +28,12 @@ namespace http {
 	  {
 		  static mapping mappings[] =
 		  {
-			  { "gif", "image/gif" },
 			  { "htm", "text/html" },
 			  { "html", "text/html" },
+			  { "css", "text/css"},
+			  { "png", "image/png" },
 			  { "jpg", "image/jpeg" },
-			  { "png", "image/png" }
+			  { "gif", "image/gif" }
 		  };
 
 		  for (mapping m: mappings)

@@ -6,8 +6,6 @@
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 
-#include <voyage.hpp>
-
 // For multithreading
 // http://stackoverflow.com/questions/6104200/boost-threads-with-clr
 namespace boost {
@@ -18,6 +16,7 @@ namespace boost {
     }
 }
 
+// Base TCPsession --> inherit for implementation
 class TCPsession
 {
 public:
@@ -31,18 +30,19 @@ public:
 	// wait for incoming data
 	void start_read();
 
-	static Voyage* voyage;
+	virtual ~TCPsession() {};
 
-private:
+protected:
 
 	int buffer_len = 1;
 	char* buffer = new char[buffer_len];
 
 	// handle incoming data
-	void handle_read(const boost::system::error_code& error);
+	virtual void handle_read(const boost::system::error_code& error);
 
 };
 
+template <class Session>
 class TCPserver
 {
 public:
@@ -56,7 +56,7 @@ public:
 	{
 		try
 		{
-			printf("Server starting\n");
+			std::cout << "Server starting\n";
 			start_accept();
 			io_service.run();
 		}
@@ -68,13 +68,24 @@ public:
 
 private:
 	// start accepting connections
-  	void start_accept();
+  	void start_accept()
+	{
+		// create new session
+		session = new Session(io_service);
+		acceptor.async_accept(session->socket, boost::bind(&TCPserver::handle_accept, this, session, boost::asio::placeholders::error));
+	}
+
 	// handle incoming connection
-	void handle_accept(TCPsession* session, const boost::system::error_code& error);
+	void handle_accept(Session* session, const boost::system::error_code& error)
+	{
+		if (!error) session->start_read(); // start session
+		else delete session;
+		start_accept();
+	}
 
 	boost::asio::io_service 		io_service;
 	boost::asio::ip::tcp::acceptor 	acceptor;
-	TCPsession* 					session;
+	Session* 						session;
 };
 
 #endif

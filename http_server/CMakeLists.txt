@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 
-project(Sailing)
+project(http_server)
 
 # Dirs
 
@@ -9,24 +9,20 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-# Dependencies
-
-add_subdirectory(http_server)
-
 # Include headers
 
 include_directories("include")
-include_directories("http_server/include")
+
+# Dependencies
+
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost COMPONENTS system thread REQUIRED)
 
 # Sources
 
-file(GLOB CFSR_SRC "src/cfsr.c")
-add_library(cfsr ${CFSR_SRC})
-target_link_libraries(cfsr netcdf hdf5_hl hdf5 szip z curl) #netcdf_c++4
-
-file(GLOB SAILING_SRC "src/*.cpp")
-add_executable(sailing ${SAILING_SRC})
-target_link_libraries(sailing cfsr http_server)
+file(GLOB HTTP_SERVER_SRC "src/*.cpp")
+add_library(http_server ${HTTP_SERVER_SRC})
+target_link_libraries(http_server ws2_32 wsock32 ${Boost_LIBRARIES})
 
 # Flags
 

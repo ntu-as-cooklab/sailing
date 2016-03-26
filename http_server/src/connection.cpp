@@ -8,13 +8,13 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "server/connection.hpp"
+#include <connection.hpp>
 
 #include <utility>
 #include <vector>
 
-#include "server/connection_manager.hpp"
-#include "server/request_handler.hpp"
+#include <connection_manager.hpp>
+#include <request_handler.hpp>
 
 namespace http {
 namespace server {

@@ -12,7 +12,7 @@
 #define HTTP_CONNECTION_MANAGER_HPP
 
 #include <set>
-#include "server/connection.hpp"
+#include <connection.hpp>
 
 namespace http {
   namespace server {

@@ -1,6 +1,6 @@
 "use strict";
 
-var timeline;
+var infobox, timeline;
 
 function main()
 {
