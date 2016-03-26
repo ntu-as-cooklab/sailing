@@ -1,6 +1,6 @@
 build/
 lib/
-cfsr/
-include/cfsr_server.h
+data/
+ftpserver.txt
 *.exe
 *.kml

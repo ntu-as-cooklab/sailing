@@ -1,9 +1,4 @@
-/*typedef struct FtpFile FtpFile;
-struct FtpFile
-{
-	const char *filename;
-	FILE *stream;
-};
+#include <cfsr_ftp.h>
 
 static size_t my_fwrite(void *buffer, size_t size, size_t nmemb, void *stream)
 {
@@ -25,9 +20,9 @@ int getCFSR(char *filename)
 
   	curl_global_init(CURL_GLOBAL_DEFAULT);
 
-  	if (curl = curl_easy_init())
+  	if ((curl = curl_easy_init()))
   	{
-		char url[80] = ;
+		char url[80] = ""; // TODO
 		strcat(url, filename);
     	curl_easy_setopt(curl, CURLOPT_URL, url);
     	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, my_fwrite); // Define our callback to get called when there's data to be written
@@ -38,8 +33,8 @@ int getCFSR(char *filename)
 
     	curl_easy_cleanup(curl); // always cleanup
 
-    	if(result != CURLE_OK)
-      		fprintf("[Curl] %d\n", res); // we failed
+    	//if(result != CURLE_OK)
+      	//	fprintf("[Curl] %d\n", result); // we failed
   	}
 
   	if(ftpfile.stream)
@@ -48,4 +43,4 @@ int getCFSR(char *filename)
   	curl_global_cleanup();
 
   	return 0;
-}*/
+}

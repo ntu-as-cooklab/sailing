@@ -1,7 +1,7 @@
 #include <cfsr.h>
 
 int err;
-const char* CFSR_dir = "cfsr/"; // predefined CFSR directory
+const char* CFSR_dir = "data/"; // predefined CFSR directory
 const char* CFSR_filename[] = // predefined CFSR filenames
 {
 	"CFSR_ocnh06.gdas.OU_YYYYMM_5.nc",
@@ -24,10 +24,11 @@ int openCFSR(CFSR type, int year, int month)
 	return ncid;
 }
 
-void closeCFSR(int ncid)
+int closeCFSR(int ncid)
 {
 	if ((err = nc_close(ncid))) ERR(err); // Close the file, freeing all resources.
 	//printf("\n[CFSR] File closed.\n");
+	return 0;
 }
 
 float getOUV(int ncid, int day, float lat, float lon)
