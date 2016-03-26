@@ -1,6 +1,7 @@
 #ifndef SAILING_HPP
 #define SAILING_HPP
 
+#include <os.h>
 #include <latlon.hpp>
 #include <uv.hpp>
 #include <kml.hpp>

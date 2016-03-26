@@ -1,15 +1,16 @@
 #include <iostream>
+#include <fstream>
 #include <ws_server.hpp>
 
+typedef websocketpp::connection_hdl connection_hdl;
 typedef websocketpp::server<websocketpp::config::asio>::message_ptr message_ptr;	// pull out the type of messages sent by our config
 
 // Define a callback to handle incoming messages
-void WsServer::on_message(websocketpp::connection_hdl hdl, message_ptr msg)
+void WsServer::on_message(connection_hdl hdl, message_ptr msg)
 {
     std::cout 	<< "[on_message]"
 				<< "\thdl: " << hdl.lock().get()
               	<< "\tmessage: " << msg->get_payload()
-				//<< "\topcode: " << msg->get_opcode()
               	<< "\n";
 
     // check for a special command to instruct the server to stop listening so it can be cleanly exited.
@@ -17,32 +18,51 @@ void WsServer::on_message(websocketpp::connection_hdl hdl, message_ptr msg)
 		{ stop_listening(); return; }
 }
 
-void WsServer::on_http(websocketpp::connection_hdl hdl)
+void WsServer::on_http(connection_hdl hdl)
 {
-    endpoint::connection_ptr con = get_con_from_hdl(hdl);
+	std::string m_docroot = "html/";
+
+	// TODO: non-blocking, asynchronous
+
+	// Upgrade our connection handle to a full connection_ptr
+    server::connection_ptr con = get_con_from_hdl(hdl);
 
     con->defer_http_response();
 
-    // Begin an asynchronous operation and pass as a callback a lambda that sets
-    // up the appropriate response and sends it.
-    /*asyncronous_function([con](int status)
-		{
-	        if (status == -1)
-			{
-	            con->set_body("An error occurred");
-	            con->set_status(websocketpp::http::status_code::internal_server_error);
-	        }
-			else
-			{
-	            con->set_body("Hello World!");
-	            con->set_status(websocketpp::http::status_code::ok);
-	        }
-	        con->send_http_response();
-    	}
-	);*/
+	std::ifstream file;
+	std::string filename = con->get_resource();
+	std::string response;
+
+	if (filename == "/") {
+		filename = m_docroot+"index.html";
+	} else {
+		filename = m_docroot+filename.substr(1);
+	}
+
+	file.open(filename.c_str(), std::ios::in);
+	if (!file) {
+		std::stringstream ss;
+		ss << "404 (Resource not found)";
+
+		con->set_body(ss.str());
+		con->set_status(websocketpp::http::status_code::not_found);
+		return;
+	}
+
+	file.seekg(0, std::ios::end);
+	response.reserve(file.tellg());
+	file.seekg(0, std::ios::beg);
+
+	response.assign((std::istreambuf_iterator<char>(file)),
+					std::istreambuf_iterator<char>());
+
+	con->set_body(response);
+	con->set_status(websocketpp::http::status_code::ok);
+
+	con->send_http_response();
 }
 
-void WsServer::sendMsg(websocketpp::connection_hdl hdl, message_ptr msg)
+void WsServer::sendMsg(connection_hdl hdl, message_ptr msg)
 {
 	try
 	{

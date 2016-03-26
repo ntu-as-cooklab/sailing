@@ -1,13 +1,5 @@
 #include <string>
-
-#ifdef _WIN32
-#include <windows.h>
-#include <ShellApi.h>
-#endif
-
-#ifdef linux
-#include <unistd.h>
-#endif
+#include <os.h>
 
 void launchURL(const std::string &url)
 {
