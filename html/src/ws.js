@@ -2,13 +2,13 @@ var ws;
 var url;
 
 function connect() {
-	url = document.getElementById("server_url").value;
+	url = "ws://127.0.0.1";
 
 	if ("WebSocket" in window)
 		ws = new WebSocket(url);
 	else if ("MozWebSocket" in window)
 		ws = new MozWebSocket(url);
-	else
+	/*else
 		return document.getElementById("console").innerHTML += "This browser does not support WebSocket<br/>";
 
 	ws.onopen = function(e) {
@@ -37,7 +37,7 @@ function connect() {
 	    if(window.event.keyCode=='13')
 	        send();
 	}
-	document.getElementById("msg").focus();
+	document.getElementById("msg").focus();*/
 }
 
 function disconnect() {
@@ -46,21 +46,20 @@ function disconnect() {
 }
 
 function cleanup_disconnect() {
-    document.getElementById("server_url").disabled = false;
-	document.getElementById("toggle_connect").innerHTML = "Connect";
-	document.getElementById("send").disabled = true;
+    //document.getElementById("server_url").disabled = false;
+	//document.getElementById("toggle_connect").innerHTML = "Connect";
+	//document.getElementById("send").disabled = true;
 }
 
 function toggle_connect() {
-	if (document.getElementById("server_url").disabled === false) {
-		connect();
-	} else {
-		disconnect();
-	}
+	//if (document.getElementById("server_url").disabled === false) {
+	//	connect();
+	//} else {
+	//	disconnect();
+	//}
 }
 
-function send() {
-	msg = document.getElementById("msg").value;
+function send(msg) {
 	ws.send(msg);
 	//document.getElementById("console").innerHTML += "[Client] Send message: " + msg +"<br />";
 }

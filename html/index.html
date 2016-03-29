@@ -4,32 +4,67 @@
 		<title>Sailing</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="src/main.css">
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIuOfsJYZwj64PNQ8RE6Cry21SRen-FN8&v=3.exp"></script>
-		<script src="lib/jquery.min.js"></script>
-		<script src="lib/dat.gui.min.js"></script>
-		<script src="src/map.js"></script>
-		<script src="src/ws.js"></script>
-		<script src="src/main.js"></script>
+		<link rel="stylesheet" href="html/lib/leaflet/leaflet.css" />
+		<link rel="stylesheet" href="html/lib/leaflet/plugins/leaflet.toolbar.css"/>
+		<script src="html/lib/leaflet/leaflet.js"></script>
+		<script src="html/lib/leaflet/plugins/leaflet.toolbar.js"></script>
+		<script src="html/lib/jquery.min.js"></script>
+		<script src="html/lib/dat.gui.min.js"></script>
+		<script src="html/src/map.js"></script>
+		<script src="html/src/voyage.js"></script>
+		<script src="html/src/ws.js"></script>
+		<script src="html/src/main.js"></script>
 		<script>$(function(){main();});</script>
+
+		<style>
+			* {
+				margin:0;	padding:0;
+				font-family:sans-serif;
+			}
+
+			html, body {
+				width:100%;	height:100%;
+				overflow: hidden;
+			}
+
+			#container {
+				position: relative;
+				width:100%; height:100%;
+			}
+
+			#map {
+				position: absolute;
+				width:100%; height: 100%;
+				color: black;
+				z-index: 1;
+			}
+
+			#coords {
+				position: absolute;
+				top:1%; width:100%;
+				text-align:center;
+				font-size: 1.1vw;
+				color: black;
+				z-index: 2;
+			}
+
+			#controls {
+				position: absolute;
+				font-size: 1.1vw;
+				right: 0%; 	top: 0%;
+				background-color: rgba(0,0,0,0);
+				z-index: 3;
+			}
+
+		</style>
+
 	</head>
 
 	<body>
 		<div id="container">
 			<div id="map"></div>
-  			<table id="infobox" style='border-spacing: 5px;'>Loading data...</table>
-			<form id="controls">
-				<div><span id="timestart">Start time</span><span id="timeend">End time</span></div>
-				<input id="timeline" type="range" oninput="update();" onchange="update();"/>
-				<div><span id="timecurrent">Current time</span>
-				<!-- <button type="button" id="forward" onclick="step();"><</button>
-				<button type="button" id="backward" onclick="step();">></button>
-				<button type="button" id="play" onclick="play();">Play</button>
-				Playback speed:
-				<button type="button" id="speedDown" onclick="speedDown();">-</button>
-				<button type="button" id="speedUp" onclick="speedUp();">+</button> -->
-			</form>
-			<span id="coords">lat, lng</span>
+			<div id="controls"></div>
+			<span id="coords"></span>
 		</div>
 	</body>
 </html>

@@ -15,13 +15,14 @@ public:
 	std::string docroot;
 	con_list connections;
 
-	WsServer() : docroot("html/") {}
+	WsServer() : docroot("./") {}
 
 	void operator()()
 	{
 		try
 		{
-			// Set logging settings: see <websocketpp/level.hpp>
+			// Set logging settings: see <websocketpp/logger/levels.hpp>
+			clear_access_channels(websocketpp::log::elevel::all);
 			clear_access_channels(websocketpp::log::alevel::all);
 	        //set_access_channels(websocketpp::log::alevel::access_core);
 

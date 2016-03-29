@@ -1,8 +1,10 @@
-#include <command.hpp>
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <thread>
 #include <boost/algorithm/string/replace.hpp>
+
+#include <command.hpp>
 
 void recvCmd(connection_hdl hdl, std::string cmd)
 {
@@ -15,6 +17,11 @@ void recvCmd(connection_hdl hdl, std::string cmd)
 
 	if 		(word == "echo") {
 		response << ss.str();
+	}
+	else if (word == "run") {
+		std::thread voyageThread(std::ref(*voyage));
+		voyageThread.detach();
+		return;
 	}
 
 	/** Variables **/

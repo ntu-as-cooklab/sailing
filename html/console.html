@@ -47,8 +47,8 @@
 		}
 		</style>
 
-		<script src="src/ws.js"></script>
-		<script src="lib/jquery.min.js"></script>
+		<script src="html/src/ws.js"></script>
+		<script src="html/lib/jquery.min.js"></script>
 		<script>$(function(){connect();});</script>
 	</head>
 
@@ -64,7 +64,7 @@
 		</div>
 		<div id="sendmsg">
 			<input type="text" name="msg" id="msg" value="Hello world!"/>
-			<button id="send" disabled="true" onclick="send();">Send</button>
+			<button id="send" disabled="true" onclick="send(document.getElementById('msg').value);">Send</button>
 		</div>
 	</body>
 

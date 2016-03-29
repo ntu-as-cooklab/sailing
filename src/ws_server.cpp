@@ -36,7 +36,9 @@ void WsServer::on_http(connection_hdl hdl)
 	std::string filename = con->get_resource();
 
 	if (filename == "/")
-		filename = docroot + "index.html";
+		filename = docroot + "html/index.html";
+	else if (filename == "/console")
+		filename = docroot + "html/console.html";
 	else
 		filename = docroot + filename.substr(1);
 
@@ -46,7 +48,7 @@ void WsServer::on_http(connection_hdl hdl)
 	{
 		//con->set_body("404");
 		//con->set_status(websocketpp::http::status_code::not_found);
-		filename = docroot + "index.html";
+		filename = docroot + "html/index.html";
 		file.open(filename.c_str(), std::ios::in);
 	}
 

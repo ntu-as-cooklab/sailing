@@ -50,6 +50,7 @@ LatLon Voyage::calcu_next_place(LatLon curr, UV speed)
 
 bool Voyage::sail() // result: whether we reached our destination
 {
+	std::cout << "\n[Voyage] Running simulation...\n";
 	kml.writeHeader();
 	int	runday = 0, runhour = 0; // count simulation time
 	LatLon curr = orig; // current position
@@ -139,7 +140,7 @@ bool Voyage::sail() // result: whether we reached our destination
 					// check if current position is within target range
 					if (norm(curr - dest) < range)
 					{ // TODO: use real distance
-						printf("\nReached destination\n");
+						printf("[Voyage] Reached destination\n");
 						return true;
 					}
 
@@ -156,7 +157,7 @@ bool Voyage::sail() // result: whether we reached our destination
 			closeCFSR(avid);
 		}
 
-	printf("\nReached end of time range\n");
+	printf("[Voyage] Reached end of time range\n");
 	kml.writeFooter();
 	return false;
 }

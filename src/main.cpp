@@ -13,9 +13,10 @@ Voyage* voyage;
 int main()
 {
 	std::cout <<
-	"********** ¦|²î­y¸ñ­pºâµ{¦¡ **********\n"
-	"             2016/3/29\n"
-	"           En Shih (¥Û®¦)\n"
+	"\n"
+	"*************** ¦|²î­y¸ñ­pºâµ{¦¡ ***************\n"
+	"                  2016/3/29\n"
+	"                 En Shih (¥Û®¦)\n"
 	"\n";
 
 	wsServer = new WsServer;
@@ -23,7 +24,7 @@ int main()
 	launchURL("http://127.0.0.1");
 
 	voyage = new Voyage(LatLon(24.804306, 122.086688), LatLon(33.823205, 134.887155)); // origin, destination
-	std::thread voyageThread(std::ref(*voyage));
+
 
 	std::string msg;
 	while (std::cin >> msg)
@@ -31,7 +32,7 @@ int main()
 		wsServer->sendAll(msg);
 	}
 
-	voyageThread.join();
+	//voyageThread.join();
 	wsThread.join();
 
 	delete wsServer;

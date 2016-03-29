@@ -1,46 +1,62 @@
-"use strict";
-
-var infobox, timeline;
+var container, controls, coords;
 
 function main()
 {
 	// Get DOM elements
-	infobox 	= document.getElementById("infobox");
-	timeline 	= document.getElementById("timeline");
+	container 	= document.getElementById("container");
+	controls 	= document.getElementById("controls");
+	coords 		= document.getElementById("coords");
 
+	connect();
+	initDatGUI();
 	initMap();
 }
 
-function initUI() {
-	//timeline.min = Time.valueOf(lora.data[1].time);
-	//timeline.max = Time.valueOf(lora.data[lora.data.length-1].time);
-	//timeline.defaultValue = timeline.min;
-	//timeline.value = timeline.min;
-	//timestart.innerHTML = Time.toString(timeline.min);
-	//timeend.innerHTML 	= Time.toString(timeline.max);
+function initDatGUI() {
+
+	var voyage = new Voyage();
+	var datGui = new dat.GUI();
+
+	var timestep 		= datGui.add(voyage, 'timestep').min(0);
+	var movement_factor = datGui.add(voyage, 'movement_factor');
+	var range = datGui.add(voyage, 'range').min(0);
+	var alpha = datGui.add(voyage, 'alpha');
+	var altitude = datGui.add(voyage, 'altitude').min(0);
+	var sail_open = datGui.add(voyage, 'sail_open');
+
+	timestep.onFinishChange(function(value) {
+  		send("timestep= " + value);
+	});
+	movement_factor.onFinishChange(function(value) {
+		send("movement_factor= " + value);
+	});
+	range.onFinishChange(function(value) {
+		send("range= " + value);
+	});
+	alpha.onFinishChange(function(value) {
+		send("alpha= " + value);
+	});
+	altitude.onFinishChange(function(value) {
+		send("altitude= " + value);
+	});
+	sail_open.onFinishChange(function(value) {
+		send("sail_open= " + (value ? 1 : 0));
+	});
+
+	var orig = datGui.addFolder('orig');
+	orig.add(voyage.orig, 'lat', -90, 90);
+	orig.add(voyage.orig, 'lon', -180, 180);
+
+	var dest = datGui.addFolder('dest');
+	dest.add(voyage.dest, 'lat', -90, 90);
+	dest.add(voyage.dest, 'lon', -180, 180);
+
+	var dir = datGui.addFolder('dir');
+	dir.add(voyage.dir, 'u', -30, 30);
+	dir.add(voyage.dir, 'v', -30, 30);
+
+	datGui.add(voyage, 'run');
+
+	controls.appendChild(datGui.domElement);
+	datGui.close();
 }
-
-function update() {
-
-	// Update timeline
-	//timecurrent.innerHTML = Time.toString(timeline.value);
-	//timecurrent.style.left = 1 + (timeline.value - timeline.min)*92/(timeline.max - timeline.min) + "%";
-
-	// Update infobox
-	//var show = ["time", "package_no", "altitude", "temperature", "pressure", "RSSI", "frequency_error"];
-	//var info = "";
-	//for (var i=0; i<show.length; i++)
-	//	info += "<tr>"
-	//		+ "<td>" + lora.display_name[show[i]] + ": " + "</td>"
-	//		+ "<td>" + lora.currentData()[show[i]] + " " + lora.units[show[i]] + "</td>"
-	//		+ "</tr>";
-	//infobox.innerHTML = info;
-
-	// Update map
-	//balloon.setPosition(new google.maps.LatLng(lora.currentData().latitude, lora.currentData().longitude));
-	//infowindow.setContent(lora.currentData().latitude + ", " + lora.currentData().longitude);
-};
-
-function play() {}
-function speedUp() {}
-function speedDown() {}
