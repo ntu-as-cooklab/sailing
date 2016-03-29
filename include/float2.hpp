@@ -67,6 +67,14 @@ struct Float2
 	{
     	return os << v.x << ", " << v.y;
 	}
+
+	// input float4
+	friend std::istream& operator>>(std::istream& is, Derived& v)
+	{
+		is >> v.x >> v.y;
+		return is;
+	}
+
 };
 
 #endif

@@ -2,7 +2,7 @@
 
 void KML::writeHeader()
 {
-	kmlfile <<
+	file <<
    	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 	"<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
 	"	<Document>\n"
@@ -22,7 +22,7 @@ void KML::writeHeader()
 
 void KML::writeFooter()
 {
-	kmlfile <<
+	file <<
 	"				</coordinates>\n"
 	"	        </LineString>\n"
 	"	    </Placemark>\n"
@@ -32,5 +32,5 @@ void KML::writeFooter()
 
 void KML::writeLatLon(LatLon latlon, float altitude)
 {
-	kmlfile << latlon.lon() << "," << latlon.lat() << "," << altitude << "\n";
+	file << latlon.lon() << "," << latlon.lat() << "," << altitude << "\n";
 }
