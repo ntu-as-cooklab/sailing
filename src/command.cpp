@@ -3,10 +3,11 @@
 #include <sstream>
 #include <thread>
 #include <boost/algorithm/string/replace.hpp>
+#include <iomanip>
 
 #include <command.hpp>
 
-void recvCmd(connection_hdl hdl, std::string cmd)
+std::string parseCmd(std::string cmd)
 {
 	std::stringstream ss(cmd);
 	std::string word;
@@ -16,21 +17,29 @@ void recvCmd(connection_hdl hdl, std::string cmd)
 	/** Commands **/
 
 	if 		(word == "echo") {
-		response << ss.str();
+		std::string msg;
+		getline(ss, msg);
+		response << msg;
 	}
 	else if (word == "run") {
-		std::thread voyageThread(std::ref(*voyage));
-		voyageThread.detach();
-		return;
+		voyage = new Voyage();
+		(*voyage)();
+		//std::thread voyageThread(std::ref(*voyage));
+		//voyageThread.detach();
+	}
+	else if (word == "send") {
+		std::string msg;
+		getline(ss, msg);
+		wsServer->sendAll(msg);
 	}
 
 	/** Variables **/
 
 	else if (word == "orig") {
-		response << voyage->orig;
+		response << std::fixed << std::setprecision(6) << voyage->orig;
 	}
 	else if (word == "dest") {
-		response << voyage->dest;
+		response << std::fixed << std::setprecision(6) << voyage->dest;
 	}
 	else if (word == "timestep") {
 		response << voyage->timestep;
@@ -39,30 +48,30 @@ void recvCmd(connection_hdl hdl, std::string cmd)
 		response << voyage->movement_factor;
 	}
 	else if (word == "alpha") {
-		response << voyage->alpha;
+		response << std::fixed << std::setprecision(2) << voyage->alpha;
 	}
 	else if (word == "altitude") {
-		response << voyage->altitude;
+		response << std::fixed << std::setprecision(2) << voyage->altitude;
 	}
 	else if (word == "range") {
-		response << voyage->range;
+		response << std::fixed << std::setprecision(2) << voyage->range;
 	}
 	else if (word == "sail_open") {
 		response << voyage->sail_open;
 	}
 	else if (word == "dir") {
-		if (voyage->dir) response << *voyage->dir;
+		if (voyage->dir) response << std::fixed << std::setprecision(2) << *voyage->dir;
 	}
 
 	/** Assignment **/
 
 	else if (word == "orig=") {
 		ss >> voyage->orig;
-		response << word << voyage->orig;
+		response << word << std::fixed << std::setprecision(6) << voyage->orig;
 	}
 	else if (word == "dest=") {
 		ss >> voyage->dest;
-		response << word << voyage->dest;
+		response << word << std::fixed << std::setprecision(6) << voyage->dest;
 	}
 	else if (word == "timestep=") {
 		ss >> voyage->timestep;
@@ -74,15 +83,15 @@ void recvCmd(connection_hdl hdl, std::string cmd)
 	}
 	else if (word == "alpha=") {
 		ss >> voyage->alpha;
-		response << word << voyage->alpha;
+		response << word << std::fixed << std::setprecision(2) << voyage->alpha;
 	}
 	else if (word == "altitude=") {
 		ss >> voyage->altitude;
-		response << word << voyage->altitude;
+		response << word << std::fixed << std::setprecision(2) << voyage->altitude;
 	}
 	else if (word == "range=") {
 		ss >> voyage->range;
-		response << word << voyage->range;
+		response << word << std::fixed << std::setprecision(2) << voyage->range;
 	}
 	else if (word == "sail_open=") {
 		ss >> voyage->sail_open;
@@ -91,7 +100,7 @@ void recvCmd(connection_hdl hdl, std::string cmd)
 	else if (word == "dir=") {
 		if (voyage->dir) {
 			ss >> *voyage->dir;
-			response << word << *voyage->dir;
+			response << word << std::fixed << std::setprecision(2) << *voyage->dir;
 		}
 	}
 
@@ -99,7 +108,13 @@ void recvCmd(connection_hdl hdl, std::string cmd)
 
 	else if (word == "help") {
 		response <<
-		"\n******** Variable commands:\n"
+		"####################################\n"
+		"############ General commands:\n"
+		"echo				(message)\n"
+		"send				(message)\n"
+		"run\n"
+		"help\n"
+		"############ Variables:\n"
 		"orig\n"
 		"dest\n"
 		"timestep\n"
@@ -109,25 +124,31 @@ void recvCmd(connection_hdl hdl, std::string cmd)
 		"range\n"
 		"sail_open\n"
 		"dir\n"
-		"******** Assignment commands:\n"
-		"orig= (lat) (lon)\n"
-		"dest= (lat) (lon)\n"
-		"timestep= (size of timestep in seconds)\n"
-		"movement_factor= (movement_factor)\n"
-		"alpha= (alpha)\n"
-		"altitude= (altitude in m)\n"
-		"range= (range)\n"
-		"sail_open= (0/1)\n"
-		"dir= (u) (v)\n"
+		"############ Assignment commands:\n"
+		"orig=          	(lat) (lon)\n"
+		"dest=          	(lat) (lon)\n"
+		"timestep=			(size of timestep in seconds)\n"
+		"movement_factor=	(movement_factor)\n"
+		"alpha=				(alpha)\n"
+		"altitude= 			(altitude in m)\n"
+		"range= 			(range)\n"
+		"sail_open= 		(0/1)\n"
+		"dir= 				(u) (v)\n"
+		"####################################"
 		;
 	}
 
 	else {
 		response << "Invalid command: \"" << word << "\"";
 	}
+	return response.str();
+}
 
-	std::string response_str = response.str();
-	std::cout << "\n[" << hdl.lock().get() << "] " << response_str;
-	boost::replace_all(response_str, "\n", "</br>");
-	wsServer->sendMsg(hdl, response_str);
+void recvCmd(connection_hdl hdl, std::string cmd)
+{
+	std::string response = parseCmd(cmd);
+	std::cout << "\n[" << hdl.lock().get() << "] " << response << "\n";
+	boost::replace_all(response, "\n", "</br>");
+	boost::replace_all(response, "\t", " ");
+	wsServer->sendMsg(hdl, response);
 }

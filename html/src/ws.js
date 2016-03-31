@@ -26,14 +26,14 @@ function connect() {
 	ws.onclose = function(e) {
 		document.getElementById("console").innerHTML += "[Client] The connection to "+url+" was closed. ["+e.code+(e.reason != "" ? ","+e.reason : "")+"]<br />";
 	    cleanup_disconnect();
-	};
+	};*/
 
 	ws.onmessage = function(e) {
-		document.getElementById("console").innerHTML += "[Server] "+e.data+"<br />";
-		$("#container").scrollTop($("#container")[0].scrollHeight);
+		console.log(e.data);
+		omnivore.kml(e.data).addTo(map);
 	};
 
-	document.onkeydown = function(){
+	/*document.onkeydown = function(){
 	    if(window.event.keyCode=='13')
 	        send();
 	}

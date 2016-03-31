@@ -43,7 +43,7 @@ void WsServer::on_http(connection_hdl hdl)
 		filename = docroot + filename.substr(1);
 
 	std::ifstream file;
-	file.open(filename.c_str(), std::ios::in);
+	file.open(filename.c_str(), std::ios::binary);
 	if (!file)
 	{
 		//con->set_body("404");

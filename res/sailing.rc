@@ -7,12 +7,12 @@ BEGIN
     BLOCK "040904E4"
     BEGIN
       VALUE "CompanyName", "NTU COOK Team"
-      VALUE "FileDescription", "Sailing simulation based on CFSR data"
+      VALUE "FileDescription", "CFSR Sailing Simulation"
       VALUE "FileVersion", "0.1"
       VALUE "InternalName", "sailing"
       VALUE "LegalCopyright", "En Shih"
       VALUE "OriginalFilename", "sailing.exe"
-      VALUE "ProductName", "Sailing simulation"
+      VALUE "ProductName", "CFSR Sailing Simulation"
       VALUE "ProductVersion", "0.1"
     END
   END

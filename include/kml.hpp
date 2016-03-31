@@ -8,8 +8,8 @@ struct KML
 {
 	std::ofstream file;
 
-	KML(std::string filename) 	{ file.open(filename); }
-	~KML() 						{ file.close(); }
+	void open(std::string filename) { file.open(filename); }
+	void close() 					{ file.close(); }
 	void writeHeader();
 	void writeFooter();
 	void writeLatLon(LatLon latlon, float altitude);

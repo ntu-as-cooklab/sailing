@@ -26,7 +26,8 @@ struct Voyage
 
 	/* Constructor */
 
-	Voyage(LatLon orig, LatLon dest) : orig(orig), dest(dest), kml("voyage.kml") {}
+	Voyage() {}
+	Voyage(LatLon orig, LatLon dest) : orig(orig), dest(dest){}
 
 	// start thread
 	void operator()() { sail(); }

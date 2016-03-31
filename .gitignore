@@ -1,9 +1,10 @@
-build/
-build-linux/
-./lib/
-data/
-ftpserver.txt
+/build/
+/build-linux/
+/lib/
+/data/
+/ftpserver.txt
+/sailing
 *.exe
 *.kml
 *.res
-sailing
+*.a

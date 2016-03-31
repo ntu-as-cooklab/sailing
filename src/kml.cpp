@@ -1,4 +1,5 @@
 #include <kml.hpp>
+#include <iomanip>
 
 void KML::writeHeader()
 {
@@ -32,5 +33,5 @@ void KML::writeFooter()
 
 void KML::writeLatLon(LatLon latlon, float altitude)
 {
-	file << latlon.lon() << "," << latlon.lat() << "," << altitude << "\n";
+	file << std::fixed << std::setprecision(6) << latlon.lon() << "," << latlon.lat() << "," << altitude << "\n";
 }

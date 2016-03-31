@@ -43,19 +43,7 @@ function initDatGUI() {
 		send("sail_open= " + (value ? 1 : 0));
 	});
 
-	var orig = datGui.addFolder('orig');
-	orig.add(voyage.orig, 'lat', -90, 90);
-	orig.add(voyage.orig, 'lon', -180, 180);
-
-	var dest = datGui.addFolder('dest');
-	dest.add(voyage.dest, 'lat', -90, 90);
-	dest.add(voyage.dest, 'lon', -180, 180);
-
-	var dir = datGui.addFolder('dir');
-	dir.add(voyage.dir, 'u', -30, 30);
-	dir.add(voyage.dir, 'v', -30, 30);
-
-	datGui.add(voyage, 'run');
+	datGui.add(voyage, 'Run');
 
 	controls.appendChild(datGui.domElement);
 	datGui.close();

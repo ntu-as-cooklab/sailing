@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="html/lib/leaflet/leaflet.css" />
 		<link rel="stylesheet" href="html/lib/leaflet/plugins/leaflet.toolbar.css"/>
 		<script src="html/lib/leaflet/leaflet.js"></script>
+		<script src="html/lib/leaflet/plugins/leaflet-omnivore.min.js"></script>
 		<script src="html/lib/leaflet/plugins/leaflet.toolbar.js"></script>
 		<script src="html/lib/jquery.min.js"></script>
 		<script src="html/lib/dat.gui.min.js"></script>
@@ -19,7 +20,7 @@
 		<style>
 			* {
 				margin:0;	padding:0;
-				font-family:sans-serif;
+				font-family: sans-serif;
 			}
 
 			html, body {
@@ -43,14 +44,17 @@
 				position: absolute;
 				top:1%; width:100%;
 				text-align:center;
-				font-size: 1.1vw;
+				font-size: 1.5vw;
 				color: black;
 				z-index: 2;
 			}
 
+			#info > * {
+				font-family: 微軟正黑體, sans-serif;
+			}
+
 			#controls {
 				position: absolute;
-				font-size: 1.1vw;
 				right: 0%; 	top: 0%;
 				background-color: rgba(0,0,0,0);
 				z-index: 3;

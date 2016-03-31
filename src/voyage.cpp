@@ -1,3 +1,4 @@
+#include <command.hpp>
 #include <voyage.hpp>
 #include <cfsr.hpp>
 #include <iostream>
@@ -51,6 +52,7 @@ LatLon Voyage::calcu_next_place(LatLon curr, UV speed)
 bool Voyage::sail() // result: whether we reached our destination
 {
 	std::cout << "\n[Voyage] Running simulation...\n";
+	kml.open("voyage.kml");
 	kml.writeHeader();
 	int	runday = 0, runhour = 0; // count simulation time
 	LatLon curr = orig; // current position
@@ -75,11 +77,13 @@ bool Voyage::sail() // result: whether we reached our destination
 			for (int day=1; day<=daymax; day++, runday++)
 				for (int hour=1; hour<=24; hour++, runhour++, sail_open = hour<=12) // only open sail for half a day
 				{
+					std::cout << day;
 					// TODO: interpolate ocean & wind in space and time using data from two days
 					// (hour-1)/24
 
 					// Ocean current:
 					UV ocean = getOUV(ouid, ovid, day, curr);
+					std::cout << "O: " << ocean << "\n";
 
 					// Wind speed:
 					UV wind =
@@ -91,18 +95,23 @@ bool Voyage::sail() // result: whether we reached our destination
 					WindSP_10m = norm(wind);
 					WindSP_2m  = WindSP_10m / pow(5,alpha); // wind profile power law
 					wind *= (WindSP_2m / WindSP_10m);*/
+					std::cout << "W: " << wind << "\n";
 
 					// adjust boat direction and calculate boat speed gain due to wind
 					// TODO: path finding
 					//dir = new UV(1,-1);
-					UV 		sail_dir 	= (dir ? *dir : adj_direction(curr, dest)).normalize();
-					float 	sail_sp 	= boat_speed(wind, sail_dir); // boat speed gain due to wind
+					UV 		sail_dir 	= 0; //(dir ? *dir : adj_direction(curr, dest)).normalize();
+					std::cout << "WDir: " << sail_dir << "\n";
+					float 	sail_sp 	= 0; //boat_speed(wind, sail_dir); // boat speed gain due to wind
+					std::cout << "WSp: " << sail_sp << "\n";
 
 					// boat movement vector due to wind from direction and speed
 					UV wind_gain = sail_sp * sail_dir;
+					std::cout << "WG: " << wind_gain << "\n";
 
 					// total speed
-					UV gain = ocean + wind_gain;
+					UV gain = ocean ;//+ wind_gain;
+					std::cout << "G: " << gain << "\n";
 
 					// calculate next place
 					curr = calcu_next_place(curr, gain);
@@ -138,11 +147,11 @@ bool Voyage::sail() // result: whether we reached our destination
 							Avg_Wind_Angle_Diff 	= Total_Wind_Angle_Diff*2 	/ runhour;
 
 					// check if current position is within target range
-					if (norm(curr - dest) < range)
-					{ // TODO: use real distance
-						printf("[Voyage] Reached destination\n");
-						return true;
-					}
+					//if (norm(curr - dest) < range)
+					//{ // TODO: use real distance
+					//	printf("[Voyage] Reached destination\n");
+					//	return true;
+					//}
 
 					// check if current position is out of bounds --> travel failed
 					//if (curr.lon() > bounds.lon() || curr.lat() < bounds.lat() )
@@ -159,5 +168,7 @@ bool Voyage::sail() // result: whether we reached our destination
 
 	printf("[Voyage] Reached end of time range\n");
 	kml.writeFooter();
+	kml.close();
+	std::cout << parseCmd("send voyage.kml") << "\n";
 	return false;
 }

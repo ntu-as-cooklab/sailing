@@ -7,6 +7,7 @@
 extern WsServer* wsServer;
 extern Voyage* voyage;
 
+std::string parseCmd(std::string cmd);
 void recvCmd(connection_hdl hdl, std::string cmd);
 
 #endif
