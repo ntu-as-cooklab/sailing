@@ -1,11 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <ws_server.hpp>
-#include <command.hpp>
 
-typedef websocketpp::connection_hdl connection_hdl;
-typedef websocketpp::server<websocketpp::config::asio>::message_ptr message_ptr;	// pull out the type of messages sent by our config
-typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
+#include "interface.hpp"
+#include "ws_server.hpp"
 
 void WsServer::on_open(connection_hdl hdl)
 {

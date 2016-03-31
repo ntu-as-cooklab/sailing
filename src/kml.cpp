@@ -1,5 +1,5 @@
-#include <kml.hpp>
-#include <iomanip>
+#include "kml.hpp"
+#include <iomanip> // for std::setprecision
 
 void KML::writeHeader()
 {

@@ -12,6 +12,7 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 # Include headers
 
 include_directories("include")
+include_directories("float2")
 include_directories("cfsr/include")
 include_directories("http_server/include")
 include_directories("websocketpp")

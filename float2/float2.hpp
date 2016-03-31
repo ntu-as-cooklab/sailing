@@ -14,6 +14,8 @@ struct Float2
 	Float2(float c) : x(c), y(c) {}
 	Float2() : x(0), y(0) {}
 
+	operator Derived() { return Derived(x, y); }
+
 	/* Addition */
 
 	// compound assignment (does not need to be a member, but often is, to modify the private members)

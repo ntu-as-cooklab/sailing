@@ -1,7 +1,7 @@
 #ifndef UV_HPP
 #define UV_HPP
 
-#include <float2.hpp>
+#include "float2.hpp"
 
 struct UV : Float2<UV>
 {

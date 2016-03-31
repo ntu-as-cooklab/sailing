@@ -1,10 +1,9 @@
-#ifndef SAILING_HPP
-#define SAILING_HPP
+#ifndef VOYAGE_HPP
+#define VOYAGE_HPP
 
-#include <os.h>
-#include <latlon.hpp>
-#include <uv.hpp>
-#include <kml.hpp>
+#include "latlon.hpp"
+#include "uv.hpp"
+#include "kml.hpp"
 
 struct Voyage
 {

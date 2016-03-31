@@ -1,4 +1,4 @@
-#ifndef CFSR_HPP
-#define CFSR_HPP
+#ifndef BOAT_HPP
+#define BOAT_HPP
 
 #endif

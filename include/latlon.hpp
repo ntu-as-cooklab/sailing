@@ -1,7 +1,7 @@
 #ifndef LATLON_HPP
 #define LATLON_HPP
 
-#include <float2.hpp>
+#include "float2.hpp"
 
 struct LatLon : Float2<LatLon>
 {

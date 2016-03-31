@@ -1,13 +1,10 @@
 #include <iostream>
 #include <thread>
 
-#include <ws_server.hpp>
-#include <voyage.hpp>
-#include <command.hpp>
-#include <os.h>
-#include <browser.hpp>
+#include "voyage.hpp"
+#include "interface.hpp"
+#include "browser.hpp"
 
-WsServer* wsServer;
 Voyage* voyage;
 
 int main()
@@ -19,8 +16,7 @@ int main()
 	"                 En Shih (е█ож)\n"
 	"\n";
 
-	wsServer = new WsServer;
-	std::thread wsThread(std::ref(*wsServer));
+	std::thread wsThread = launchWsServer();
 	launchURL("http://127.0.0.1");
 
 	voyage = new Voyage(); // origin, destination
@@ -34,7 +30,7 @@ int main()
 	//voyageThread.join();
 	wsThread.join();
 
-	delete wsServer;
+	//delete wsServer;
 	delete voyage;
 
    	return 0;

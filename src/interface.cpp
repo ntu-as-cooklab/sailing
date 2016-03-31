@@ -1,11 +1,20 @@
-#include <string>
 #include <iostream>
+#include <iomanip> // for std::setprecision
+#include <string>
 #include <sstream>
-#include <thread>
 #include <boost/algorithm/string/replace.hpp>
-#include <iomanip>
+#include <thread>
 
-#include <command.hpp>
+#include "ws_server.hpp"
+#include "voyage.hpp"
+
+extern Voyage* voyage;
+WsServer* wsServer;
+
+std::thread launchWsServer()
+{
+	return wsServer ? NULL : wsServer = new WsServer, std::thread(std::ref(*wsServer));
+}
 
 std::string parseCmd(std::string cmd)
 {
@@ -144,7 +153,7 @@ std::string parseCmd(std::string cmd)
 	return response.str();
 }
 
-void recvCmd(connection_hdl hdl, std::string cmd)
+void recvCmd(websocketpp::connection_hdl hdl, std::string cmd)
 {
 	std::string response = parseCmd(cmd);
 	std::cout << "\n[" << hdl.lock().get() << "] " << response << "\n";

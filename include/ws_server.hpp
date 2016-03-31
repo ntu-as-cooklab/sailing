@@ -1,13 +1,15 @@
 #ifndef WSSERVER_HPP
 #define WSSERVER_HPP
 
-#include <websocketpp/server.hpp>
-#include <websocketpp/config/asio_no_tls.hpp>
+#include <iostream>
+#include <string>
 #include <set>
 
+#include <websocketpp/server.hpp>
+#include <websocketpp/config/asio_no_tls.hpp>
 typedef websocketpp::connection_hdl connection_hdl;
+typedef std::set<connection_hdl, std::owner_less<connection_hdl>> con_list;
 typedef websocketpp::server<websocketpp::config::asio>::message_ptr message_ptr;	// pull out the type of messages sent by our config
-typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
 
 class WsServer : protected websocketpp::server<websocketpp::config::asio>
 {
@@ -25,7 +27,7 @@ public:
 			// Set logging settings: see <websocketpp/logger/levels.hpp>
 			clear_access_channels(websocketpp::log::elevel::all);
 			clear_access_channels(websocketpp::log::alevel::all);
-	        //set_access_channels(websocketpp::log::alevel::access_core);
+			//set_access_channels(websocketpp::log::alevel::access_core);
 
 			init_asio();			// Initialize Asio
 			using websocketpp::lib::placeholders::_1;

@@ -2,7 +2,7 @@
 #define KML_HPP
 
 #include <fstream>
-#include <latlon.hpp>
+#include "latlon.hpp"
 
 struct KML
 {

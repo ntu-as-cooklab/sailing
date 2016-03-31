@@ -1,7 +1,8 @@
-#include <command.hpp>
-#include <voyage.hpp>
-#include <cfsr.hpp>
 #include <iostream>
+
+#include "voyage.hpp"
+#include "cfsr.hpp"
+#include "interface.hpp"
 
 UV Voyage::adj_direction(LatLon curr, LatLon dest)
 {
@@ -77,7 +78,7 @@ bool Voyage::sail() // result: whether we reached our destination
 			for (int day=1; day<=daymax; day++, runday++)
 				for (int hour=1; hour<=24; hour++, runhour++, sail_open = hour<=12) // only open sail for half a day
 				{
-					std::cout << day;
+					std::cout << "Day" << day << "Hour" << hour << "\n";
 					// TODO: interpolate ocean & wind in space and time using data from two days
 					// (hour-1)/24
 
