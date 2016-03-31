@@ -5,7 +5,7 @@ function main()
 	// Get DOM elements
 	container 	= document.getElementById("container");
 	controls 	= document.getElementById("controls");
-	coords 		= document.getElementById("coords");
+	info 		= document.getElementById("info");
 
 	connect();
 	initDatGUI();

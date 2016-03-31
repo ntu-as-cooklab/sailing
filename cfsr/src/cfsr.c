@@ -1,4 +1,5 @@
 #include <cfsr.h>
+#include <string.h>
 
 int err;
 const char* CFSR_dir = "data/"; // predefined CFSR directory

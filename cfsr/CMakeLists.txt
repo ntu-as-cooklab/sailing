@@ -17,7 +17,11 @@ include_directories("include")
 
 file(GLOB CFSR_SRC "src/*.c")
 add_library(cfsr ${CFSR_SRC})
-target_link_libraries(cfsr netcdf hdf5_hl hdf5 szip z curl) #netcdf_c++4
+if(WIN32)
+    target_link_libraries(cfsr netcdf hdf5_hl hdf5 szip z curl) #netcdf_c++4
+else()
+    target_link_libraries(cfsr netcdf hdf5_hl hdf5 szip z curl) #netcdf_c++4
+endif()
 
 # Flags
 

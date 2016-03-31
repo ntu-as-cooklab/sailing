@@ -24,7 +24,15 @@ add_subdirectory(http_server)
 # Sources
 
 file(GLOB SAILING_SRC "src/*.cpp")
-add_executable(sailing ${SAILING_SRC})
+if(WIN32)
+    file(GLOB SAILING_RES "res/sailing.res")
+    set_source_files_properties(
+        ${SAILING_RES} PROPERTIES
+        EXTERNAL_OBJECT TRUE  # Identifies this as an object file
+        GENERATED TRUE  # Avoids need for file to exist at configure-time
+        )
+endif()
+add_executable(sailing ${SAILING_SRC} ${SAILING_RES})
 target_link_libraries(sailing cfsr http_server)
 
 # Flags

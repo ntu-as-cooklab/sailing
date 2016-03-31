@@ -3,6 +3,7 @@
 
 #include <websocketpp/server.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
+#include <set>
 
 typedef websocketpp::connection_hdl connection_hdl;
 typedef websocketpp::server<websocketpp::config::asio>::message_ptr message_ptr;	// pull out the type of messages sent by our config
@@ -29,10 +30,10 @@ public:
 			init_asio();			// Initialize Asio
 			using websocketpp::lib::placeholders::_1;
 			using websocketpp::lib::placeholders::_2;
-			set_message_handler(websocketpp::lib::bind(&on_message, this, _1, _2));
-			set_http_handler(websocketpp::lib::bind(&on_http, this, _1));
-			set_open_handler(websocketpp::lib::bind(&on_open, this, _1));
-			set_close_handler(websocketpp::lib::bind(&on_close, this, _1));
+			set_message_handler(websocketpp::lib::bind(&WsServer::on_message, this, _1, _2));
+			set_http_handler(websocketpp::lib::bind(&WsServer::on_http, this, _1));
+			set_open_handler(websocketpp::lib::bind(&WsServer::on_open, this, _1));
+			set_close_handler(websocketpp::lib::bind(&WsServer::on_close, this, _1));
 			listen(80); 			// Listen on port
 			start_accept(); 		// Start the server accept loop
 			run();					// Start the ASIO io_service run loop
