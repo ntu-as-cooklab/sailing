@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip> // for std::setprecisionma
 
 #include "voyage.hpp"
 #include "cfsr.hpp"
@@ -13,7 +14,7 @@ UV Voyage::adj_direction(LatLon curr, LatLon dest)
 
 float Voyage::boat_speed(UV wind, UV dir)
 {
-	float wind_speed = norm(wind)<8 ? norm(wind) : 0;
+	float wind_speed = norm(wind); //norm(wind)<8 ? norm(wind) : 0;
 	float angle_diff = anglediff(wind, dir);
 
 	if (angle_diff <= 30)
@@ -76,15 +77,18 @@ bool Voyage::sail() // result: whether we reached our destination
 
 			int daymax = 26; // TODO
 			for (int day=1; day<=daymax; day++, runday++)
-				for (int hour=1; hour<=24; hour++, runhour++, sail_open = hour<=12) // only open sail for half a day
+				for (int hour=1; hour<=1; hour++, runhour++, sail_open = hour<=12) // only open sail for half a day
 				{
-					std::cout << "Day" << day << "Hour" << hour << "\n";
+					//std::cout << "Time: " << year << " " << month << " " << day << " " << hour << "\n";
+					//std::cout << "Current position: " << std::fixed << std::setprecision(6) << curr << "\n";
 					// TODO: interpolate ocean & wind in space and time using data from two days
 					// (hour-1)/24
 
 					// Ocean current:
 					UV ocean = getOUV(ouid, ovid, day, curr);
-					std::cout << "O: " << ocean << "\n";
+					//std::cout << "ouid: " << ouid << "\n";
+					//std::cout << "ovid: " << ovid << "\n";
+					//std::cout << "Ocean: " << ocean << "\n";
 
 					// Wind speed:
 					UV wind =
@@ -96,23 +100,23 @@ bool Voyage::sail() // result: whether we reached our destination
 					WindSP_10m = norm(wind);
 					WindSP_2m  = WindSP_10m / pow(5,alpha); // wind profile power law
 					wind *= (WindSP_2m / WindSP_10m);*/
-					std::cout << "W: " << wind << "\n";
+					//std::cout << "Wind: " << wind << "\n";
 
 					// adjust boat direction and calculate boat speed gain due to wind
 					// TODO: path finding
 					//dir = new UV(1,-1);
-					UV 		sail_dir 	= 0; //(dir ? *dir : adj_direction(curr, dest)).normalize();
-					std::cout << "WDir: " << sail_dir << "\n";
-					float 	sail_sp 	= 0; //boat_speed(wind, sail_dir); // boat speed gain due to wind
-					std::cout << "WSp: " << sail_sp << "\n";
+					UV 		sail_dir 	= wind.normalize(); //(dir ? *dir : adj_direction(curr, dest)).normalize();
+					//std::cout << "Sail dir: " << sail_dir << "\n";
+					float 	sail_sp 	= boat_speed(wind, sail_dir); // boat speed gain due to wind
+					//std::cout << "Sail sp: " << sail_sp << "\n";
 
 					// boat movement vector due to wind from direction and speed
 					UV wind_gain = sail_sp * sail_dir;
-					std::cout << "WG: " << wind_gain << "\n";
+					//std::cout << "Wind gain: " << wind_gain << "\n";
 
 					// total speed
-					UV gain = ocean ;//+ wind_gain;
-					std::cout << "G: " << gain << "\n";
+					UV gain = ocean + wind_gain;
+					//std::cout << "Total gain: " << gain << "\n";
 
 					// calculate next place
 					curr = calcu_next_place(curr, gain);
@@ -160,6 +164,8 @@ bool Voyage::sail() // result: whether we reached our destination
 					//	printf("\nSailed out of bounds\n");
 					//	return false;
 					//}
+
+					//std::cout << "\n";
 				}
 			closeCFSR(ouid);
 			closeCFSR(ovid);

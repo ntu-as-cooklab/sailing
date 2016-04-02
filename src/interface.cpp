@@ -5,6 +5,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <thread>
 
+#include "cfsr.hpp"
 #include "ws_server.hpp"
 #include "voyage.hpp"
 
@@ -31,7 +32,6 @@ std::string parseCmd(std::string cmd)
 		response << msg;
 	}
 	else if (word == "run") {
-		voyage = new Voyage();
 		(*voyage)();
 		//std::thread voyageThread(std::ref(*voyage));
 		//voyageThread.detach();
@@ -40,6 +40,31 @@ std::string parseCmd(std::string cmd)
 		std::string msg;
 		getline(ss, msg);
 		wsServer->sendAll(msg);
+	}
+	else if (word == "OU") {
+		int year, month, day;
+		float lat, lon;
+		ss >> year >> month >> day >> lat >> lon;
+		int ouid = openCFSR(CFSR_OU, year, month);
+		response << getOUV(ouid, day, lat, lon);
+		closeCFSR(ouid);
+	}
+	else if (word == "OV") {
+		int year, month, day;
+		float lat, lon;
+		ss >> year >> month >> day >> lat >> lon;
+		int ovid = openCFSR(CFSR_OV, year, month);
+		response << getOUV(ovid, day, lat, lon);
+		closeCFSR(ovid);
+	}
+	else if (word == "OUV") {
+		int year, month, day;
+		LatLon latlon;
+		ss >> year >> month >> day >> latlon;
+		int ouid = openCFSR(CFSR_OU, year, month),
+			ovid = openCFSR(CFSR_OV, year, month);
+		response << getOUV(ouid, ovid, day, latlon);
+		closeCFSR(ovid);
 	}
 
 	/** Variables **/
