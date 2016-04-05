@@ -10,15 +10,25 @@ var dest;
 function initMap() {
 
 	map = L.map('map', {
+		worldCopyJump: true,
+		minZoom: 3,
+		maxZoom: 18,
 		'center': [26.0, 133.0],
-		'zoom': 5
+		'zoom': 5,
+		inertia : false
+		//fadeAnimation: false,
+		//zoomAnimation: false
 	});
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>, <p>Flat Icons by <a href="/resources/free-icons/">WhoIsHostingThis.com</a></p>',
-    	maxZoom: 18,
     	id: 'seanstone5923.phlaakpk',
-    	accessToken: 'pk.eyJ1Ijoic2VhbnN0b25lNTkyMyIsImEiOiJjaW1kOTJrZGYwMDUxdHNra2wwOGN0cTY1In0.n0m5Euk9SWbiNt4RZi8vkQ'
+    	accessToken: 'pk.eyJ1Ijoic2VhbnN0b25lNTkyMyIsImEiOiJjaW1kOTJrZGYwMDUxdHNra2wwOGN0cTY1In0.n0m5Euk9SWbiNt4RZi8vkQ',
+		//unloadInvisibleTiles : false,
+		//reuseTiles : true,
+		//updateWhenIdle : false,
+		continousWorld : true,
+		//noWrap: false
 	}).addTo(map);
 
 	L.control.scale().addTo(map);
@@ -69,8 +79,8 @@ function initMap() {
 			popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
 	});
 
-	orig = L.marker(voyage.orig, { icon: origIcon, draggable: true }).addTo(map);
-	dest = L.marker(voyage.dest, { icon: destIcon, draggable: true }).addTo(map);
+	orig = L.marker(voyage.orig, { icon: origIcon, draggable: true, continousWorld : true }).addTo(map);
+	dest = L.marker(voyage.dest, { icon: destIcon, draggable: true, continousWorld : true  }).addTo(map);
 
 	/** Events **/
 

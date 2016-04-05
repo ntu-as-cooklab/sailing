@@ -17,7 +17,7 @@ std::thread launchWsServer()
 	return wsServer ? NULL : wsServer = new WsServer, std::thread(std::ref(*wsServer));
 }
 
-std::string parseCmd(std::string cmd)
+std::string execCmd(std::string cmd)
 {
 	std::stringstream ss(cmd);
 	std::string word;
@@ -75,6 +75,9 @@ std::string parseCmd(std::string cmd)
 	else if (word == "dest") {
 		response << std::fixed << std::setprecision(6) << voyage->dest;
 	}
+	else if (word == "curr") {
+		response << std::fixed << std::setprecision(6) << voyage->curr;
+	}
 	else if (word == "timestep") {
 		response << voyage->timestep;
 	}
@@ -94,7 +97,7 @@ std::string parseCmd(std::string cmd)
 		response << voyage->sail_open;
 	}
 	else if (word == "dir") {
-		if (voyage->dir) response << std::fixed << std::setprecision(2) << *voyage->dir;
+		response << std::fixed << std::setprecision(2) << voyage->dir;
 	}
 
 	/** Assignment **/
@@ -132,10 +135,8 @@ std::string parseCmd(std::string cmd)
 		response << word << voyage->sail_open;
 	}
 	else if (word == "dir=") {
-		if (voyage->dir) {
-			ss >> *voyage->dir;
-			response << word << std::fixed << std::setprecision(2) << *voyage->dir;
-		}
+		ss >> voyage->dir;
+		response << word << std::fixed << std::setprecision(2) << voyage->dir;
 	}
 
 	/** **/
@@ -172,16 +173,15 @@ std::string parseCmd(std::string cmd)
 		;
 	}
 
-	else {
-		response << "Invalid command: \"" << word << "\"";
-	}
+	else response << "Invalid command: \"" << word << "\"";
+
 	return response.str();
 }
 
 void recvCmd(websocketpp::connection_hdl hdl, std::string cmd)
 {
-	std::string response = parseCmd(cmd);
-	std::cout << "\n[" << hdl.lock().get() << "] " << response << "\n";
+	std::string response = execCmd(cmd);
+	std::cout << "[" << hdl.lock().get() << "] " << response << "\n";
 	boost::replace_all(response, "\n", "</br>");
 	boost::replace_all(response, "\t", " ");
 	wsServer->sendMsg(hdl, response);

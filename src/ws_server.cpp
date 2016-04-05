@@ -43,21 +43,18 @@ void WsServer::on_http(connection_hdl hdl)
 	file.open(filename.c_str(), std::ios::binary);
 	if (!file)
 	{
-		//con->set_body("404");
-		//con->set_status(websocketpp::http::status_code::not_found);
 		filename = docroot + "html/index.html";
 		file.open(filename.c_str(), std::ios::in);
+		con->set_status(websocketpp::http::status_code::not_found);
 	}
+	else con->set_status(websocketpp::http::status_code::ok);
 
 	std::string response;
 	file.seekg(0, std::ios::end);
 	response.reserve(file.tellg());
 	file.seekg(0, std::ios::beg);
-
 	response.assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-
 	con->set_body(response);
-	con->set_status(websocketpp::http::status_code::ok);
 
 	con->send_http_response();
 }

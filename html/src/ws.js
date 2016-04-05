@@ -9,16 +9,18 @@ function connect() {
 	else if ("MozWebSocket" in window)
 		ws = new MozWebSocket(url);
 	/*else
-		return document.getElementById("console").innerHTML += "This browser does not support WebSocket<br/>";
+		return document.getElementById("console").innerHTML += "This browser does not support WebSocket<br/>";*/
 
 	ws.onopen = function(e) {
-		document.getElementById("console").innerHTML += "[Client] A connection to "+ws.url+" has been opened.<br/>";
-		document.getElementById("server_url").disabled = true;
-		document.getElementById("toggle_connect").innerHTML = "Disconnect";
-		document.getElementById("send").disabled = false;
+		setOrig(orig.getLatLng());
+		setDest(dest.getLatLng());
+		//document.getElementById("console").innerHTML += "[Client] A connection to "+ws.url+" has been opened.<br/>";
+		//document.getElementById("server_url").disabled = true;
+		//document.getElementById("toggle_connect").innerHTML = "Disconnect";
+		//document.getElementById("send").disabled = false;
 	};
 
-	ws.onerror = function(e) {
+	/*ws.onerror = function(e) {
 		document.getElementById("console").innerHTML += "[Client] An error occured, see console log for more details.<br/>";
 		console.log(e);
 	};

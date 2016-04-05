@@ -12,7 +12,7 @@ int main()
 	std::cout <<
 	"\n"
 	"*************** ¦|²î­y¸ñ­pºâµ{¦¡ ***************\n"
-	"                  2016/3/29\n"
+	"                  2016/4/5\n"
 	"                 En Shih (¥Û®¦)\n"
 	"\n";
 
@@ -23,14 +23,10 @@ int main()
 
 	std::string msg;
 	while (std::getline (std::cin, msg))
-	{
-		std::cout << parseCmd(msg) << "\n";
-	}
+		std::cout << execCmd(msg) << "\n";
 
-	//voyageThread.join();
 	wsThread.join();
 
-	//delete wsServer;
 	delete voyage;
 
    	return 0;

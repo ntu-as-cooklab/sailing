@@ -3,18 +3,18 @@
 
 #include <math.h>
 #define PI 3.14159265358979
-#include <iostream>
+#include <iosfwd> // foward declare iostream
 
 template<class Derived>
 struct Float2
 {
 	float x, y;
 
-	Float2(float x, float y) : x(x), y(y) {}
-	Float2(float c) : x(c), y(c) {}
-	Float2() : x(0), y(0) {}
+	constexpr Float2(float x, float y) : x(x), y(y) {}
+	constexpr Float2(float c) : x(c), y(c) {}
+	constexpr Float2() : x(0), y(0) {}
 
-	operator Derived() { return Derived(x, y); }
+	constexpr operator Derived() { return Derived(x, y); }
 
 	/* Addition */
 
@@ -51,7 +51,7 @@ struct Float2
 	/* Dot product */
 
 	constexpr friend float dot(const Derived& lhs, const Derived& rhs) { return lhs.x * rhs.x + lhs.y * rhs.y; }
-	constexpr friend float operator&(const Derived& lhs, const Derived& rhs){ return dot(lhs, rhs); }
+	constexpr friend float operator*(const Derived& lhs, const Derived& rhs){ return dot(lhs, rhs); }
 
 	/* Norm */
 
@@ -60,7 +60,7 @@ struct Float2
 
 	/* Normalization */
 
-	Derived& normalize() { return *static_cast<Derived*>(&(*this/=norm())); }
+	Derived& normalize() { return *static_cast<Derived*>(&(norm()!=0 ? *this/=norm() : *this=0)); }
 	constexpr friend Derived normalize(Derived v) { return v.normalize(); }
 
 	/* Stream extraction */

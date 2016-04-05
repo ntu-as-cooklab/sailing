@@ -20,9 +20,9 @@ int openCFSR(CFSR type, int year, int month)
 	strcat(filepath, CFSR_filename[type]); // append CFSR filename to filepath
 	snprintf(strchr(filepath,'Y'), 6, "%04d%02d", year, month);
 	// TODO: fetchCFSR(filename);
-	//printf("[CFSR] Opening file: %s", filepath);
+	printf("[CFSR] Opening file: %s", filepath);
 	if ((err = nc_open(filepath, NC_NOWRITE, &ncid))) ERR(err); // Open the file. NC_NOWRITE tells netCDF we want read-only access to the file.
-	//printf("\t...ok\n");
+	printf("\t...ok\n");
 	return ncid;
 }
 

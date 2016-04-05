@@ -1,11 +1,63 @@
 #ifndef DATE_HPP
 #define DATE_HPP
 
-struct date
+#include <iostream> // foward declare iostream
+
+struct Date
 {
 	int year, month, day, hour;
-	date(int year, int month, int day, int hour) : year(year), month(month), day(day), hour(hour) {}
-	// TODO
-}
+
+	//Date(int year, int month, int day, int hour) : year(year), month(month), day(day), hour(hour) {}
+
+	#define days(m, y) (m==2 ? y%400?29 : y%100?28 : y%4?29 : 28 : (m<8 ? m&1:!(m&1)) ? 31 : 30)
+
+	Date& operator++()
+	{
+		if (hour++ >= 24)
+			if(hour = 0, day++ >= days(month, year))
+				if(day = 1, month++ > 12)
+					month = 1, year++;
+		return *this;
+	}
+	Date operator++(int)
+	{
+		Date tmp(*this); // copy
+		operator++(); // pre-increment
+		return tmp;   // return old value
+	}
+	Date& operator--()
+	{
+		if (hour-- < 0)
+			if(hour = 23, day-- < 1)
+				if(day = days(month, year), month-- < 1)
+					month = 12, year--;
+		return *this;
+	}
+	Date operator--(int)
+	{
+		Date tmp(*this); // copy
+		operator--(); // pre-increment
+		return tmp;   // return old value
+	}
+
+	inline friend std::ostream& operator<<(std::ostream& os, const Date& date)
+		{ return os << date.year << "/" << date.month << "/" << date.day << " " << date.hour << "hr"; }
+
+	inline friend bool operator< (const Date& lhs, const Date& rhs)
+		{ return
+			lhs.year != rhs.year ? lhs.year < rhs.year :
+			lhs.month != rhs.month ? lhs.month < rhs.month :
+			lhs.day != rhs.day ? lhs.day < rhs.day :
+			lhs.hour != rhs.hour ? lhs.hour < rhs.hour :
+			false;
+		}
+	inline friend bool operator> (const Date& lhs, const Date& rhs){ return rhs < lhs; }
+	inline friend bool operator<=(const Date& lhs, const Date& rhs){ return !(lhs > rhs); }
+	inline friend bool operator>=(const Date& lhs, const Date& rhs){ return !(lhs < rhs); }
+
+	inline friend bool operator==(const Date& lhs, const Date& rhs)
+		{ return lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day && lhs.hour == rhs.hour; }
+	inline friend bool operator!=(const Date& lhs, const Date& rhs){ return !(lhs == rhs); }
+};
 
 #endif
