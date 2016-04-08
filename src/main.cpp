@@ -5,7 +5,9 @@
 #include "interface.hpp"
 #include "browser.hpp"
 
-Voyage* voyage;
+/* interface.cpp */
+extern Voyage* voyage;
+extern WsServer* wsServer;
 
 int main()
 {
@@ -16,7 +18,7 @@ int main()
 	"                 En Shih (е█ож)\n"
 	"\n";
 
-	std::thread wsThread = launchWsServer();
+	std::thread wsThread = launchWsServer(wsServer);
 	launchURL("http://127.0.0.1");
 
 	voyage = new Voyage(); // origin, destination
@@ -27,7 +29,7 @@ int main()
 
 	wsThread.join();
 
-	delete voyage;
+	//delete voyage;
 
    	return 0;
 }

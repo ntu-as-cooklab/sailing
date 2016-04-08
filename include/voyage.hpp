@@ -31,7 +31,7 @@ struct Voyage
 	typedef enum { DRIFT, WIND, DIR, DEST } SAILMODE;
 	SAILMODE sailmode;
 
-	int	runday = 0, runhour = 0, sailhour = 0; // count simulation time
+	int	runhour = 0, sailhour = 0; // count simulation time
 	Date 	date 	= {1979, 1,  1,  0},
 			enddate = {1979, 1, 31, 24};
 

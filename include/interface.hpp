@@ -1,13 +1,17 @@
-#ifndef COMMAND_HPP
-#define COMMAND_HPP
+#ifndef INTERFACE_CPP
+#define INTERFACE_CPP
 
 #include <string>
 #include <thread>
 
+/* ws_server.cpp */
+class WsServer;
 typedef class std::weak_ptr<void> connection_hdl;
-//typedef class std::weak_ptr<void> message_ptr;
+void sendMsg(WsServer* server, connection_hdl hdl, std::string msg);
+void sendAll(WsServer* server, std::string msg);
+std::thread launchWsServer(WsServer*& server);
 
-std::thread launchWsServer();
+/* command.cpp */
 std::string execCmd(std::string cmd);
 void recvCmd(connection_hdl hdl, std::string cmd);
 

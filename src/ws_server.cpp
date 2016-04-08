@@ -1,18 +1,15 @@
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 #include "interface.hpp"
 #include "ws_server.hpp"
 
 void WsServer::on_open(connection_hdl hdl)
-{
-	connections.insert(hdl);
-}
+	{ connections.insert(hdl); }
 
 void WsServer::on_close(connection_hdl hdl)
-{
-	connections.erase(hdl);
-}
+	{ connections.erase(hdl); }
 
 // Define a callback to handle incoming messages
 void WsServer::on_message(connection_hdl hdl, message_ptr msg)
@@ -62,15 +59,24 @@ void WsServer::on_http(connection_hdl hdl)
 void WsServer::sendMsg(connection_hdl hdl, std::string msg)
 {
 	try
-	{
-		send(hdl, msg.c_str(), websocketpp::frame::opcode::text);
-    }
+		{ send(hdl, msg.c_str(), websocketpp::frame::opcode::text); }
 	catch (const websocketpp::lib::error_code& e)
-	{ std::cout << "Send failed: " << e << "(" << e.message() << ")\n"; }
+		{ std::cout << "Send failed: " << e << "(" << e.message() << ")\n"; }
 }
 
 void WsServer::sendAll(std::string msg)
 {
 	for (con_list::iterator it = connections.begin(); it != connections.end(); ++it)
 		sendMsg(*it, msg);
+}
+
+void sendMsg(WsServer* server, connection_hdl hdl, std::string msg)
+	{ server->sendMsg(hdl, msg); }
+
+void sendAll(WsServer* server, std::string msg)
+	{ server->sendAll(msg); }
+
+std::thread launchWsServer(WsServer *& server)
+{
+	return server ? NULL : (server = new WsServer), std::thread(std::ref(*server));
 }

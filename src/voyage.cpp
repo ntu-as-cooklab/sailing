@@ -5,6 +5,7 @@
 #include "cfsr.hpp"
 #include "interface.hpp"
 
+extern CfsrReader* cfsrReader;
 bool Voyage::debug = false;
 
 UV Voyage::adj_direction(LatLon curr, LatLon dest)
@@ -49,9 +50,6 @@ LatLon Voyage::calc_next_place(LatLon curr, UV speed)
 		* LatLon(speed.y/lat2km(curr.lat()), speed.x/lon2km(curr.lat()));
 }
 
-// TODO: space and time interpolation
-int ouid, ovid, auid, avid;
-
 void Voyage::sail_timestep()
 {
 	if (debug) std::cout
@@ -59,9 +57,9 @@ void Voyage::sail_timestep()
 		<< "[Voyage] time: " << date << "\n";
 
 	// Ocean current:
-	UV ocean = getOUV(ouid, ovid, date.day, curr);
+	UV ocean = cfsrReader->OUV(date, curr);
 	if (debug) std::cout << std::fixed
-		<< std::setprecision(2) << "[Voyage] ocean: " << ocean << " (" << ocean.norm() << ")\n"
+		<< "[Voyage] ocean: " << ocean << " (" << ocean.norm() << ")\n"
 		<< std::setprecision(1) << "[Voyage] ocean heading: " << ocean.heading() << "\n";
 
 	UV wind, sail_dir, sail_gain;
@@ -70,10 +68,10 @@ void Voyage::sail_timestep()
 		case WIND: case DIR: case DEST:
 			// Wind speed:
 			wind =	sail_open ? // if sail is open
-					getAUV(auid, avid, date.day, curr) * pow(altitude/10.0,alpha) : // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
+					cfsrReader->AUV(date, curr) * pow(altitude/10.0,alpha) : // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
 					0;
 			if (debug) std::cout << std::fixed
-				<< std::setprecision(2) << "[Voyage] wind: " << wind << " (" << wind.norm() << ")\n"
+				<< "[Voyage] wind: " << wind << " (" << wind.norm() << ")\n"
 				<< std::setprecision(1) << "[Voyage] wind heading: " << wind.heading() << "\n";
 
 			// adjust boat direction and calculate boat speed gain due to wind
@@ -87,16 +85,16 @@ void Voyage::sail_timestep()
 			if (debug) std::cout << std::fixed << std::setprecision(1) << "[Voyage] sail heading: " << sail_dir.heading() << "\n";
 
 			sail_gain = calc_sail_gain(wind, sail_dir); // boat speed gain due to wind
-			if (debug) std::cout << std::fixed << std::setprecision(2) << "[Voyage] sail gain: " << sail_gain << " (" << sail_gain.norm() << ")\n";
+			if (debug) std::cout << "[Voyage] sail gain: " << sail_gain << " (" << sail_gain.norm() << ")\n";
 	}
 
 	// total speed
 	UV gain = ocean + sail_gain;
-	if (debug) std::cout << std::fixed << std::setprecision(2) << "[Voyage] total gain: " << gain << " (" << gain.norm() << ")\n";
+	if (debug) std::cout << "[Voyage] total gain: " << gain << " (" << gain.norm() << ")\n";
 
 	// calculate next place
 	curr = calc_next_place(curr, gain);
-	if (debug) std::cout << std::fixed << std::setprecision(6) << "[Voyage] position: " << curr << "\n";
+	if (debug) std::cout << "[Voyage] position: " << curr << "\n";
 	kml.writeLatLon(curr, altitude);
 
 	// increment values for calculating averages
@@ -133,11 +131,6 @@ bool Voyage::sail() // result: whether we reached our destination
 	curr = orig;
 	date = {1979, 1,  1,  0};
 
-	ouid = openCFSR(CFSR_OU, date.year, date.month),
-	ovid = openCFSR(CFSR_OV, date.year, date.month),
-	auid = openCFSR(CFSR_U, date.year, date.month),
-	avid = openCFSR(CFSR_V, date.year, date.month);
-
 	while (runhour++, date++ < enddate) // only open sail for half a day
 	{
 		if ((sail_open = date.hour<=12)) sailhour++;
@@ -151,10 +144,6 @@ bool Voyage::sail() // result: whether we reached our destination
 				Avg_Wind_Sp 	= Total_Wind_Sp 	/ runhour,
 				Avg_Wind_Angle	= Total_Wind_Angle 	/ runhour;
 	}
-	closeCFSR(ouid);
-	closeCFSR(ovid);
-	closeCFSR(auid);
-	closeCFSR(avid);
 
 	printf("[Voyage] Reached end of time range\n");
 	kml.writeFooter();

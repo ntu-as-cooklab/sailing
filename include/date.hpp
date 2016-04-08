@@ -9,7 +9,7 @@ struct Date
 
 	//Date(int year, int month, int day, int hour) : year(year), month(month), day(day), hour(hour) {}
 
-	#define days(m, y) (m==2 ? y%400?29 : y%100?28 : y%4?29 : 28 : (m<8 ? m&1:!(m&1)) ? 31 : 30)
+	inline int days(int m, int y) { return m==2 ? y%400?29 : y%100?28 : y%4?29 : 28 : (m<8 ? m&1:!(m&1)) ? 31 : 30; }
 
 	Date& operator++()
 	{
@@ -40,9 +40,6 @@ struct Date
 		return tmp;   // return old value
 	}
 
-	inline friend std::ostream& operator<<(std::ostream& os, const Date& date)
-		{ return os << date.year << "/" << date.month << "/" << date.day << " " << date.hour << "hr"; }
-
 	inline friend bool operator< (const Date& lhs, const Date& rhs)
 		{ return
 			lhs.year != rhs.year ? lhs.year < rhs.year :
@@ -58,6 +55,12 @@ struct Date
 	inline friend bool operator==(const Date& lhs, const Date& rhs)
 		{ return lhs.year == rhs.year && lhs.month == rhs.month && lhs.day == rhs.day && lhs.hour == rhs.hour; }
 	inline friend bool operator!=(const Date& lhs, const Date& rhs){ return !(lhs == rhs); }
+
+	inline friend std::ostream& operator<<(std::ostream& os, const Date& date)
+		{ return os << date.year << "/" << date.month << "/" << date.day << " " << date.hour << "hr"; }
+
+	inline friend std::istream& operator>>(std::istream& is, Date& date)
+		{ return is >> date.year >> date.month >> date.day >> date.hour; }
 };
 
 #endif

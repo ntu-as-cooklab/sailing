@@ -3,7 +3,7 @@
 
 #include <math.h>
 #define PI 3.14159265358979
-#include <iosfwd> // foward declare iostream
+#include <iostream>
 
 template<class Derived>
 struct Float2
@@ -65,17 +65,11 @@ struct Float2
 
 	/* Stream extraction */
 
-	friend std::ostream& operator<<(std::ostream& os, const Derived& v)
-	{
-    	return os << v.x << ", " << v.y;
-	}
+	friend std::ostream& operator<<(std::ostream& os, const Float2& v)
+		{ return os << v.x << ", " << v.y; }
 
-	// input float4
 	friend std::istream& operator>>(std::istream& is, Derived& v)
-	{
-		is >> v.x >> v.y;
-		return is;
-	}
+		{ return is >> v.x >> v.y; }
 
 };
 

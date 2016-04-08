@@ -38,7 +38,7 @@ target_link_libraries(sailing cfsr http_server)
 
 # Flags
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -s -static -save-temps")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -s -static -static-libgcc -save-temps")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -pedantic -Wextra")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -s -static -save-temps")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -s -static -static-libgcc -static-libstdc++ -save-temps")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")

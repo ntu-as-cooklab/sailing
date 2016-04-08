@@ -1,21 +1,16 @@
 #include <iostream>
-#include <iomanip> // for std::setprecision
 #include <string>
 #include <sstream>
 #include <boost/algorithm/string/replace.hpp>
-#include <thread>
+#include <iomanip> // for std::setprecision
 
 #include "cfsr.hpp"
-#include "ws_server.hpp"
 #include "voyage.hpp"
+#include "interface.hpp"
 
-extern Voyage* voyage;
-WsServer* wsServer;
-
-std::thread launchWsServer()
-{
-	return wsServer ? NULL : wsServer = new WsServer, std::thread(std::ref(*wsServer));
-}
+Voyage* 	voyage;
+WsServer* 	wsServer;
+CfsrReader* cfsrReader = new CfsrReader;
 
 std::string execCmd(std::string cmd)
 {
@@ -39,7 +34,7 @@ std::string execCmd(std::string cmd)
 	else if (word == "send") {
 		std::string msg;
 		getline(ss, msg);
-		wsServer->sendAll(msg);
+		sendAll(wsServer, msg);
 	}
 	else if (word == "OU") {
 		int year, month, day;
@@ -53,30 +48,27 @@ std::string execCmd(std::string cmd)
 		int year, month, day;
 		float lat, lon;
 		ss >> year >> month >> day >> lat >> lon;
-		int ovid = openCFSR(CFSR_OV, year, month);
+		int ovid = openCFSR(CFSR_OU, year, month);
 		response << getOUV(ovid, day, lat, lon);
 		closeCFSR(ovid);
 	}
 	else if (word == "OUV") {
-		int year, month, day;
+		Date date;
 		LatLon latlon;
-		ss >> year >> month >> day >> latlon;
-		int ouid = openCFSR(CFSR_OU, year, month),
-			ovid = openCFSR(CFSR_OV, year, month);
-		response << getOUV(ouid, ovid, day, latlon);
-		closeCFSR(ovid);
+		ss >> date >> latlon;
+		response << cfsrReader->OUV(date, latlon);
 	}
 
 	/** Variables **/
 
 	else if (word == "orig") {
-		response << std::fixed << std::setprecision(6) << voyage->orig;
+		response << voyage->orig;
 	}
 	else if (word == "dest") {
-		response << std::fixed << std::setprecision(6) << voyage->dest;
+		response << voyage->dest;
 	}
 	else if (word == "curr") {
-		response << std::fixed << std::setprecision(6) << voyage->curr;
+		response << voyage->curr;
 	}
 	else if (word == "timestep") {
 		response << voyage->timestep;
@@ -97,18 +89,18 @@ std::string execCmd(std::string cmd)
 		response << voyage->sail_open;
 	}
 	else if (word == "dir") {
-		response << std::fixed << std::setprecision(2) << voyage->dir;
+		response << voyage->dir;
 	}
 
 	/** Assignment **/
 
 	else if (word == "orig=") {
 		ss >> voyage->orig;
-		response << word << std::fixed << std::setprecision(6) << voyage->orig;
+		response << word << voyage->orig;
 	}
 	else if (word == "dest=") {
 		ss >> voyage->dest;
-		response << word << std::fixed << std::setprecision(6) << voyage->dest;
+		response << word << voyage->dest;
 	}
 	else if (word == "timestep=") {
 		ss >> voyage->timestep;
@@ -136,7 +128,7 @@ std::string execCmd(std::string cmd)
 	}
 	else if (word == "dir=") {
 		ss >> voyage->dir;
-		response << word << std::fixed << std::setprecision(2) << voyage->dir;
+		response << word << voyage->dir;
 	}
 
 	/** **/
@@ -178,11 +170,11 @@ std::string execCmd(std::string cmd)
 	return response.str();
 }
 
-void recvCmd(websocketpp::connection_hdl hdl, std::string cmd)
+void recvCmd(connection_hdl hdl, std::string cmd)
 {
 	std::string response = execCmd(cmd);
 	std::cout << "[" << hdl.lock().get() << "] " << response << "\n";
 	boost::replace_all(response, "\n", "</br>");
 	boost::replace_all(response, "\t", " ");
-	wsServer->sendMsg(hdl, response);
+	sendMsg(wsServer, hdl, response);
 }

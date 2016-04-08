@@ -2,6 +2,7 @@ build/
 build-linux/
 /lib/
 /data/
+/dist/
 /ftpserver.txt
 /sailing
 *.exe
