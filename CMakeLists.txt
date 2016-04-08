@@ -9,6 +9,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
+# Flags
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast -s -static ")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -pedantic -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Ofast -s -static -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")
+
 # Include headers
 
 include_directories("include")
@@ -22,6 +29,9 @@ include_directories("websocketpp")
 add_subdirectory(cfsr)
 add_subdirectory(http_server)
 
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost COMPONENTS system thread REQUIRED)
+
 # Sources
 
 file(GLOB SAILING_SRC "src/*.cpp")
@@ -34,11 +44,10 @@ if(WIN32)
         )
 endif()
 add_executable(sailing ${SAILING_SRC} ${SAILING_RES})
-target_link_libraries(sailing cfsr http_server)
+target_link_libraries(sailing cfsr ws2_32 wsock32 ${Boost_LIBRARIES})
 
-# Flags
+# Install
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -s -static -static-libgcc -save-temps")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -pedantic -Wextra")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -O3 -s -static -static-libgcc -static-libstdc++ -save-temps")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")
+install(TARGETS sailing DESTINATION ${CMAKE_SOURCE_DIR}/dist)
+install(DIRECTORY html/ DESTINATION ${CMAKE_SOURCE_DIR}/dist/html)
+install(DIRECTORY data/ DESTINATION ${CMAKE_SOURCE_DIR}/dist/data)
