@@ -17,7 +17,7 @@ UV Voyage::adj_direction(LatLon curr, LatLon dest)
 
 UV Voyage::calc_sail_gain(UV wind, UV dir)
 {
-	float wind_speed = norm(wind); //norm(wind)<8 ? norm(wind) : 0;
+	float wind_speed = norm(wind)<windlimit ? norm(wind) : 0;
 	float angle_diff = anglediff(wind, dir);
 	float boat_speed = 0;
 
@@ -50,7 +50,7 @@ LatLon Voyage::calc_next_place(LatLon curr, UV speed)
 		* LatLon(speed.y/lat2km(curr.lat()), speed.x/lon2km(curr.lat()));
 }
 
-void Voyage::sail_timestep()
+void Voyage::step()
 {
 	if (debug) std::cout
 		<< "[Voyage] timestep: " << runhour << "\n"
@@ -63,11 +63,11 @@ void Voyage::sail_timestep()
 		<< std::setprecision(1) << "[Voyage] ocean heading: " << ocean.heading() << "\n";
 
 	UV wind, sail_dir, sail_gain;
-	switch (sailmode)
+	switch (mode)
 	{
 		case WIND: case DIR: case DEST:
 			// Wind speed:
-			wind =	sail_open ? // if sail is open
+			wind =	sailopen ? // if sail is open
 					cfsrReader->AUV(date, curr) * pow(altitude/10.0,alpha) : // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
 					0;
 			if (debug) std::cout << std::fixed
@@ -77,9 +77,9 @@ void Voyage::sail_timestep()
 			// adjust boat direction and calculate boat speed gain due to wind
 			// TODO: path finding
 			sail_dir =  (
-							sailmode == DRIFT 	? 	wind.normalize() :
-							sailmode == DIR 	? 	dir :
-							sailmode == DEST 	? 	adj_direction(curr, dest) :
+							mode == WIND 	? 	wind.normalize() :
+							mode == DIR 	? 	dir :
+							mode == DEST 	? 	adj_direction(curr, dest) :
 							0
 						).normalize();
 			if (debug) std::cout << std::fixed << std::setprecision(1) << "[Voyage] sail heading: " << sail_dir.heading() << "\n";
@@ -129,12 +129,12 @@ bool Voyage::sail() // result: whether we reached our destination
 	kml.open("voyage.kml");
 	kml.writeHeader();
 	curr = orig;
-	date = {1979, 1,  1,  0};
+	date = startdate;
 
 	while (runhour++, date++ < enddate) // only open sail for half a day
 	{
-		if ((sail_open = date.hour<=12)) sailhour++;
-		sail_timestep();
+		if ((sailopen = date.hour<=sailopenhours)) sailhour++;
+		step();
 
 		// calculate averages from start of simulation up to now
 		float 	Avg_Wind_Gain 	= Total_Wind_Gain 	/ sailhour,

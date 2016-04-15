@@ -4,21 +4,20 @@
 		<title>Sailing</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		<meta charset="utf-8">
-
+		<!-- jQuery -->
 		<script src="html/lib/jquery.min.js"></script>
-		<!-- <script src="html/lib/less.min.js"></script>
-		<link rel="stylesheet" href="html/lib/uikit-2.26.1/css/uikit.min.css" />
-		<link rel="stylesheet" href="html/lib/uikit-2.26.1/css/uikit.gradient.min.css" />
-		<script src="html/lib/uikit-2.26.1/js/uikit.min.js"></script>
-		<script src="html/lib/uikit-2.26.1/js/core/switcher.min.js"></script> -->
+		<!-- Leaflet -->
 		<link rel="stylesheet" href="html/lib/leaflet/leaflet.css" />
 		<script src="html/lib/leaflet/leaflet.js"></script>
 		<script src="html/lib/leaflet/plugins/leaflet-omnivore.min.js"></script>
 		<link rel="stylesheet" href="html/lib/leaflet/plugins/leaflet.toolbar.css"/>
 		<script src="html/lib/leaflet/plugins/leaflet.toolbar.js"></script>
+		<link rel="stylesheet" href="html/lib/leaflet/plugins/leaflet.contextmenu.css"/>
+		<script src="html/lib/leaflet/plugins/leaflet.contextmenu.js"></script>
+		<!-- DatGUI -->
 		<script src="html/lib/dat.gui.min.js"></script>
+		<!-- Sources -->
 		<script src="html/src/map.js"></script>
-		<script src="html/src/voyage.js"></script>
 		<script src="html/src/ws.js"></script>
 		<script src="html/src/main.js"></script>
 		<script>$(function(){main();});</script>
@@ -32,6 +31,8 @@
 			html, body {
 				width:100%;	height:100%;
 				overflow: hidden;
+				min-width:  400px;
+				min-height: 300px;
 			}
 
 			#container {
@@ -48,7 +49,7 @@
 
 			#info {
 				position: absolute;
-				top:1%; width:100%;
+				bottom:1%; width:100%;
 				text-align:center;
 				font-size: 1.5vw;
 				color: black;
@@ -59,12 +60,34 @@
 				font-family: 微軟正黑體, sans-serif;
 			}
 
-			#controls {
+			#parameters {
 				position: absolute;
 				right: 0%; 	top: 0%;
 				background-color: rgba(0,0,0,0);
 				z-index: 3;
 			}
+
+			#controls {
+				font-family: 微軟正黑體, sans-serif;
+				position: absolute;
+				right: 1%; 	top: 1%;
+				background-color: rgba(0,0,0,0.7);
+				color: white;
+				z-index: 4;
+			}
+
+			#controls > * {
+				font-family: 微軟正黑體, sans-serif;
+				font-size: 1vw;
+			}
+			.hor {
+				display: inline-block;
+				vertical-align:middle;
+				padding: 10px;
+				font-family: 微軟正黑體, sans-serif;
+				font-size: 1vw;
+			}
+			.date { width:18ex; }
 
 		</style>
 
@@ -73,7 +96,40 @@
 	<body>
 		<div id="container">
 			<div id="map"></div>
-			<div id="controls"></div>
+			<div id="controls" onclick="setParam(event.target)">
+				<div class="hor">
+					<div class="hor">
+						<input type="radio" name="dataset" value="0" checked> 1979~2010 平均資料<br>
+						<input type="radio" name="dataset" value="1" > 1979~2010 連續資料<br>
+						<input type="radio" name="dataset" value="2"> 單年資料: <input type="number" name="year" value="1979" min="1979" max="2010" style="width:8ex">
+					</div>
+					<div class="hor">
+						起始日期: <input class="date" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="2010-12-31">
+						天數: <input type="number" name="days" value="31" min="1" step="1" style="width:6ex"><br>
+						結束日期: <input class="date" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31"><br>
+					</div>
+					<div>
+						<input type="button" name="run" value="計算">
+						<input type="button" name="reset" value="重設">
+					</div>
+				</div>
+				<div class="hor">
+					<input type="radio" name="mode" value="0"> 瓶中信 (無風帆)<br>
+					<input type="radio" name="mode" value="1"> 隨風漂流 (航向=風向)<br>
+					<input type="radio" name="mode" value="2" checked> 固定目的地<br>
+					<input type="radio" name="mode" value="3"> 固定航向<br>
+					<input type="radio" name="mode" value="4"> 隨機航向<br>
+				</div>
+				<div class="hor">
+					<input type="radio" name="ship" value="small" checked> 小帆船<br><br>
+					<table>
+						<tr><td>風帆高度: </td><td><input name="altitude" type="number" style="width:6ex" value="2" min="0" max="100" step="0.1"></td><td>m</td></tr>
+						<tr><td>張帆極限風速: </td><td><input name="windlimit" type="number" style="width:6ex" value="8" min="0" max="100" step="0.1"></td><td>m/s</td></tr>
+						<tr><td>每日張帆時數: </td><td><input name="sailopenhours" type="number" style="width:6ex" value="12" min="0" max="24" step="1"></td><td>hr</td></tr>
+					</table>
+					</table>
+				</div>
+			</div>
 			<span id="info"></span>
 		</div>
 	</body>

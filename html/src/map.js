@@ -1,23 +1,25 @@
 "use strict";
 
 var map;
-var mode = "";
-var cursor_pos = [26.0, 133.0];
+var orig, dest;
 
-var orig;
-var dest;
-
-function initMap() {
-
+function initMap()
+{
 	map = L.map('map', {
 		worldCopyJump: true,
 		minZoom: 3,
 		maxZoom: 18,
 		'center': [26.0, 133.0],
 		'zoom': 5,
-		inertia : false
+		inertia : false,
 		//fadeAnimation: false,
-		//zoomAnimation: false
+		//zoomAnimation: false,
+		contextmenu: true,
+	    contextmenuWidth: 140,
+	    contextmenuItems: [
+			{text: '設為起點', callback: onMapClick},
+			{text: '設為目的地', callback: onMapClick},
+		]
 	});
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -35,28 +37,12 @@ function initMap() {
 
 	//** Toolbar **/
 
-	var SetOrigAction = L.ToolbarAction.extend({
-			options: { toolbarIcon: { html: '起點', tooltip: "設定起點" } },
-			addHooks: function () { switchMode("設定起點");  }
-		});
-	var SetDestAction = L.ToolbarAction.extend({
-			options: { toolbarIcon: { html: '目的', tooltip: "設定目的地" } },
-			addHooks: function () { switchMode("設定目的地"); }
-		});
-	var SetModelAction = L.ToolbarAction.extend({
-			options: { toolbarIcon: { html: '模式', tooltip: "設定模式" } },
-			addHooks: function () { }
-		});
-	var SetDirAction = L.ToolbarAction.extend({
-			options: { toolbarIcon: { html: '航向', tooltip: "設定航向" } },
-			addHooks: function () { switchMode("設定航向"); }
-		});
 	var SailAction = L.ToolbarAction.extend({
 			options: { toolbarIcon: { html: '計算', tooltip: "計算航道" } },
-			addHooks: function () { send("run"); }
+			addHooks: function () { wsClient.send("run"); }
 		});
 	new L.Toolbar.Control({
-		actions: [SetModelAction, SailAction],
+		actions: [SailAction],
 		position: 'topleft',
 		className: 'leaflet-draw-toolbar'
 	}).addTo(map);
@@ -64,73 +50,31 @@ function initMap() {
 	/** Markers **/
 
 	var iconsize = 32;
-
 	var origIcon = L.icon({
-	    	iconUrl: 	'html/orig.png',
-	    	iconSize:     [iconsize, iconsize], // size of the icon
-	    	iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
-	    	popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
+			iconUrl: 	'html/orig.png',
+			iconSize:     [iconsize, iconsize], // size of the icon
+			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
+			popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
 	});
-
 	var destIcon = L.icon({
 			iconUrl: 	'html/dest.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
 			popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
 	});
-
-	orig = L.marker(voyage.orig, { icon: origIcon, draggable: true, continousWorld : true }).addTo(map);
-	dest = L.marker(voyage.dest, { icon: destIcon, draggable: true, continousWorld : true  }).addTo(map);
+	function setOrig(latlng) { orig ? orig.setLatLng(latlng) : orig = L.marker(latlng, { icon: origIcon, draggable: true, continousWorld : true }).addTo(map); }
+	function setDest(latlng) { dest ? dest.setLatLng(latlng) : dest = L.marker(latlng, { icon: destIcon, draggable: true, continousWorld : true }).addTo(map); }
+	setOrig(new L.LatLng(0,0));
+	setDest(new L.LatLng(1,1));
 
 	/** Events **/
 
+	function onMapClick(e) {}
+	function onMapMouseMove(e) { info.innerHTML = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
+	function onOrigDragEnd(e) { wsClient.send("orig = " + orig.getLatLng().lat + "," + orig.getLatLng().lng); }
+	function onDestDragEnd(e) { wsClient.send("dest = " + dest.getLatLng().lat + "," + dest.getLatLng().lng); }
 	map.on('click', onMapClick);
 	map.on('mousemove', onMapMouseMove);
 	orig.on('dragend', onOrigDragEnd);
 	dest.on('dragend', onDestDragEnd);
-}
-
-function showInfo(latlng) {
-    info.innerHTML = "<h1 style='color:#ff4500'>" + mode + "</h1>" + latlng.lat.toFixed(5) + ', ' + latlng.lng.toFixed(5);
-}
-
-function onMapClick(e) {
-	switch (mode) {
-		case "設定起點":
-			setOrig(e.latlng);
-			break;
-		case "設定目的地":
-			setDest(e.latlng);
-			break;
-	}
-	switchMode("");
-}
-
-function onMapMouseMove(e) {
-	// To show the latlng under mouse cursor.
-	cursor_pos = e.latlng;
-	showInfo(cursor_pos);
-}
-
-function onOrigDragEnd(e) {
-	setOrig(orig.getLatLng());
-}
-
-function onDestDragEnd(e) {
-	setDest(dest.getLatLng());
-}
-
-function switchMode(m) {
-	mode = m;
-	showInfo(cursor_pos);
-}
-
-function setOrig(latlng) {
-	orig.setLatLng(voyage.orig = latlng);
-	send("orig= " + latlng.lat + " " + latlng.lng);
-}
-
-function setDest(latlng) {
-	dest.setLatLng(voyage.dest = latlng);
-	send("dest= " + latlng.lat + " " + latlng.lng);
 }

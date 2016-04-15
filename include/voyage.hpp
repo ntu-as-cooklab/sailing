@@ -1,6 +1,8 @@
 #ifndef VOYAGE_HPP
 #define VOYAGE_HPP
 
+#include <map>
+
 #include "latlon.hpp"
 #include "uv.hpp"
 #include "kml.hpp"
@@ -8,42 +10,44 @@
 
 struct Voyage
 {
-	/* Status */
+	static bool debug;
+	static const int AVG=0, ALL=1, SINGLE=2;
+	static const int DRIFT=0, WIND=1, DEST=2, DIR=3, RANDOM=4;
 
 	/* Parameters */
 
-	static bool debug;
+	int 	dataset			= AVG;
+	Date 	startdate 		= {1979, 1,  1,  0};
+	Date	enddate 		= {1979, 1, 31, 24};
 
-	LatLon orig, dest, curr;
+	int 	mode 			= DEST;
+	LatLon 	orig			= {24.0, 122.0};
+	LatLon	dest			= {34.0, 135.0};
 
-	int timestep = 3600 * 24; 		// size of timestep = 1 hr = 3600 sec
-	int movement_factor = 1; 	// movement factor (forward = 1, reverse = -1)
+	float 	altitude 		= 2;
+	float 	windlimit 		= 8;
+	int 	sailopenhours 	= 12;
+	float 	alpha 			= 0.11;				// parameter for wind profile power law
 
-	float alpha = 0.11;			// parameter for wind profile power law
-	float altitude = 2;
+	int 	timestep 		= 3600 * 24; 		// size of timestep = 1 hr = 3600 sec
+	int 	movement_factor = 1; 				// movement factor (forward = 1, reverse = -1)
 
-	float range = 1.1; 				// for checking if within range of destination
-	LatLon bounds = { -32, 255 }; 	// { -16.5, 177.5 }; // beyond --> out of range
+	float 	range 			= 1.1; 				// for checking if within range of destination
+	LatLon 	bounds 			= {-32.0, 255.0}; 	// { -16.5, 177.5 }; // beyond --> out of range
 
-	bool sail_open = true;
-	UV dir;
+	/* Status */
 
-	typedef enum { DRIFT, WIND, DIR, DEST } SAILMODE;
-	SAILMODE sailmode;
-
-	int	runhour = 0, sailhour = 0; // count simulation time
-	Date 	date 	= {1979, 1,  1,  0},
-			enddate = {1979, 1, 31, 24};
-
-	/* Constructor */
-
-	Voyage() {}
-	Voyage(LatLon orig, LatLon dest) : orig(orig), dest(dest), curr(orig) {}
-
-	// start thread
-	void operator()() { sail(); }
+	Date 	date 			= startdate;
+	LatLon 	curr 			= orig;
+	bool 	sailopen 		= true;
+	UV 		dir				= 0;
+	int		runhour 		= 0; // count simulation time
+	int		sailhour 		= 0; // count simulation time
 
 	/* Functions */
+
+	// start simulation
+	void operator()() { sail(); }
 
 	float anglediff(UV dir1, UV dir2) { return acos(dot(dir1, dir2)) * 180/PI; } // 計算兩角度間的夾角
 	float lat2km(float lat) { return 110.59 + 4e-12*lat + 0.0003*pow(lat,2) + 3e-17*pow(lat,3) - 2e-8*pow(lat,4); } // 計算該緯度的每一緯度應該是多少距離(km)
@@ -53,7 +57,7 @@ struct Voyage
 	UV calc_sail_gain(UV wind, UV dir);
 	LatLon calc_next_place(LatLon curr, UV speed);
 
-	void sail_timestep();
+	void step();
 	bool sail();
 
 	KML kml;

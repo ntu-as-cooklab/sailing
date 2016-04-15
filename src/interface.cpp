@@ -14,32 +14,34 @@ CfsrReader* cfsrReader = new CfsrReader;
 
 std::string execCmd(std::string cmd)
 {
-	std::stringstream ss(cmd);
-	std::string word;
-	ss >> word;
+	std::string word = cmd.substr(0, cmd.find('='));
+	word.erase(0, word.find_first_not_of(" "));
+	word.erase(word.find_last_not_of(" ") + 1);
+	std::string params = cmd.substr(cmd.find('=')+1, cmd.find('=')<cmd.length()?-1:0);
+	if (!params.length())
+	{
+		params = word.substr(word.find(' ')+1);
+		word = word.substr(0, word.find(' '));
+	}
+	params.erase(0, params.find_first_not_of(" "));
+	params.erase(params.find_last_not_of(" ") + 1);
+	boost::replace_all(params, ",", " ");
 	std::stringstream response;
 
 	/** Commands **/
 
-	if 		(word == "echo") {
-		std::string msg;
-		getline(ss, msg);
-		response << msg;
-	}
-	else if (word == "run") {
+	if (word == "run") {
 		(*voyage)();
 		//std::thread voyageThread(std::ref(*voyage));
 		//voyageThread.detach();
 	}
-	else if (word == "send") {
-		std::string msg;
-		getline(ss, msg);
-		sendAll(wsServer, msg);
-	}
+	else if (word == "send")				sendAll(wsServer, params);
+	else if (word == "alert");
+	else if (word == "reset") 				{ new (voyage) Voyage; }
 	else if (word == "OU") {
 		int year, month, day;
 		float lat, lon;
-		ss >> year >> month >> day >> lat >> lon;
+		std::stringstream(params) >> year >> month >> day >> lat >> lon;
 		int ouid = openCFSR(CFSR_OU, year, month);
 		response << getOUV(ouid, day, lat, lon);
 		closeCFSR(ouid);
@@ -47,7 +49,7 @@ std::string execCmd(std::string cmd)
 	else if (word == "OV") {
 		int year, month, day;
 		float lat, lon;
-		ss >> year >> month >> day >> lat >> lon;
+		std::stringstream(params) >> year >> month >> day >> lat >> lon;
 		int ovid = openCFSR(CFSR_OU, year, month);
 		response << getOUV(ovid, day, lat, lon);
 		closeCFSR(ovid);
@@ -55,81 +57,32 @@ std::string execCmd(std::string cmd)
 	else if (word == "OUV") {
 		Date date;
 		LatLon latlon;
-		ss >> date >> latlon;
+		std::stringstream(params) >> date >> latlon;
 		response << cfsrReader->OUV(date, latlon);
 	}
 
-	/** Variables **/
+	#define PARAM(param) response << (params.length() ? (std::stringstream(params) >> param, word + " = ") : ""), response << param
 
-	else if (word == "orig") {
-		response << voyage->orig;
-	}
-	else if (word == "dest") {
-		response << voyage->dest;
-	}
-	else if (word == "curr") {
-		response << voyage->curr;
-	}
-	else if (word == "timestep") {
-		response << voyage->timestep;
-	}
-	else if (word == "movement_factor") {
-		response << voyage->movement_factor;
-	}
-	else if (word == "alpha") {
-		response << std::fixed << std::setprecision(2) << voyage->alpha;
-	}
-	else if (word == "altitude") {
-		response << std::fixed << std::setprecision(2) << voyage->altitude;
-	}
-	else if (word == "range") {
-		response << std::fixed << std::setprecision(2) << voyage->range;
-	}
-	else if (word == "sail_open") {
-		response << voyage->sail_open;
-	}
-	else if (word == "dir") {
-		response << voyage->dir;
-	}
+	/** Parameters **/
 
-	/** Assignment **/
+	else if (word == "dataset") 			PARAM(voyage->dataset);
+	else if (word == "startdate") 			{ boost::replace_all(params, "-", " "); PARAM(voyage->startdate); }
+	else if (word == "enddate") 			{ boost::replace_all(params, "-", " "); PARAM(voyage->enddate); }
+	//else if (word == "days") 				PARAM(voyage->days);
+	else if (word == "mode") 				PARAM(voyage->mode);
+	else if (word == "orig") 				PARAM(voyage->orig);
+	else if (word == "dest") 				PARAM(voyage->dest);
+	else if (word == "altitude")			PARAM(voyage->altitude);
+	else if (word == "windlimit")			PARAM(voyage->windlimit);
+	else if (word == "sailopenhours")		PARAM(voyage->sailopenhours);
 
-	else if (word == "orig=") {
-		ss >> voyage->orig;
-		response << word << voyage->orig;
-	}
-	else if (word == "dest=") {
-		ss >> voyage->dest;
-		response << word << voyage->dest;
-	}
-	else if (word == "timestep=") {
-		ss >> voyage->timestep;
-		response << word << voyage->timestep;
-	}
-	else if (word == "movement_factor=") {
-		ss >> voyage->movement_factor;
-		response << word << voyage->movement_factor;
-	}
-	else if (word == "alpha=") {
-		ss >> voyage->alpha;
-		response << word << std::fixed << std::setprecision(2) << voyage->alpha;
-	}
-	else if (word == "altitude=") {
-		ss >> voyage->altitude;
-		response << word << std::fixed << std::setprecision(2) << voyage->altitude;
-	}
-	else if (word == "range=") {
-		ss >> voyage->range;
-		response << word << std::fixed << std::setprecision(2) << voyage->range;
-	}
-	else if (word == "sail_open=") {
-		ss >> voyage->sail_open;
-		response << word << voyage->sail_open;
-	}
-	else if (word == "dir=") {
-		ss >> voyage->dir;
-		response << word << voyage->dir;
-	}
+	else if (word == "range") 				PARAM(voyage->range);
+	else if (word == "sailopen")  			PARAM(voyage->sailopen);
+	else if (word == "dir") 				PARAM(voyage->dir);
+
+	else if (word == "timestep") 			PARAM(voyage->timestep);
+	else if (word == "movement_factor") 	PARAM(voyage->movement_factor);
+	else if (word == "alpha") 				PARAM(voyage->alpha);
 
 	/** **/
 
@@ -137,36 +90,27 @@ std::string execCmd(std::string cmd)
 		response <<
 		"####################################\n"
 		"############ General commands:\n"
-		"echo				(message)\n"
 		"send				(message)\n"
-		"run\n"
-		"help\n"
-		"############ Variables:\n"
-		"orig\n"
-		"dest\n"
-		"timestep\n"
-		"movement_factor\n"
-		"alpha\n"
-		"altitude\n"
-		"range\n"
-		"sail_open\n"
-		"dir\n"
-		"############ Assignment commands:\n"
-		"orig=          	(lat) (lon)\n"
-		"dest=          	(lat) (lon)\n"
-		"timestep=			(size of timestep in seconds)\n"
-		"movement_factor=	(movement_factor)\n"
-		"alpha=				(alpha)\n"
-		"altitude= 			(altitude in m)\n"
-		"range= 			(range)\n"
-		"sail_open= 		(0/1)\n"
-		"dir= 				(u) (v)\n"
+		"run				(run simulation)\n"
+		"help				(display this help message)\n"
+		"new				(new voyage)\n"
+		"############ Parameters:\n"
+		"orig				(lat) (lon)\n"
+		"dest				(lat) (lon)\n"
+		"timestep			(size of timestep in seconds)\n"
+		"movement_factor	(movement_factor)\n"
+		"alpha				(alpha)\n"
+		"altitude			(altitude in m)\n"
+		"range				(range)\n"
+		"sailopen			(0/1)\n"
+		"dir				(u) (v)\n"
 		"####################################"
 		;
 	}
 
-	else response << "Invalid command: \"" << word << "\"";
+	else response << "Invalid " << (params.length()?"parameter":"command") << ": \"" << word << "\"";
 
+	sendAll(wsServer, response.str());
 	return response.str();
 }
 

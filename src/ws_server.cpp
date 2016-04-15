@@ -42,7 +42,7 @@ void WsServer::on_http(connection_hdl hdl)
 	{
 		filename = docroot + "html/index.html";
 		file.open(filename.c_str(), std::ios::in);
-		con->set_status(websocketpp::http::status_code::not_found);
+		con->set_status(websocketpp::http::status_code::ok); // not_found
 	}
 	else con->set_status(websocketpp::http::status_code::ok);
 
