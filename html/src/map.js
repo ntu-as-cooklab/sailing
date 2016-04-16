@@ -9,7 +9,7 @@ function initMap()
 		worldCopyJump: true,
 		minZoom: 3,
 		maxZoom: 18,
-		'center': [26.0, 133.0],
+		'center': [29.0, 134.0],
 		'zoom': 5,
 		inertia : false,
 		//fadeAnimation: false,
@@ -17,8 +17,8 @@ function initMap()
 		contextmenu: true,
 	    contextmenuWidth: 140,
 	    contextmenuItems: [
-			{text: '設為起點', callback: onMapClick},
-			{text: '設為目的地', callback: onMapClick},
+			{text: '設為起點', callback: function(e){setOrig(e.latlng)} },
+			{text: '設為目的地', callback: function(e){setDest(e.latlng)} },
 		]
 	});
 
@@ -34,18 +34,6 @@ function initMap()
 	}).addTo(map);
 
 	L.control.scale().addTo(map);
-
-	//** Toolbar **/
-
-	var SailAction = L.ToolbarAction.extend({
-			options: { toolbarIcon: { html: '計算', tooltip: "計算航道" } },
-			addHooks: function () { wsClient.send("run"); }
-		});
-	new L.Toolbar.Control({
-		actions: [SailAction],
-		position: 'topleft',
-		className: 'leaflet-draw-toolbar'
-	}).addTo(map);
 
 	/** Markers **/
 
@@ -64,8 +52,8 @@ function initMap()
 	});
 	function setOrig(latlng) { orig ? orig.setLatLng(latlng) : orig = L.marker(latlng, { icon: origIcon, draggable: true, continousWorld : true }).addTo(map); }
 	function setDest(latlng) { dest ? dest.setLatLng(latlng) : dest = L.marker(latlng, { icon: destIcon, draggable: true, continousWorld : true }).addTo(map); }
-	setOrig(new L.LatLng(0,0));
-	setDest(new L.LatLng(1,1));
+	setOrig(new L.LatLng(24.0, 122.0));
+	setDest(new L.LatLng(34.0, 135.0));
 
 	/** Events **/
 

@@ -14,18 +14,17 @@ CfsrReader* cfsrReader = new CfsrReader;
 
 std::string execCmd(std::string cmd)
 {
-	std::string word = cmd.substr(0, cmd.find('='));
-	word.erase(0, word.find_first_not_of(" "));
-	word.erase(word.find_last_not_of(" ") + 1);
-	std::string params = cmd.substr(cmd.find('=')+1, cmd.find('=')<cmd.length()?-1:0);
-	if (!params.length())
-	{
-		params = word.substr(word.find(' ')+1);
-		word = word.substr(0, word.find(' '));
-	}
-	params.erase(0, params.find_first_not_of(" "));
-	params.erase(params.find_last_not_of(" ") + 1);
+	int cmdbegin = cmd.find_first_not_of(" ");
+	if (cmdbegin != std::string::npos) cmd.erase(0, cmdbegin);
+	int cmdbreak = cmd.find_first_of("= ");
+	std::string word = cmd.substr(0, cmdbreak);
+	std::string params = (cmdbreak != std::string::npos) ? cmd.substr(cmdbreak+1) : "";
+
+	int paramsbegin = params.find_first_not_of("= ");
+	if (paramsbegin != std::string::npos) params.erase(0, paramsbegin);
 	boost::replace_all(params, ",", " ");
+	params.erase(params.find_last_not_of(" ") + 1);
+
 	std::stringstream response;
 
 	/** Commands **/
@@ -36,8 +35,8 @@ std::string execCmd(std::string cmd)
 		//voyageThread.detach();
 	}
 	else if (word == "send")				sendAll(wsServer, params);
-	else if (word == "alert");
-	else if (word == "reset") 				{ new (voyage) Voyage; }
+	else if (word == "alert")				;
+	else if (word == "reset")				new (voyage) Voyage;
 	else if (word == "OU") {
 		int year, month, day;
 		float lat, lon;
@@ -110,7 +109,6 @@ std::string execCmd(std::string cmd)
 
 	else response << "Invalid " << (params.length()?"parameter":"command") << ": \"" << word << "\"";
 
-	sendAll(wsServer, response.str());
 	return response.str();
 }
 

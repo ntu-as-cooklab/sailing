@@ -14,16 +14,36 @@ var WsClient = function()
 			ws = new MozWebSocket(url);
 
 		ws.onopen = function(e) {};
-
 		ws.onerror = function(e) { console.log(e); };
+		ws.onclose = function(e) { console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
 
-		ws.onclose = function(e) {
-			console.log(e.code+(e.reason != "" ? ","+e.reason : ""));
-		};
-
-		ws.onmessage = function(e) {
+		ws.onmessage = function(e)
+		{
 			console.log(e.data);
-			omnivore.kml(e.data).addTo(map);
+			var cmd = e.data.split('=');
+			if (cmd.length == 2)
+				switch (cmd[0].trim())
+				{
+					case "startdate":
+						break;
+					case "orig":
+						orig.setLatLng(cmd[1].match(/\S+/g));
+						break;
+					case "dest":
+						dest.setLatLng(cmd[1].match(/\S+/g));
+						break;
+				}
+			else if (cmd.length == 1)
+			{
+				cmd = e.data.split(' ');
+				switch (cmd[0].trim())
+				{
+					case "voyage":
+						omnivore.kml(cmd[1].trim()).addTo(map);
+						break;
+				}
+			}
+
 		};
 	};
 

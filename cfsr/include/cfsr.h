@@ -11,7 +11,7 @@ extern  "C" {
 
 // NetCDF error handling
 extern int err;
-#define ERR(e) { printf("NetCDF error: %s\n", nc_strerror(e)); return(err); }
+#define ERR(e) { printf("NetCDF error: %s\n", nc_strerror(e)); return(1e4); }
 
 // CFSR data types
 typedef enum

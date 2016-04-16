@@ -8,14 +8,12 @@
 		<script src="html/lib/jquery.min.js"></script>
 		<!-- Leaflet -->
 		<link rel="stylesheet" href="html/lib/leaflet/leaflet.css" />
-		<script src="html/lib/leaflet/leaflet.js"></script>
-		<script src="html/lib/leaflet/plugins/leaflet-omnivore.min.js"></script>
-		<link rel="stylesheet" href="html/lib/leaflet/plugins/leaflet.toolbar.css"/>
-		<script src="html/lib/leaflet/plugins/leaflet.toolbar.js"></script>
 		<link rel="stylesheet" href="html/lib/leaflet/plugins/leaflet.contextmenu.css"/>
+		<link rel="stylesheet" href="html/lib/leaflet/plugins/leaflet.toolbar.css"/>
+		<script src="html/lib/leaflet/leaflet.js"></script>
 		<script src="html/lib/leaflet/plugins/leaflet.contextmenu.js"></script>
-		<!-- DatGUI -->
-		<script src="html/lib/dat.gui.min.js"></script>
+		<script src="html/lib/leaflet/plugins/leaflet.toolbar.js"></script>
+		<script src="html/lib/leaflet/plugins/leaflet-omnivore.min.js"></script>
 		<!-- Sources -->
 		<script src="html/src/map.js"></script>
 		<script src="html/src/ws.js"></script>
@@ -87,6 +85,11 @@
 				font-family: 微軟正黑體, sans-serif;
 				font-size: 1vw;
 			}
+			.ver {
+
+				font-family: 微軟正黑體, sans-serif;
+				font-size: 1vw;
+			}
 			.date { width:18ex; }
 
 		</style>
@@ -100,25 +103,26 @@
 				<div class="hor">
 					<div class="hor">
 						<input type="radio" name="dataset" value="0" checked> 1979~2010 平均資料<br>
-						<input type="radio" name="dataset" value="1" > 1979~2010 連續資料<br>
-						<input type="radio" name="dataset" value="2"> 單年資料: <input type="number" name="year" value="1979" min="1979" max="2010" style="width:8ex">
+						<input type="radio" name="dataset" value="1" disabled="true"> 1979~2010 連續資料<br>
+						<input type="radio" name="dataset" value="2" disabled="true"> 單年資料: <input type="number" name="year" value="1979" min="1979" max="2010" style="width:8ex">
 					</div>
 					<div class="hor">
 						起始日期: <input class="date" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="2010-12-31">
 						天數: <input type="number" name="days" value="31" min="1" step="1" style="width:6ex"><br>
 						結束日期: <input class="date" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31"><br>
 					</div>
-					<div>
+					<div style="padding-left:10px">
 						<input type="button" name="run" value="計算">
-						<input type="button" name="reset" value="重設">
+						<input type="button" onclick="resetParams()" value="重設參數">
+						<input type="button" onclick="clearPaths()" value="清除路線">
 					</div>
 				</div>
 				<div class="hor">
 					<input type="radio" name="mode" value="0"> 瓶中信 (無風帆)<br>
 					<input type="radio" name="mode" value="1"> 隨風漂流 (航向=風向)<br>
 					<input type="radio" name="mode" value="2" checked> 固定目的地<br>
-					<input type="radio" name="mode" value="3"> 固定航向<br>
-					<input type="radio" name="mode" value="4"> 隨機航向<br>
+					<input type="radio" name="mode" value="3" disabled="true"> 固定航向<br>
+					<input type="radio" name="mode" value="4" disabled="true"> 隨機航向<br>
 				</div>
 				<div class="hor">
 					<input type="radio" name="ship" value="small" checked> 小帆船<br><br>

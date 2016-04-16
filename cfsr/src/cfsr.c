@@ -56,6 +56,5 @@ float getAUV(int ncid, int day, float lat, float lon)
 	size_t dim[3] = { day-1, j, i };
 	float v;
 	if ((err = nc_get_var1_float(ncid, 0, dim, &v))) ERR(err);
-
 	return v;
 }

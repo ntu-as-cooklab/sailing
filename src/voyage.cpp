@@ -57,7 +57,7 @@ void Voyage::step()
 		<< "[Voyage] time: " << date << "\n";
 
 	// Ocean current:
-	UV ocean = cfsrReader->OUV(date, curr);
+	UV ocean = cfsrReader->OUV(date, curr); if (ocean.norm() > 1e3) return;
 	if (debug) std::cout << std::fixed
 		<< "[Voyage] ocean: " << ocean << " (" << ocean.norm() << ")\n"
 		<< std::setprecision(1) << "[Voyage] ocean heading: " << ocean.heading() << "\n";
@@ -70,6 +70,7 @@ void Voyage::step()
 			wind =	sailopen ? // if sail is open
 					cfsrReader->AUV(date, curr) * pow(altitude/10.0,alpha) : // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
 					0;
+			if (wind.norm() > 1e3) return;
 			if (debug) std::cout << std::fixed
 				<< "[Voyage] wind: " << wind << " (" << wind.norm() << ")\n"
 				<< std::setprecision(1) << "[Voyage] wind heading: " << wind.heading() << "\n";
@@ -148,6 +149,6 @@ bool Voyage::sail() // result: whether we reached our destination
 	printf("[Voyage] Reached end of time range\n");
 	kml.writeFooter();
 	kml.close();
-	execCmd("send voyage.kml");
+	execCmd("send voyage voyage.kml");
 	return false;
 }
