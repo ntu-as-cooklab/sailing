@@ -8,6 +8,9 @@
 extern CfsrReader* cfsrReader;
 bool Voyage::debug = false;
 
+constexpr const char* const Voyage::DATASET[3];
+constexpr const char* const Voyage::MODE[5];
+
 UV Voyage::adj_direction(LatLon curr, LatLon dest)
 {
 	return UV(	lon2km((curr+dest).lat()/2) * (dest-curr).lon(),
@@ -126,8 +129,20 @@ void Voyage::step()
 
 bool Voyage::sail() // result: whether we reached our destination
 {
-	std::cout << "\n[Voyage] Running simulation...\n";
-	kml.open("voyage.kml");
+	std::cout << "\n[Voyage] Running simulation: ";
+	std::stringstream namestream;
+	namestream 	<< "dataset=" << DATASET[dataset] << "@"
+				<< "startdate=" << startdate.year << "-" << startdate.month << "-" << startdate.day << "-" << startdate.hour << "@"
+				<< "enddate=" << enddate.year << "-" << enddate.month << "-" << enddate.day << "-" << enddate.hour << "@"
+				<< "mode=" << MODE[mode] << "@"
+				<< "orig=" << orig.lat() << "," << orig.lon() << "@"
+				<< "dest=" << dest.lat() << "," << dest.lon() << "@"
+				<< "altitude=" << altitude << "@"
+				<< "windlimit=" << windlimit << "@"
+				<< "sailopenhours=" << sailopenhours;
+	name = namestream.str();
+	std::cout << name << "\n";
+	kml.open(name + ".kml");
 	kml.writeHeader();
 	curr = orig;
 	date = startdate;
@@ -149,6 +164,6 @@ bool Voyage::sail() // result: whether we reached our destination
 	printf("[Voyage] Reached end of time range\n");
 	kml.writeFooter();
 	kml.close();
-	execCmd("send voyage voyage.kml");
+	execCmd("send voyage " + name + ".kml");
 	return false;
 }

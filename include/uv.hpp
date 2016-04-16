@@ -15,7 +15,7 @@ struct UV : Float2<UV>
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const UV& v)
-		{ return os << std::fixed << std::setprecision(2) << v.x << ", " << v.y; }
+	{ return os << std::fixed << std::setprecision(2) << v.x << ", " << v.y; }
 };
 
 #endif

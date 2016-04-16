@@ -12,7 +12,11 @@ struct Voyage
 {
 	static bool debug;
 	static const int AVG=0, ALL=1, SINGLE=2;
+	static const constexpr char* DATASET[3] = {"AVG", "ALL", "SINGLE"};
 	static const int DRIFT=0, WIND=1, DEST=2, DIR=3, RANDOM=4;
+	static const constexpr char* MODE[5] = {"DRIFT", "WIND", "DEST", "DIR", "RANDOM"};
+
+	std::string name;
 
 	/* Parameters */
 
