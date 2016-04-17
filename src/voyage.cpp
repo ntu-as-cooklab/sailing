@@ -56,19 +56,18 @@ LatLon Voyage::calc_next_place(LatLon curr, UV speed)
 void Voyage::step()
 {
 	if (debug) std::cout
-		<< "[Voyage] timestep: " << runhour << "\n"
+		<< "[Voyage] timestep: " << runstep << "\n"
 		<< "[Voyage] time: " << date << "\n";
 
 	// Ocean current:
-	UV ocean = cfsrReader->OUV(date, curr); if (ocean.norm() > 1e3) return;
+	ocean = cfsrReader->OUV(date, curr); if (ocean.norm() > 1e3) return;
 	if (debug) std::cout << std::fixed
 		<< "[Voyage] ocean: " << ocean << " (" << ocean.norm() << ")\n"
 		<< std::setprecision(1) << "[Voyage] ocean heading: " << ocean.heading() << "\n";
 
-	UV wind, sail_dir, sail_gain;
 	switch (mode)
 	{
-		case WIND: case DIR: case DEST:
+		case WIND: case DIRN: case DEST:
 			// Wind speed:
 			wind =	sailopen ? // if sail is open
 					cfsrReader->AUV(date, curr) * pow(altitude/10.0,alpha) : // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
@@ -82,7 +81,7 @@ void Voyage::step()
 			// TODO: path finding
 			sail_dir =  (
 							mode == WIND 	? 	wind.normalize() :
-							mode == DIR 	? 	dir :
+							mode == DIRN 	? 	dir :
 							mode == DEST 	? 	adj_direction(curr, dest) :
 							0
 						).normalize();
@@ -93,13 +92,12 @@ void Voyage::step()
 	}
 
 	// total speed
-	UV gain = ocean + sail_gain;
+	gain = ocean + sail_gain;
 	if (debug) std::cout << "[Voyage] total gain: " << gain << " (" << gain.norm() << ")\n";
 
 	// calculate next place
 	curr = calc_next_place(curr, gain);
 	if (debug) std::cout << "[Voyage] position: " << curr << "\n";
-	kml.writeLatLon(curr, altitude);
 
 	// increment values for calculating averages
 	Total_Ocean_Sp		+= ocean.norm();
@@ -126,44 +124,52 @@ void Voyage::step()
 	if (debug) std::cout << "\n";
 }
 
-
 bool Voyage::sail() // result: whether we reached our destination
 {
-	std::cout << "\n[Voyage] Running simulation: ";
-	std::stringstream namestream;
-	namestream 	<< "dataset=" << DATASET[dataset] << "@"
-				<< "startdate=" << startdate.year << "-" << startdate.month << "-" << startdate.day << "-" << startdate.hour << "@"
-				<< "enddate=" << enddate.year << "-" << enddate.month << "-" << enddate.day << "-" << enddate.hour << "@"
-				<< "mode=" << MODE[mode] << "@"
-				<< "orig=" << orig.lat() << "," << orig.lon() << "@"
-				<< "dest=" << dest.lat() << "," << dest.lon() << "@"
-				<< "altitude=" << altitude << "@"
-				<< "windlimit=" << windlimit << "@"
-				<< "sailopenhours=" << sailopenhours;
-	name = namestream.str();
-	std::cout << name << "\n";
+	std::cout << "\n[Voyage] Running simulation: " << genName() << "\n";
+	csv.open(name + ".csv");
+	csv.writeHeader();
 	kml.open(name + ".kml");
 	kml.writeHeader();
-	curr = orig;
-	date = startdate;
 
-	while (runhour++, date++ < enddate) // only open sail for half a day
+	for (runstep = 0, sailstep = 0, curr = orig, date = startdate; date++ < enddate; runstep++)
 	{
-		if ((sailopen = date.hour<=sailopenhours)) sailhour++;
+		sailstep += (sailopen = date.hour<=sailopenhours); // only open sail for sailopenhours
 		step();
+		if (ocean.norm() > 1e3 || wind.norm() > 1e3) break;
+		csv.writeLine(this);
+		kml.writeLatLon(curr, altitude);
 
 		// calculate averages from start of simulation up to now
-		float 	Avg_Wind_Gain 	= Total_Wind_Gain 	/ sailhour,
+		/*float 	Avg_Wind_Gain 	= Total_Wind_Gain 	/ sailhour,
 				Avg_Ocean_Gain 	= Total_Ocean_Gain 	/ sailhour,
 				Avg_Ocean_Sp 	= Total_Ocean_Sp 	/ runhour,
 				Avg_Ocean_Angle = Total_Ocean_Angle / runhour,
 				Avg_Wind_Sp 	= Total_Wind_Sp 	/ runhour,
-				Avg_Wind_Angle	= Total_Wind_Angle 	/ runhour;
+				Avg_Wind_Angle	= Total_Wind_Angle 	/ runhour;*/
 	}
+	//printf("[Voyage] Reached end of time range\n");
 
-	printf("[Voyage] Reached end of time range\n");
+	csv.close();
 	kml.writeFooter();
 	kml.close();
 	execCmd("send voyage " + name + ".kml");
 	return false;
+}
+
+std::string Voyage::genName()
+{
+	std::stringstream namestream;
+														namestream 	<< DATASET[dataset];
+	if (dataset != AVG) 								namestream 	<< startdate.year;
+														namestream	<< (startdate.month<10?"0":"") << startdate.month << (startdate.day<10?"0":"") << startdate.day
+	//																<< "d" << (enddate-startdate)
+																	<< "_ORIG" << orig.lat() << "-" << orig.lon()
+																	<< "_" << MODE[mode];
+	if 		(mode == DEST) 								namestream 	<< dest.lat() << "-" << dest.lon();
+	else if (mode == DIRN) 								namestream 	<< dir.x << "-" << dir.y;
+	if 		(altitude != Voyage::altitude) 				namestream 	<< "_" << "alt" << altitude;
+	if 		(windlimit != Voyage::windlimit) 			namestream 	<< "_" << "lmt" << windlimit;
+	if 		(sailopenhours != Voyage::sailopenhours) 	namestream 	<< "_" << "hrs" << sailopenhours;
+	return name = namestream.str();
 }

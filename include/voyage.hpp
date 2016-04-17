@@ -6,15 +6,16 @@
 #include "latlon.hpp"
 #include "uv.hpp"
 #include "kml.hpp"
+#include "csv.hpp"
 #include "date.hpp"
 
 struct Voyage
 {
 	static bool debug;
-	static const int AVG=0, ALL=1, SINGLE=2;
-	static const constexpr char* DATASET[3] = {"AVG", "ALL", "SINGLE"};
-	static const int DRIFT=0, WIND=1, DEST=2, DIR=3, RANDOM=4;
-	static const constexpr char* MODE[5] = {"DRIFT", "WIND", "DEST", "DIR", "RANDOM"};
+	static const int AVG=0, ALL=1, SIN=2;
+	static const constexpr char* DATASET[3] = {"AVG", "ALL", "SIN"};
+	static const int DRFT=0, WIND=1, DEST=2, DIRN=3, RAND=4;
+	static const constexpr char* MODE[5] = {"DRFT", "WIND", "DEST", "DIRN", "RAND"};
 
 	std::string name;
 
@@ -23,6 +24,7 @@ struct Voyage
 	int 	dataset			= AVG;
 	Date 	startdate 		= {1979, 1,  1,  0};
 	Date	enddate 		= {1979, 1, 31, 24};
+	int 	days			= 30;
 
 	int 	mode 			= DEST;
 	LatLon 	orig			= {24.0, 122.0};
@@ -45,8 +47,10 @@ struct Voyage
 	LatLon 	curr 			= orig;
 	bool 	sailopen 		= true;
 	UV 		dir				= 0;
-	int		runhour 		= 0; // count simulation time
-	int		sailhour 		= 0; // count simulation time
+	int		runstep 		= 0; // count simulation time
+	int		sailstep 		= 0; // count simulation time
+
+	UV ocean, wind, sail_dir, sail_gain, gain;
 
 	/* Functions */
 
@@ -61,10 +65,12 @@ struct Voyage
 	UV calc_sail_gain(UV wind, UV dir);
 	LatLon calc_next_place(LatLon curr, UV speed);
 
+	std::string genName();
 	void step();
 	bool sail();
 
 	KML kml;
+	CSV csv;
 
 private:
 	// Sums --> used for averages

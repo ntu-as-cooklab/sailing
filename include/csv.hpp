@@ -2,15 +2,16 @@
 #define CSV_HPP
 
 #include <fstream>
+class Voyage;
 
 struct CSV
 {
 	std::ofstream file;
 
-	CSV(std::string filename) 	{ file.open(filename); }
-	~CSV() 						{ file.close(); }
+	void open(std::string filename) { file.open(filename); }
+	void close() 					{ file.close(); }
 	void writeHeader();
-	void writeLine();
+	void writeLine(Voyage* voyage);
 };
 
 #endif

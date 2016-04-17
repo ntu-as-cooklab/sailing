@@ -7,5 +7,6 @@ build-linux/
 /sailing
 *.exe
 *.kml
+*.csv
 *.res
 *.a

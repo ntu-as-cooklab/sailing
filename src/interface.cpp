@@ -67,7 +67,7 @@ std::string execCmd(std::string cmd)
 	else if (word == "dataset") 			PARAM(voyage->dataset);
 	else if (word == "startdate") 			{ boost::replace_all(params, "-", " "); PARAM(voyage->startdate); }
 	else if (word == "enddate") 			{ boost::replace_all(params, "-", " "); PARAM(voyage->enddate); }
-	//else if (word == "days") 				PARAM(voyage->days);
+	else if (word == "days") 				PARAM(voyage->days);
 	else if (word == "mode") 				PARAM(voyage->mode);
 	else if (word == "orig") 				PARAM(voyage->orig);
 	else if (word == "dest") 				PARAM(voyage->dest);

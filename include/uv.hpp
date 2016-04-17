@@ -11,11 +11,11 @@ struct UV : Float2<UV>
 	float heading()
 	{
 		float h = 90 - atan2(y, x) * 180/PI;
-		return h < 0 ? h+360 : h;
+		return norm() > 0 ? (h < 0 ? h+360 : h) : 0;
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const UV& v)
-	{ return os << std::fixed << std::setprecision(2) << v.x << ", " << v.y; }
+	{ return os << std::fixed << std::setprecision(3) << v.x << ", " << v.y; }
 };
 
 #endif

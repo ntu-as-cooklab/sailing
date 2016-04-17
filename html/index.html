@@ -107,9 +107,9 @@
 						<input type="radio" name="dataset" value="2" disabled="true"> 單年資料: <input type="number" name="year" value="1979" min="1979" max="2010" style="width:8ex">
 					</div>
 					<div class="hor">
-						起始日期: <input class="date" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="2010-12-31">
-						天數: <input type="number" name="days" value="31" min="1" step="1" style="width:6ex"><br>
-						結束日期: <input class="date" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31"><br>
+						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="2010-12-31" onchange="setStartDate()">
+						天數: <input id="days" type="number" name="days" value="30" min="1" step="1" onchange="setEndDate()" style="width:6ex"><br>
+						結束日期: <input class="date" id="enddate" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31" onchange="setDays()"><br>
 					</div>
 					<div style="padding-left:10px">
 						<input type="button" name="run" value="計算">

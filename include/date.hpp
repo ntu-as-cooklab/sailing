@@ -9,36 +9,42 @@ struct Date
 
 	//Date(int year, int month, int day, int hour) : year(year), month(month), day(day), hour(hour) {}
 
-	inline int days(int m, int y) { return m==2 ? y%400?29 : y%100?28 : y%4?29 : 28 : (m<8 ? m&1:!(m&1)) ? 31 : 30; }
+	inline bool leap(int y) { return y%400?true : y%100?false : y%4?true : false; }
+	inline int days(int m, int y) { return m==2 ? 28+leap(y) : (m<8 ? m&1:!(m&1)) ? 31 : 30; }
 
-	Date& operator++()
+	inline Date& operator++()
 	{
-		if (hour++ >= 24)
-			if(hour = 0, day++ >= days(month, year))
-				if(day = 1, month++ > 12)
-					month = 1, year++;
+		if (++hour >= 24)
+			if(hour = 0, ++day >= days(month, year))
+				if(day = 1, ++month > 12)
+					month = 1, ++year;
 		return *this;
 	}
-	Date operator++(int)
+	inline Date operator++(int)
 	{
 		Date tmp(*this); // copy
 		operator++(); // pre-increment
 		return tmp;   // return old value
 	}
-	Date& operator--()
+	inline Date& operator--()
 	{
-		if (hour-- < 0)
-			if(hour = 23, day-- < 1)
+		if (--hour < 0)
+			if(hour = 23, --day < 1)
 				if(day = days(month, year), month-- < 1)
-					month = 12, year--;
+					month = 12, --year;
 		return *this;
 	}
-	Date operator--(int)
+	inline Date operator--(int)
 	{
 		Date tmp(*this); // copy
 		operator--(); // pre-increment
 		return tmp;   // return old value
 	}
+
+	//inline friend int operator-(const Date& lhs, const Date& rhs)
+  	//{
+    //	return (lhs.year-rhs.year)*(365+leap())
+  	//}
 
 	inline friend bool operator< (const Date& lhs, const Date& rhs)
 		{ return
