@@ -11,9 +11,9 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # Flags
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast -s -static ")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast -s -static")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -pedantic -Wextra")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Ofast -s -static -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Ofast -s -static")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")
 
 # Include headers
@@ -21,18 +21,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")
 include_directories("include")
 include_directories("float2")
 include_directories("cfsr/include")
-include_directories("http_server/include")
 include_directories("websocketpp")
 
 # Dependencies
 
 add_subdirectory(cfsr)
-add_subdirectory(http_server)
-
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost COMPONENTS system thread REQUIRED)
-
-# Sources
 
 file(GLOB SAILING_SRC "src/*.cpp")
 if(WIN32)
@@ -44,7 +37,7 @@ if(WIN32)
         )
 endif()
 add_executable(sailing ${SAILING_SRC} ${SAILING_RES})
-target_link_libraries(sailing cfsr ws2_32 wsock32 ${Boost_LIBRARIES})
+target_link_libraries(sailing ws2_32 wsock32 cfsr boost_system-mt.a boost_thread-mt.a winpthread.a stdc++.a gcc.a winpthread.a)
 
 # Install
 

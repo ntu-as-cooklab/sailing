@@ -35,9 +35,9 @@ int closeCFSR(int ncid)
 
 float getOUV(int ncid, int day, float lat, float lon)
 {
-	//printf("%f %f\n", lat, lon);
-	float y = (89.75-lat)/0.5; float x = ((lon<0.25?lon+360:lon) -0.25)/0.5; // TODO: fix range hack
-	//printf("%f %f\n", y, x);
+	printf("%f %f\n", lat, lon);
+	float y = (89.75-lat)/0.5, x = ((lon<0.25?lon+360:lon) -0.25)/0.5; // TODO: fix range hack
+	printf("%f %f\n", y, x);
 	int j = (int) y, i = (int) x;
 	//printf("%d %d\n", j, i);
 	// TODO: 2d interpolation, e.g. Barnes

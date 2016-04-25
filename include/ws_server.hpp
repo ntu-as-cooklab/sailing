@@ -27,7 +27,7 @@ public:
 			// Set logging settings: see <websocketpp/logger/levels.hpp>
 			clear_access_channels(websocketpp::log::elevel::all);
 			clear_access_channels(websocketpp::log::alevel::all);
-			//set_access_channels(websocketpp::log::alevel::access_core);
+			set_access_channels(websocketpp::log::alevel::access_core);
 
 			init_asio();			// Initialize Asio
 			using websocketpp::lib::placeholders::_1;
@@ -41,7 +41,7 @@ public:
 			run();					// Start the ASIO io_service run loop
 		}
 		catch (websocketpp::exception const & e) { std::cout << e.what() << "\n"; }
-		catch (...) { std::cout << "other exception" << "\n"; }
+		//catch (...) { std::cout << "other exception" << "\n"; }
 	}
 
 	void on_open(connection_hdl hdl);

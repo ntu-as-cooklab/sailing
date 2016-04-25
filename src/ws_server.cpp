@@ -29,29 +29,24 @@ void WsServer::on_http(connection_hdl hdl)
     con->defer_http_response();
 	std::string filename = con->get_resource();
 
-	if (filename == "/")
-		filename = docroot + "html/index.html";
-	else if (filename == "/console")
-		filename = docroot + "html/console.html";
-	else
+	if (filename.length() > 1)
 		filename = docroot + filename.substr(1);
+	else
+		filename = docroot + "html/index.html";
 
 	std::ifstream file;
-	file.open(filename.c_str(), std::ios::binary);
+	file.open(filename.c_str(), std::ios_base::binary);
 	if (!file)
 	{
 		filename = docroot + "html/index.html";
-		file.open(filename.c_str(), std::ios::in);
+		file.open(filename.c_str(), std::ios_base::binary);
 		con->set_status(websocketpp::http::status_code::ok); // not_found
 	}
 	else con->set_status(websocketpp::http::status_code::ok);
 
-	std::string response;
-	file.seekg(0, std::ios::end);
-	response.reserve(file.tellg());
-	file.seekg(0, std::ios::beg);
-	response.assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	con->set_body(response);
+	std::ostringstream response;
+	response << file.rdbuf();
+	con->set_body(response.str());
 
 	con->send_http_response();
 }
