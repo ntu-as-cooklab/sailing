@@ -1,6 +1,6 @@
 "use strict";
 
-var container, controls, info, outputlist, doConnect;
+var container, controls, info, outputlist, doConnect, icolor;
 var startdate, enddate, days;
 var wsClient;
 var voyage = [];
@@ -16,6 +16,9 @@ function main()
 	days 		= document.getElementById("days");
 	outputlist 	= document.getElementById("outputlist");
 	doConnect 	= document.getElementById("doConnect");
+	icolor 	= document.getElementById("icolor");
+
+	//alert(icolor.value);
 
 	wsClient = new WsClient();
 	wsClient.connect();
@@ -37,5 +40,5 @@ function connect()
 
 function resetParams()
 {
-	
+
 }

@@ -71,18 +71,20 @@ function parseVoyage(v)
 	for (var i = 0; i < v.path.length; i++)
 	{
 		points.push(v.path[i].curr);
-		v.circleMarker.push(L.circleMarker(points[i], {radius: 2, color: "red", fillOpacity: 0.9, stroke: false}).addTo(map));
+		v.circleMarker.push(L.circleMarker(points[i], {radius: (!i?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
 		v.layerGroup.addLayer(v.circleMarker[i]);
 	}
-	v.polyline = L.polyline(points, {color: "red", lineJoin:"round"})
+	v.polyline = L.polyline(points, {color: icolor.value, opacity: 0.2})
 	v.layerGroup.addLayer(v.polyline);
 	v.layerGroup.addTo(map);
-	outputlist.innerHTML +=
+	outputlist.innerHTML =
 	"<div class='outputitem'>" +
-	"<input type='checkbox'>顯示 <input type='button' value='刪除'> </br>" +
+	"<input type='checkbox' checked> 顯示 " +
+	"<input type='color' value="+icolor.value+"> "+
+	"<input type='button' value='刪除'> </br>" +
 	"起點: " + v.orig.lat + ", " + v.orig.lng + "</br>" +
 	"資料: " + v.mode + "</br>" +
-	"時間: " + 
+	"時間: " +
 	v.startdate.year + "/" + (v.startdate.month<10?"0":"") + v.startdate.month + "/" + (v.startdate.day<10?"0":"") + v.startdate.day + " " + v.startdate.hour + "hr" +
 	" - " +
 	v.enddate.year + "/" + (v.enddate.month<10?"0":"") + v.enddate.month + "/" + (v.enddate.day<10?"0":"") + v.enddate.day + " " + v.enddate.hour + "hr" +
@@ -93,5 +95,6 @@ function parseVoyage(v)
 	"張帆極限風速: " + v.windlimit + "m/s</br>" +
 	"每日張帆時數: " + v.sailopenhours + "hr</br>" +
 	//v.name +
-	"</div>";
+	"</div>" +
+	outputlist.innerHTML;
 }

@@ -69,8 +69,8 @@
 				font-family: 微軟正黑體, sans-serif;
 				position: absolute;
 				right: 1%; 	top: 1%;
-				width:65%; height:20%;
-				background-color: rgba(0,0,0,0.7);
+				width:70vw; height:20vh;
+				background-color: rgba(0,0,0,0.6);
 				color: white;
 				z-index: 4;
 				overflow: auto;
@@ -83,7 +83,10 @@
 			.hor {
 				display: inline-block;
 				vertical-align:middle;
-				padding: 10px;
+				margin-top: 5px;
+				margin-bottom: 10px;
+				margin-left: 10px;
+				margin-right: 10px;
 				font-family: 微軟正黑體, sans-serif;
 				font-size: 1vw;
 			}
@@ -93,14 +96,19 @@
 			}
 			.date { width:18ex; }
 
-			#outputlist {
+			#icolor {
+				margin-top: 10px;
+				font-size: 0.2vw;
+			}
+
+			#outputcontainer {
 				padding: 5px;
 				font-family: 微軟正黑體, sans-serif;
 				font-size: 0.3vw;
 				position: absolute;
 				right: 1%; 	top: 22%;
 				width:20%; height:70%;
-				background-color: rgba(0,0,0,0.7);
+				background-color: rgba(0,0,0,0.6);
 				color: white;
 				z-index: 5;
 				overflow: auto;
@@ -111,11 +119,17 @@
 				margin: 5px;
 				font-family: 微軟正黑體, sans-serif;
 				font-size: 0.3vw;
-				background-color: rgba(0,0,200,0.5);
+				background-color: rgba(0,0,0,0.3);
 				color: white;
 				z-index: 6;
-				height:21%;
+
 				overflow: auto;
+			}
+
+			.tools {
+				margin-right: 10px;
+				font-size: 2.4vh;
+				font-family: 微軟正黑體, sans-serif;
 			}
 
 		</style>
@@ -138,9 +152,10 @@
 						結束日期: <input class="date" id="enddate" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31" onchange="setEndDate()"><br>
 					</div>
 					<div style="padding-left:10px">
-						<input type="button" name="run" value="計算">
-						<input type="button" onclick="resetParams()" value="重設參數" hidden>
-						<input id="doConnect" type="button" onclick="connect()" value="連線">
+						軌跡顏色: <input class="tools" id="icolor" type="color" value="#0000ff">
+						<input class="tools" type="button" name="run" value="計算">
+						<input class="tools" type="button" onclick="resetParams()" value="重設參數" hidden>
+						<input class="tools" id="doConnect" type="button" onclick="connect()" value="連線">
 					</div>
 				</div>
 				<div class="hor">
@@ -160,9 +175,10 @@
 					</table>
 				</div>
 			</div>
-			<div id="outputlist">
+			<div id="outputcontainer">
 				<input type="button" onclick="loadRecord()" value="載入紀錄">
 				<input type="button" onclick="clearRecord()" value="清除紀錄">
+				<div id="outputlist"></div>
 			</div>
 			<span id="info"></span>
 		</div>
