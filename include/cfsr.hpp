@@ -10,7 +10,7 @@ class CfsrReader
 {
 	static const int startYear 	= 1979, startMonth = 1,
 			  		 endYear	= 1979, endMonth   = 1,
-			  		 months = ((endYear-startYear)*12 + (endMonth-startMonth+1));
+			  		 months = 12;//((endYear-startYear)*12 + (endMonth-startMonth+1));
 
 	int ouid[months], ovid[months], auid[months], avid[months];
 
@@ -21,18 +21,22 @@ public:
 
 	CfsrReader()
 	{
-		ouid[0]
-		= ovid[0]
-		= auid[0]
-		= avid[0] = 0;
+		for (int i=0; i<12; i++)
+		ouid[i]
+		= ovid[i]
+		= auid[i]
+		= avid[i] = 0;
 	}
 
 	~CfsrReader()
 	{
-		closeCFSR(ouid[0]);
-		closeCFSR(ovid[0]);
-		closeCFSR(auid[0]);
-		closeCFSR(avid[0]);
+		for (int i=0; i<12; i++)
+		{
+			closeCFSR(ouid[i]);
+			closeCFSR(ovid[i]);
+			closeCFSR(auid[i]);
+			closeCFSR(avid[i]);
+		}
 	}
 };
 

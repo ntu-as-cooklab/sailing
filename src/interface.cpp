@@ -3,6 +3,8 @@
 #include <sstream>
 #include <boost/algorithm/string/replace.hpp>
 #include <iomanip> // for std::setprecision
+#include <dirent.h>
+#include <stdio.h>
 
 #include "cfsr.hpp"
 #include "voyage.hpp"
@@ -57,6 +59,24 @@ std::string execCmd(std::string cmd)
 		LatLon latlon;
 		std::stringstream(params) >> date >> latlon;
 		response << cfsrReader->OUV(date, latlon);
+	}
+
+	else if (word == "delete") {
+		DIR *dir;
+		struct dirent *ent;
+		if ((dir = opendir ("output/")) != NULL)
+		{
+			std::string name;
+			std::stringstream(params) >> name;
+			//std::cout << name+".kml" << ";\n";
+			//std::cout << name+".csv" << ";\n";
+			while ((ent = readdir (dir)) != NULL)
+			{
+				if (std::string(ent->d_name) == name+".kml") remove(("output/"+name+".kml").c_str());
+				if (std::string(ent->d_name) == name+".csv") remove(("output/"+name+".csv").c_str());
+			}
+  			closedir (dir);
+		}
 	}
 
 	#define PARAM(param) response << (params.length() ? (std::stringstream(params) >> param, word + " = ") : ""), response << param

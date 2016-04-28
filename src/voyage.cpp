@@ -24,6 +24,8 @@ UV Voyage::calc_sail_gain(UV wind, UV dir)
 	float angle_diff = anglediff(wind, dir);
 	float boat_speed = 0;
 
+	//std::cout << wind << "\t" << dir << "\t" << angle_diff << "\n";
+
 	if (angle_diff <= 30)
 	    boat_speed = (-0.0008*pow(wind_speed,3) - 0.0037*pow(wind_speed,2) + 0.5548*wind_speed ) * ( -0.0333*angle_diff+1 ) +
 	              ( 0.0023*pow(wind_speed,3) - 0.0699*pow(wind_speed,2) + 0.9546*wind_speed ) * ( 0.0333*angle_diff );
@@ -89,6 +91,9 @@ void Voyage::step()
 
 			sail_gain = calc_sail_gain(wind, sail_dir); // boat speed gain due to wind
 			if (debug) std::cout << "[Voyage] sail gain: " << sail_gain << " (" << sail_gain.norm() << ")\n";
+			break;
+		case DRFT:
+			wind = 0; sail_dir = 0; sail_gain = 0; break;
 	}
 
 	// total speed
@@ -134,8 +139,10 @@ bool Voyage::sail() // result: whether we reached our destination
 	kml.open("output/" + name + ".kml");
 	kml.writeHeader();
 
-	for (runstep = 0, sailstep = 0, curr = orig, date = startdate; date++ < enddate; runstep++)
+	for (runstep = 0, sailstep = 0, curr = orig, date = startdate; ++date < enddate; runstep++)
 	{
+		if ((mode == SIN || mode == AVG) && date.month == 1 && date.day == 1 && date.hour == 0)
+			date.year--, enddate.year--;
 		sailstep += (sailopen = date.hour<=sailopenhours); // only open sail for sailopenhours
 		step();
 		if (ocean.norm() > 1e3 || wind.norm() > 1e3) break;

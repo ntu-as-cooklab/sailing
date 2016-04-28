@@ -47,7 +47,7 @@ var WsClient = function()
 
 						// Check if new voyage
 						var newv = true;
-						for (var i=0; i<voyage.length; i++) if (voyage[i].name == v.name) newv = false;
+						for (var i=0; i<voyage.length; i++) if (voyage[i].name == v.name && !voyage[i].deleted) newv = false;
 						if (newv)
 						{
 							voyage.push(v);
@@ -71,30 +71,62 @@ function parseVoyage(v)
 	for (var i = 0; i < v.path.length; i++)
 	{
 		points.push(v.path[i].curr);
-		v.circleMarker.push(L.circleMarker(points[i], {radius: (!i?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
+		v.circleMarker.push(L.circleMarker(points[i], {radius: (i==v.path.length-1?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
 		v.layerGroup.addLayer(v.circleMarker[i]);
 	}
 	v.polyline = L.polyline(points, {color: icolor.value, opacity: 0.2})
 	v.layerGroup.addLayer(v.polyline);
 	v.layerGroup.addTo(map);
 	outputlist.innerHTML =
-	"<div class='outputitem'>" +
-	"<input type='checkbox' checked> 顯示 " +
-	"<input type='color' value="+icolor.value+"> "+
-	"<input type='button' value='刪除'> </br>" +
+	"<div class='outputitem' id='outputitem"+(voyage.length-1)+"'>" +
+	"<input type='checkbox' onchange='setchecked(this,"+(voyage.length-1)+")' checked> 顯示 " +
+	"<input type='color' value="+icolor.value+" onchange='setcolor(this,"+(voyage.length-1)+")'> "+
+	"<span style='position:absolute;right:10%'><input type='button' value='刪除' onclick='del("+(voyage.length-1)+")'></span></br>" +
 	"起點: " + v.orig.lat + ", " + v.orig.lng + "</br>" +
-	"資料: " + v.mode + "</br>" +
+	"資料: " + datasetName[v.dataset] + "</br>" +
 	"時間: " +
 	v.startdate.year + "/" + (v.startdate.month<10?"0":"") + v.startdate.month + "/" + (v.startdate.day<10?"0":"") + v.startdate.day + " " + v.startdate.hour + "hr" +
 	" - " +
 	v.enddate.year + "/" + (v.enddate.month<10?"0":"") + v.enddate.month + "/" + (v.enddate.day<10?"0":"") + v.enddate.day + " " + v.enddate.hour + "hr" +
 	"</br>" +
 	"天數: " + v.days + "</br>" +
-	"模式: " + v.mode + "</br>" +
+	"模式: " + modeName[v.mode] + "</br>" +
 	"風帆高度: " + v.altitude + "m</br>" +
 	"張帆極限風速: " + v.windlimit + "m/s</br>" +
 	"每日張帆時數: " + v.sailopenhours + "hr</br>" +
-	//v.name +
+	"檔案名稱: " + v.name +
 	"</div>" +
 	outputlist.innerHTML;
+}
+
+function setcolor(e, n)
+{
+	voyage[n].polyline.setStyle({color: e.value});
+	voyage[n].polyline.redraw();
+	for (var i = 0; i < voyage[n].path.length; i++)
+	{
+		voyage[n].circleMarker[i].setStyle({color: e.value});
+		voyage[n].circleMarker[i].redraw();
+	}
+}
+
+function setchecked(e, n)
+{
+	if (e.checked) voyage[n].layerGroup.addTo(map);
+	else map.removeLayer(voyage[n].layerGroup);
+}
+
+function del(n)
+{
+	map.removeLayer(voyage[n].layerGroup);
+	voyage[n].deleted = true;
+	var item = document.getElementById("outputitem"+n);
+	if(item) item.parentNode.removeChild(item);
+	wsClient.send("delete " + voyage[n].name);
+}
+
+function clearRecord()
+{
+	for (var n=0; n<voyage.length; n++)
+		del(n);
 }

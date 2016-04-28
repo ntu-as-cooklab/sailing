@@ -142,14 +142,14 @@
 			<div id="controls" onclick="setParam(event.target)">
 				<div class="hor">
 					<div class="hor">
-						<input type="radio" name="dataset" value="0" checked> 1979~2010 平均資料<br>
-						<input type="radio" name="dataset" value="1" disabled="true"> 1979~2010 連續資料<br>
-						<input type="radio" name="dataset" value="2" disabled="true"> 單年資料: <input type="number" name="year" value="1979" min="1979" max="2010" style="width:8ex">
+						<input type="radio" name="dataset" value="0" disabled="true" checked> 1979~2009 平均資料<br>
+						<input type="radio" name="dataset" value="1" disabled="true"> 1979~2009 連續資料<br>
+						<input type="radio" name="dataset" value="2" checked> 單年資料: <input disabled="true" type="number" name="year" value="1979" min="1979" max="1980" style="width:8ex">
 					</div>
 					<div class="hor">
-						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="2010-12-31" onchange="setStartDate()">
-						天數: <input id="days" type="number" name="days" value="30" min="1" step="1" onchange="setDays()" style="width:6ex"><br>
-						結束日期: <input class="date" id="enddate" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31" onchange="setEndDate()"><br>
+						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="1980-12-31" onchange="setDays()">
+						天數: <input id="days" type="number" name="days" value="15" min="1" step="1" onchange="setDays()" style="width:6ex"><br>
+						結束日期: <input class="date" id="enddate" type="date" name="enddate" value="1979-01-16" min="1979-01-01" max="1980-12-31" onchange="setEndDate()"><br>
 					</div>
 					<div style="padding-left:10px">
 						軌跡顏色: <input class="tools" id="icolor" type="color" value="#0000ff">
@@ -176,7 +176,7 @@
 				</div>
 			</div>
 			<div id="outputcontainer">
-				<input type="button" onclick="loadRecord()" value="載入紀錄">
+				<input type="button" onclick="loadRecord()" value="載入紀錄" hidden>
 				<input type="button" onclick="clearRecord()" value="清除紀錄">
 				<div id="outputlist"></div>
 			</div>

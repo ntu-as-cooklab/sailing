@@ -19,6 +19,7 @@ void JSON::writeHeader(Voyage* voyage)
 		<< "\"hour\": " << voyage->enddate.hour
 	<< "}, "
 	<< "\"days\": " 	<< voyage->days << ", "
+	<< "\"dataset\": " 	<< voyage->dataset << ", "
 	<< "\"mode\": " 	<< voyage->mode << ", "
 	<< "\"orig\": {\"lat\": " << voyage->orig.lat() << ", \"lng\": " << voyage->orig.lon() << "}, "
 	<< "\"dest\": {\"lat\": " << voyage->dest.lat() << ", \"lng\": " << voyage->dest.lon() << "}, "

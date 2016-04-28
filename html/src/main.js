@@ -27,7 +27,7 @@ function main()
 }
 
 function setParam(e) { if(e.name) wsClient.send(e.name + "= " + e.value); }
-function setStartDate() { enddate.min = startdate.value; if (new Date(enddate.value).getTime() < new Date(startdate.value).getTime()) enddate.value = startdate.value; setParam(enddate); }
+function setStartDate() { setEndDate(); enddate.min = startdate.value; if (new Date(enddate.value).getTime() < new Date(startdate.value).getTime()) enddate.value = startdate.value; setParam(enddate); }
 function setEndDate() { days.value = Math.ceil((new Date(enddate.value).getTime() - new Date(startdate.value).getTime())/86400000); setParam(days); }
 function setDays() { var date = new Date(startdate.value);
 						date.setTime(date.getTime() + days.value * 86400000);
