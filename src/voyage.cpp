@@ -167,13 +167,13 @@ std::string Voyage::genName()
 														namestream 	<< DATASET[dataset];
 	if (dataset != AVG) 								namestream 	<< startdate.year;
 														namestream	<< (startdate.month<10?"0":"") << startdate.month << (startdate.day<10?"0":"") << startdate.day
-	//																<< "d" << (enddate-startdate)
+																	<< "_d" << days
 																	<< "_ORIG" << orig.lat() << "-" << orig.lon()
 																	<< "_" << MODE[mode];
 	if 		(mode == DEST) 								namestream 	<< dest.lat() << "-" << dest.lon();
 	else if (mode == DIRN) 								namestream 	<< dir.x << "-" << dir.y;
-	if 		(altitude != Voyage::altitude) 				namestream 	<< "_" << "alt" << altitude;
-	if 		(windlimit != Voyage::windlimit) 			namestream 	<< "_" << "lmt" << windlimit;
-	if 		(sailopenhours != Voyage::sailopenhours) 	namestream 	<< "_" << "hrs" << sailopenhours;
+	/*if 		(altitude != Voyage::altitude) */				namestream 	<< "_" << "alt" << altitude;
+	/*if 		(windlimit != Voyage::windlimit) 	*/			namestream 	<< "_" << "lmt" << windlimit;
+	/*if 		(sailopenhours != Voyage::sailopenhours) */		namestream 	<< "_" << "hrs" << sailopenhours;
 	return name = namestream.str();
 }

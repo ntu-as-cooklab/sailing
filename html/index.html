@@ -69,9 +69,11 @@
 				font-family: 微軟正黑體, sans-serif;
 				position: absolute;
 				right: 1%; 	top: 1%;
+				width:65%; height:20%;
 				background-color: rgba(0,0,0,0.7);
 				color: white;
 				z-index: 4;
+				overflow: auto;
 			}
 
 			#controls > * {
@@ -86,11 +88,35 @@
 				font-size: 1vw;
 			}
 			.ver {
-
 				font-family: 微軟正黑體, sans-serif;
 				font-size: 1vw;
 			}
 			.date { width:18ex; }
+
+			#outputlist {
+				padding: 5px;
+				font-family: 微軟正黑體, sans-serif;
+				font-size: 0.3vw;
+				position: absolute;
+				right: 1%; 	top: 22%;
+				width:20%; height:70%;
+				background-color: rgba(0,0,0,0.7);
+				color: white;
+				z-index: 5;
+				overflow: auto;
+			}
+
+			.outputitem {
+				padding: 5px;
+				margin: 5px;
+				font-family: 微軟正黑體, sans-serif;
+				font-size: 0.3vw;
+				background-color: rgba(0,0,200,0.5);
+				color: white;
+				z-index: 6;
+				height:21%;
+				overflow: auto;
+			}
 
 		</style>
 
@@ -108,12 +134,13 @@
 					</div>
 					<div class="hor">
 						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="2010-12-31" onchange="setStartDate()">
-						天數: <input id="days" type="number" name="days" value="30" min="1" step="1" onchange="setEndDate()" style="width:6ex"><br>
-						結束日期: <input class="date" id="enddate" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31" onchange="setDays()"><br>
+						天數: <input id="days" type="number" name="days" value="30" min="1" step="1" onchange="setDays()" style="width:6ex"><br>
+						結束日期: <input class="date" id="enddate" type="date" name="enddate" value="1979-01-31" min="1979-01-01" max="2010-12-31" onchange="setEndDate()"><br>
 					</div>
 					<div style="padding-left:10px">
 						<input type="button" name="run" value="計算">
-						<input type="button" onclick="resetParams()" value="重設參數">
+						<input type="button" onclick="resetParams()" value="重設參數" hidden>
+						<input id="doConnect" type="button" onclick="connect()" value="連線">
 					</div>
 				</div>
 				<div class="hor">
@@ -132,6 +159,10 @@
 					</table>
 					</table>
 				</div>
+			</div>
+			<div id="outputlist">
+				<input type="button" onclick="loadRecord()" value="載入紀錄">
+				<input type="button" onclick="clearRecord()" value="清除紀錄">
 			</div>
 			<span id="info"></span>
 		</div>
