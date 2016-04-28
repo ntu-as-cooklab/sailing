@@ -127,9 +127,11 @@ void Voyage::step()
 bool Voyage::sail() // result: whether we reached our destination
 {
 	std::cout << "\n[Voyage] Running simulation: " << genName() << "\n";
-	csv.open(name + ".csv");
+	json.clear();
+	json.writeHeader(this);
+	csv.open("output/" + name + ".csv");
 	csv.writeHeader();
-	kml.open(name + ".kml");
+	kml.open("output/" + name + ".kml");
 	kml.writeHeader();
 
 	for (runstep = 0, sailstep = 0, curr = orig, date = startdate; date++ < enddate; runstep++)
@@ -137,6 +139,7 @@ bool Voyage::sail() // result: whether we reached our destination
 		sailstep += (sailopen = date.hour<=sailopenhours); // only open sail for sailopenhours
 		step();
 		if (ocean.norm() > 1e3 || wind.norm() > 1e3) break;
+		json.writeLine(this, !runstep);
 		csv.writeLine(this);
 		kml.writeLatLon(curr, altitude);
 
@@ -150,10 +153,11 @@ bool Voyage::sail() // result: whether we reached our destination
 	}
 	//printf("[Voyage] Reached end of time range\n");
 
+	json.writeFooter();
 	csv.close();
 	kml.writeFooter();
 	kml.close();
-	execCmd("send voyage " + name + ".kml");
+	execCmd("send json " + json.json.str());
 	return false;
 }
 

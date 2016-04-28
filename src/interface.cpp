@@ -22,7 +22,6 @@ std::string execCmd(std::string cmd)
 
 	int paramsbegin = params.find_first_not_of("= ");
 	if (paramsbegin != std::string::npos) params.erase(0, paramsbegin);
-	boost::replace_all(params, ",", " ");
 	params.erase(params.find_last_not_of(" ") + 1);
 
 	std::stringstream response;
@@ -42,7 +41,7 @@ std::string execCmd(std::string cmd)
 		float lat, lon;
 		std::stringstream(params) >> year >> month >> day >> lat >> lon;
 		int ouid = openCFSR(CFSR_OU, year, month);
-		response << getOUV(ouid, day, lat, lon);
+		response << bilinearOUV(ouid, day, lat, lon);
 		closeCFSR(ouid);
 	}
 	else if (word == "OV") {
@@ -50,7 +49,7 @@ std::string execCmd(std::string cmd)
 		float lat, lon;
 		std::stringstream(params) >> year >> month >> day >> lat >> lon;
 		int ovid = openCFSR(CFSR_OU, year, month);
-		response << getOUV(ovid, day, lat, lon);
+		response << bilinearOUV(ovid, day, lat, lon);
 		closeCFSR(ovid);
 	}
 	else if (word == "OUV") {
@@ -69,15 +68,15 @@ std::string execCmd(std::string cmd)
 	else if (word == "enddate") 			{ boost::replace_all(params, "-", " "); PARAM(voyage->enddate); }
 	else if (word == "days") 				PARAM(voyage->days);
 	else if (word == "mode") 				PARAM(voyage->mode);
-	else if (word == "orig") 				PARAM(voyage->orig);
-	else if (word == "dest") 				PARAM(voyage->dest);
+	else if (word == "orig") 				{ boost::replace_all(params, ",", " "); PARAM(voyage->orig); }
+	else if (word == "dest") 				{ boost::replace_all(params, ",", " "); PARAM(voyage->dest); }
 	else if (word == "altitude")			PARAM(voyage->altitude);
 	else if (word == "windlimit")			PARAM(voyage->windlimit);
 	else if (word == "sailopenhours")		PARAM(voyage->sailopenhours);
 
 	else if (word == "range") 				PARAM(voyage->range);
 	else if (word == "sailopen")  			PARAM(voyage->sailopen);
-	else if (word == "dir") 				PARAM(voyage->dir);
+	else if (word == "dir") 				{ boost::replace_all(params, "-", " "); PARAM(voyage->dir); }
 
 	else if (word == "timestep") 			PARAM(voyage->timestep);
 	else if (word == "movement_factor") 	PARAM(voyage->movement_factor);

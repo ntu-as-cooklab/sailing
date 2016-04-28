@@ -28,8 +28,10 @@ extern const char* CFSR_filename[4];
 // CFSR functions
 int openCFSR(CFSR type, int year, int month);
 int closeCFSR(int ncid);
-float getOUV(int ncid, int day, float lat, float lon);
-float getAUV(int ncid, int day, float lat, float lon);
+float bilinearOUV(int ncid, float day, float lat, float lon);
+float bilinearAUV(int ncid, float day, float lat, float lon);
+
+// TODO: Barnes interpolation
 
 #ifdef  __cplusplus
 }

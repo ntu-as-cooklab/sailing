@@ -3,6 +3,7 @@
 var container, controls, info;
 var startdate, enddate, days;
 var wsClient;
+var voyage = [];
 
 function main()
 {

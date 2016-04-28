@@ -8,6 +8,7 @@
 #include "kml.hpp"
 #include "csv.hpp"
 #include "date.hpp"
+#include "json.hpp"
 
 struct Voyage
 {
@@ -35,7 +36,7 @@ struct Voyage
 	int 	sailopenhours 	= 12;
 	float 	alpha 			= 0.11;				// parameter for wind profile power law
 
-	int 	timestep 		= 3600 * 24; 		// size of timestep = 1 hr = 3600 sec
+	int 	timestep 		= 3600; 		// size of timestep = 1 hr = 3600 sec
 	int 	movement_factor = 1; 				// movement factor (forward = 1, reverse = -1)
 
 	float 	range 			= 1.1; 				// for checking if within range of destination
@@ -71,6 +72,7 @@ struct Voyage
 
 	KML kml;
 	CSV csv;
+	JSON json;
 
 private:
 	// Sums --> used for averages

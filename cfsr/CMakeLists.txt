@@ -25,5 +25,5 @@ add_library(cfsr STATIC ${CFSR_SRC})
 target_link_libraries(cfsr netcdf.a hdf5_hl.a hdf5.a szip.a z.a curl.a gcc.a) #netcdf_c++4
 
 file(GLOB EXAMPLE_SRC "example/*.cpp")
-add_executable(cfsr_example ${EXAMPLE_SRC})
-target_link_libraries(cfsr_example cfsr)
+add_executable(example ${EXAMPLE_SRC})
+target_link_libraries(example cfsr)

@@ -65,4 +65,13 @@ function initMap()
 	map.on('mousemove', onMapMouseMove);
 	orig.on('dragend', onOrigDragEnd);
 	dest.on('dragend', onDestDragEnd);
+
+	var latlngs = [new L.LatLng(24.0, 122.0) , new L.LatLng(28.0, 125.0), new L.LatLng(30.0, 125.0)];
+	var polyline = L.polyline(latlngs, {color: "red", lineJoin:"round"});
+	var circle = L.circleMarker(new L.LatLng(24.0, 122.0), {radius: 4, color: "red", fillOpacity: 0.8, stroke: false});
+
+	var layerGroup = L.layerGroup()
+	.addLayer(polyline)
+	.addLayer(circle)
+	.addTo(map);
 }

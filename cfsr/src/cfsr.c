@@ -33,28 +33,54 @@ int closeCFSR(int ncid)
 	return 0;
 }
 
-float getOUV(int ncid, int day, float lat, float lon)
+inline float rawOUV(int ncid, int day, int i, int j)
 {
-	printf("%f %f\n", lat, lon);
-	float y = (89.75-lat)/0.5, x = ((lon<0.25?lon+360:lon) -0.25)/0.5; // TODO: fix range hack
-	printf("%f %f\n", y, x);
-	int j = (int) y, i = (int) x;
-	//printf("%d %d\n", j, i);
-	// TODO: 2d interpolation, e.g. Barnes
-	size_t dim[4] = { day-1, 0, j, i };
+	size_t dim[4] = { day-1, 0, i, j };
 	float v;
-	if ((nc_get_var1_float(ncid, 4, dim, &v))) ERR(err);;
+	if ((nc_get_var1_float(ncid, 4, dim, &v))) ERR(err);
 	return v;
 }
 
-float getAUV(int ncid, int day, float lat, float lon)
+inline float rawAUV(int ncid, int day, int i, int j)
 {
-	float y = (89.761-lat)/0.31249958, x = (lon<0?lon+360:lon)/0.31249958; // TODO: fix range hack
-	int j = (int) y, i = (int) x;
-	//printf("%d %d\n", j, i);
-	// TODO: 2d interpolation, e.g. Barnes
-	size_t dim[3] = { day-1, j, i };
+	size_t dim[3] = { day-1, i, j };
 	float v;
-	if ((err = nc_get_var1_float(ncid, 0, dim, &v))) ERR(err);
+	if ((nc_get_var1_float(ncid, 0, dim, &v))) ERR(err);
 	return v;
+}
+
+inline float bilinearDayOUV(int ncid, int day, float i, float j)
+{
+	int i0 = floorf(i), i1 = ceilf(i),
+		j0 = floorf(j), j1 = ceilf(j);
+
+	return 	(i-i0) * (j-j0) * rawOUV(ncid, day, i0, j0) +
+			(i-i0) * (j1-j) * rawOUV(ncid, day, i0, j1) +
+			(i1-i) * (j-j0) * rawOUV(ncid, day, i1, j0) +
+			(i1-i) * (j1-j) * rawOUV(ncid, day, i1, j1);
+}
+
+inline float bilinearDayAUV(int ncid, int day, float i, float j)
+{
+	int i0 = floorf(i), i1 = ceilf(i),
+		j0 = floorf(j), j1 = ceilf(j);
+
+	return 	(i-i0) * (j-j0) * rawAUV(ncid, day, i0, j0) +
+			(i-i0) * (j1-j) * rawAUV(ncid, day, i0, j1) +
+			(i1-i) * (j-j0) * rawAUV(ncid, day, i1, j0) +
+			(i1-i) * (j1-j) * rawAUV(ncid, day, i1, j1);
+}
+
+float bilinearOUV(int ncid, float day, float lat, float lon)
+{
+	float i = (89.75-lat)/0.5, j = ((lon<0.25?lon+360:lon)-0.25)/0.5; // TODO: fix range hack
+	int d0 = floorf(day), d1 = ceilf(day);
+	return bilinearDayOUV(ncid, d0, i, j) * d0 + bilinearDayOUV(ncid, d1, i, j) * d1;
+}
+
+float bilinearAUV(int ncid, float day, float lat, float lon)
+{
+	float i = (89.761-lat)/0.31249958, j = (lon<0?lon+360:lon)/0.31249958; // TODO: fix range hack
+	int d0 = floorf(day), d1 = ceilf(day);
+	return bilinearDayAUV(ncid, d0, i, j) * d0 + bilinearDayAUV(ncid, d1, i, j) * d1;
 }

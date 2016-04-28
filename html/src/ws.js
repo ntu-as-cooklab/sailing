@@ -24,7 +24,7 @@ var WsClient = function()
 			if (cmd.length == 2)
 				switch (cmd[0].trim())
 				{
-					case "startdate":
+					case "startdate": // TODO
 						break;
 					case "orig":
 						orig.setLatLng(cmd[1].match(/\S+/g));
@@ -33,17 +33,25 @@ var WsClient = function()
 						dest.setLatLng(cmd[1].match(/\S+/g));
 						break;
 				}
-			else if (cmd.length == 1)
+			else
 			{
 				cmd = e.data.split(' ');
 				switch (cmd[0].trim())
 				{
-					case "voyage":
+					case "kml":
 						omnivore.kml(cmd[1].trim()).addTo(map);
+						break;
+					case "json":
+						voyage.push(JSON.parse(e.data.slice(e.data.indexOf(cmd[0]) + cmd[0].length)));
+						var points = [];
+						for (var i = 0; i < voyage[voyage.length-1].path.length; i++) {
+							points.push(new L.LatLng(voyage[voyage.length-1].path[i].curr[0],voyage[voyage.length-1].path[i].curr[1]));
+						}
+						console.log(points);
+						var polyline = L.polyline(points, {color: "red", lineJoin:"round"}).addTo(map);
 						break;
 				}
 			}
-
 		};
 	};
 
