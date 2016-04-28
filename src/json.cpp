@@ -20,8 +20,8 @@ void JSON::writeHeader(Voyage* voyage)
 	<< "}, "
 	<< "\"days\": " 	<< voyage->days << ", "
 	<< "\"mode\": " 	<< voyage->mode << ", "
-	<< "\"orig\": [" << voyage->orig << "], "
-	<< "\"dest\": [" << voyage->dest << "], "
+	<< "\"orig\": {\"lat\": " << voyage->orig.lat() << ", \"lng\": " << voyage->orig.lon() << "}, "
+	<< "\"dest\": {\"lat\": " << voyage->dest.lat() << ", \"lng\": " << voyage->dest.lon() << "}, "
 	<< "\"altitude\": " 	<< voyage->altitude << ", "
 	<< "\"windlimit\": " 	<< voyage->windlimit << ", "
 	<< "\"sailopenhours\": " 	<< voyage->sailopenhours << ", "
@@ -29,7 +29,7 @@ void JSON::writeHeader(Voyage* voyage)
 	<< "\"timestep\": " 	<< voyage->timestep << ", "
 	<< "\"movement_factor\": " 	<< voyage->movement_factor << ", "
 	<< "\"range\": " 	<< voyage->range << ", "
-	<< "\"bounds\": [" << voyage->bounds << "], "
+	<< "\"bounds\": {\"lat\": " << voyage->bounds.lat() << ", \"lng\": " << voyage->bounds.lon() << "}, "
 	<< "\"path\": [";
 }
 
@@ -44,7 +44,7 @@ void JSON::writeLine(Voyage* voyage, bool first)
 		<< "\"day\": " << voyage->date.day << ", "
 		<< "\"hour\": " << voyage->date.hour
 	<< "}, "
-	<< "\"curr\": [" << voyage->curr << "], "
+	<< "\"curr\": {\"lat\": " << voyage->curr.lat() << ", \"lng\": " << voyage->curr.lon() << "}, "
 	<< "\"ocean\": [" << voyage->ocean << "], "
 	<< "\"ocean_norm\": " << voyage->ocean.norm() << ", "
 	<< "\"ocean_heading\": " << voyage->ocean.heading() << ", "

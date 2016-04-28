@@ -43,12 +43,7 @@ var WsClient = function()
 						break;
 					case "json":
 						voyage.push(JSON.parse(e.data.slice(e.data.indexOf(cmd[0]) + cmd[0].length)));
-						var points = [];
-						for (var i = 0; i < voyage[voyage.length-1].path.length; i++) {
-							points.push(new L.LatLng(voyage[voyage.length-1].path[i].curr[0],voyage[voyage.length-1].path[i].curr[1]));
-						}
-						console.log(points);
-						var polyline = L.polyline(points, {color: "red", lineJoin:"round"}).addTo(map);
+						parseVoyage(voyage[voyage.length-1]);
 						break;
 				}
 			}
@@ -57,4 +52,20 @@ var WsClient = function()
 
 	this.disconnect = function() { ws.close(); };
 	this.send = function(msg) { ws.send(msg); };
+}
+
+function parseVoyage(v)
+{
+	v.layerGroup = L.layerGroup()
+	v.circleMarker = [];
+	var points = [];
+	for (var i = 0; i < v.path.length; i++)
+	{
+		points.push(v.path[i].curr);
+		v.circleMarker.push(L.circleMarker(points[i], {radius: 2, color: "red", fillOpacity: 0.9, stroke: false}).addTo(map));
+		v.layerGroup.addLayer(v.circleMarker[i]);
+	}
+	v.polyline = L.polyline(points, {color: "red", lineJoin:"round"})
+	v.layerGroup.addLayer(v.polyline);
+	v.layerGroup.addTo(map);
 }
