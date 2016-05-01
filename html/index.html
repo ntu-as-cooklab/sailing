@@ -139,7 +139,7 @@
 	<body>
 		<div id="container">
 			<div id="map"></div>
-			<div id="controls" onclick="setParam(event.target)">
+			<div id="controls" onchange="setParam(event.target)" onclick="setParam(event.target)">
 				<div class="hor">
 					<div class="hor">
 						<input type="radio" name="dataset" value="0" disabled="true" checked> 1979~2009 平均資料<br>
@@ -160,7 +160,7 @@
 				</div>
 				<div class="hor">
 					<input type="radio" name="mode" value="0"> 瓶中信 (無風帆)<br>
-					<input type="radio" name="mode" value="1"> 隨風漂流 (航向=風向)<br>
+					<input type="radio" name="mode" value="1"> 迎風漂流 (航向=風向)<br>
 					<input type="radio" name="mode" value="2" checked> 固定目的地<br>
 					<input type="radio" name="mode" value="3" disabled="true"> 固定航向<br>
 					<input type="radio" name="mode" value="4" disabled="true"> 隨機航向<br>

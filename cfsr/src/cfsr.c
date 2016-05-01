@@ -65,6 +65,7 @@ inline float bilinearDayAUV(int ncid, int day, float i, float j)
 	int i0 = floorf(i), i1 = ceilf(i),
 		j0 = floorf(j), j1 = ceilf(j);
 
+		printf("%d\n", i1-i0);
 	return 	(i-i0) * (j-j0) * rawAUV(ncid, day, i0, j0) +
 			(i-i0) * (j1-j) * rawAUV(ncid, day, i0, j1) +
 			(i1-i) * (j-j0) * rawAUV(ncid, day, i1, j0) +

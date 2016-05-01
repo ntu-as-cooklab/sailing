@@ -36,7 +36,7 @@ public:
 			set_http_handler(websocketpp::lib::bind(&WsServer::on_http, this, _1));
 			set_open_handler(websocketpp::lib::bind(&WsServer::on_open, this, _1));
 			set_close_handler(websocketpp::lib::bind(&WsServer::on_close, this, _1));
-			listen(80); 			// Listen on port
+			listen(8000); 			// Listen on port
 			start_accept(); 		// Start the server accept loop
 			run();					// Start the ASIO io_service run loop
 		}

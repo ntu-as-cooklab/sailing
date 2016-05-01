@@ -3,7 +3,7 @@
 var map;
 var orig, dest;
 var datasetName = ["1979~2009 平均資料", "1979~2009 連續資料", "單年資料"];
-var modeName = ["瓶中信 (無風帆)", "隨風漂流 (航向=風向)", "固定目的地", "固定航向", "隨機航向"];
+var modeName = ["瓶中信 (無風帆)", "隨風漂流 (航向=風向)", "固定目的地", ""];
 
 function initMap()
 {
@@ -19,8 +19,8 @@ function initMap()
 		contextmenu: true,
 	    contextmenuWidth: 140,
 	    contextmenuItems: [
-			{text: '設為起點', callback: function(e){setOrig(e.latlng)} },
-			{text: '設為目的地', callback: function(e){setDest(e.latlng)} },
+			{text: '設為起點', callback: function(e){setOrig(e.latlng);onOrigDragEnd(e);} },
+			{text: '設為目的地', callback: function(e){setDest(e.latlng);onDestDragEnd(e)} },
 		]
 	});
 

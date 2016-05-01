@@ -14,12 +14,12 @@ int main()
 	std::cout <<
 	"\n"
 	"*************** ¦|²î­y¸ñ­pºâµ{¦¡ ***************\n"
-	"                  2016/4/28\n"
+	"                  2016/5/1\n"
 	"                 En Shih (¥Û®¦)\n"
 	"\n";
 
 	std::thread wsThread = launchWsServer(wsServer);
-	launchURL("http://127.0.0.1");
+	launchURL("http://127.0.0.1:8000");
 
 	voyage = new Voyage(); // origin, destination
 

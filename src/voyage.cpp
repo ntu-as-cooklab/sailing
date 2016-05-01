@@ -72,7 +72,7 @@ void Voyage::step()
 		case WIND: case DIRN: case DEST:
 			// Wind speed:
 			wind =	sailopen ? // if sail is open
-					cfsrReader->AUV(date, curr) * pow(altitude/10.0,alpha) : // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
+					cfsrReader->AUV(date, curr):// * pow(altitude/10.0bu,alpha) : // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
 					0;
 			if (wind.norm() > 1e3) return;
 			if (debug) std::cout << std::fixed
@@ -84,9 +84,9 @@ void Voyage::step()
 			sail_dir =  (
 							mode == WIND 	? 	wind.normalize() :
 							mode == DIRN 	? 	dir :
-							mode == DEST 	? 	adj_direction(curr, dest) :
+							mode == DEST 	? 	adj_direction(curr, dest).normalize() :
 							0
-						).normalize();
+						);
 			if (debug) std::cout << std::fixed << std::setprecision(1) << "[Voyage] sail heading: " << sail_dir.heading() << "\n";
 
 			sail_gain = calc_sail_gain(wind, sail_dir); // boat speed gain due to wind
