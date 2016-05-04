@@ -5,8 +5,7 @@
 
 int main()
 {
-	int ncid = openCFSR(CFSR_OU, 1979, 1);
-	printf("%f\n", bilinearOUV(ncid, 2, 0, -20));
+	int ncid = openCFSR(CFSR_U, 1979, 1);
 	closeCFSR(ncid);
 
 	return 0;
