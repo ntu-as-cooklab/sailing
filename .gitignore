@@ -11,3 +11,4 @@ build-linux/
 *.csv
 *.res
 *.a
+*.zip
