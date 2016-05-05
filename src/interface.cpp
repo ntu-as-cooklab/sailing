@@ -96,7 +96,7 @@ std::string execCmd(std::string cmd)
 
 	else if (word == "range") 				PARAM(voyage->range);
 	else if (word == "sailopen")  			PARAM(voyage->sailopen);
-	else if (word == "dir") 				{ boost::replace_all(params, "-", " "); PARAM(voyage->dir); }
+	else if (word == "dir") 				PARAM(voyage->dir);
 
 	else if (word == "timestep") 			PARAM(voyage->timestep);
 	else if (word == "movement_factor") 	PARAM(voyage->movement_factor);

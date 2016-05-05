@@ -28,8 +28,8 @@ struct Voyage
 	int 	days			= 15;
 
 	int 	mode 			= DEST;
-	LatLon 	orig			= {24.0, 122.0};
-	LatLon	dest			= {34.0, 135.0};
+	LatLon 	orig			= {-10.0, 160.0};
+	LatLon	dest			= {-14.0, 188.5};
 
 	float 	altitude 		= 2;
 	float 	windlimit 		= 8;

@@ -11,8 +11,8 @@ function initMap()
 		worldCopyJump: true,
 		minZoom: 3,
 		maxZoom: 18,
-		'center': [29.0, 134.0],
-		'zoom': 5,
+		'center': [-10.0, 160.0],
+		'zoom': 4,
 		inertia : false,
 		//fadeAnimation: false,
 		//zoomAnimation: false,
@@ -54,8 +54,8 @@ function initMap()
 	});
 	function setOrig(latlng) { orig ? orig.setLatLng(latlng) : orig = L.marker(latlng, { icon: origIcon, draggable: true, continousWorld : true }).addTo(map); }
 	function setDest(latlng) { dest ? dest.setLatLng(latlng) : dest = L.marker(latlng, { icon: destIcon, draggable: true, continousWorld : true }).addTo(map); }
-	setOrig(new L.LatLng(24.0, 122.0));
-	setDest(new L.LatLng(34.0, 135.0));
+	setOrig(new L.LatLng(-10.0, 160.0));
+	setDest(new L.LatLng(-14.0, 188.5));
 
 	/** Events **/
 
@@ -67,4 +67,19 @@ function initMap()
 	map.on('mousemove', onMapMouseMove);
 	orig.on('dragend', onOrigDragEnd);
 	dest.on('dragend', onDestDragEnd);
+
+	// Add a basic graticule with divisions every 20 degrees
+	// as a layer on a map
+	L.graticule().addTo(map);
+
+	// Specify divisions every 10 degrees
+	//L.graticule({ interval: 180 }).addTo(map);
+
+	// Specify bold red lines instead of thin grey lines
+	L.graticule({
+	style: {
+        	color: '#f00',
+        	weight: 1
+    	}
+	}).addTo(map);
 }
