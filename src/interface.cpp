@@ -83,6 +83,8 @@ std::string execCmd(std::string cmd)
 
 	/** Parameters **/
 
+	else if (word == "project")				PARAM(voyage->project);
+
 	else if (word == "dataset") 			PARAM(voyage->dataset);
 	else if (word == "startdate") 			{ boost::replace_all(params, "-", " "); PARAM(voyage->startdate); }
 	else if (word == "enddate") 			{ boost::replace_all(params, "-", " "); PARAM(voyage->enddate); }

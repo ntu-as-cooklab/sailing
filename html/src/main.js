@@ -1,6 +1,6 @@
 "use strict";
 
-var container, controls, info, outputlist, doConnect, icolor, iyear, heading;
+var container, controls, info, outputlist, doConnect, icolor, iyear, heading, project;
 var startdate, enddate, days;
 var wsClient;
 var voyage = [];
@@ -19,6 +19,7 @@ function main()
 	icolor 	= document.getElementById("icolor");
 	iyear 	= document.getElementById("iyear");
 	heading 	= document.getElementById("heading");
+	project 	= document.getElementById("project");
 
 	//alert(icolor.value);
 
@@ -60,4 +61,15 @@ function connect()
 function resetParams()
 {
 
+}
+
+function newRecord()
+{
+	var projectName = prompt("請輸入專案名稱", "新專案");
+
+    if (projectName != null)
+	{
+        project.innerHTML = projectName;
+		wsClient.send("project= " + projectName);
+    }
 }

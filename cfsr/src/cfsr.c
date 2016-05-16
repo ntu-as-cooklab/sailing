@@ -11,6 +11,13 @@ const char* CFSR_filename[] = // predefined CFSR filenames
 	"CFSR_flxf06.gdas.U_10m_YYYYMM.nc",
 	"CFSR_flxf06.gdas.V_10m_YYYYMM.nc"
 };
+const char* AVG_filename[] = // predefined CFSR filenames
+{
+	"OU_DailyM/9999oc.csv",
+	"OV_DailyM/9999oc.csv",
+	"U10_DailyM/9999.csv",
+	"V10_DailyM/9999.csv"
+};
 
 int openCFSR(CFSR type, int year, int month)
 {

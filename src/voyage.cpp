@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip> // for std::setprecisionma
+#include <windows.h>
 
 #include "voyage.hpp"
 #include "cfsr.hpp"
@@ -134,9 +135,12 @@ bool Voyage::sail() // result: whether we reached our destination
 	std::cout << "\n[Voyage] Running simulation: " << genName() << "\n";
 	json.clear();
 	json.writeHeader(this);
-	csv.open("output/" + name + ".csv");
+	std::string projectName("output/" + project);
+	CreateDirectory(projectName.c_str(), NULL);
+	std::cout << ("output/" + project + "/" + name + "\n");
+	csv.open("output/" + project + "/" + name + ".csv");
 	csv.writeHeader();
-	kml.open("output/" + name + ".kml");
+	kml.open("output/" + project + "/" + name + ".kml");
 	kml.writeHeader();
 
 	for (runstep = 0, sailstep = 0, curr = orig, date = startdate; ++date < enddate; runstep++)

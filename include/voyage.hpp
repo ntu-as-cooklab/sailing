@@ -19,6 +19,7 @@ struct Voyage
 	static const constexpr char* MODE[5] = {"DRFT", "WIND", "DEST", "DIRN", "RAND"};
 
 	std::string name;
+	std::string project;
 
 	/* Parameters */
 

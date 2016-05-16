@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <windows.h>
 
 #include "voyage.hpp"
 #include "interface.hpp"
@@ -11,11 +12,13 @@ extern WsServer* wsServer;
 
 int main()
 {
+	SetConsoleOutputCP(65001);
+
 	std::cout <<
 	"\n"
-	"*************** ¦|²î­y¸ñ­pºâµ{¦¡ ***************\n"
-	"                  2016/5/5\n"
-	"                 En Shih (¥Û®¦)\n"
+	"*************** å¸†èˆ¹è»Œè·¡è¨ˆç®—ç¨‹å¼ ***************\n"
+	"                  2016/5/16\n"
+	"                 En Shih (çŸ³æ©)\n"
 	"\n";
 
 	std::thread wsThread = launchWsServer(wsServer);

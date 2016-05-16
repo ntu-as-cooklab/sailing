@@ -11,7 +11,7 @@ function initMap()
 		worldCopyJump: true,
 		minZoom: 3,
 		maxZoom: 18,
-		'center': [-10.0, 160.0],
+		'center': [3.0, 160.0],
 		'zoom': 4,
 		inertia : false,
 		//fadeAnimation: false,

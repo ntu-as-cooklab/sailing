@@ -145,7 +145,7 @@
 					<div class="hor">
 						<input type="radio" name="dataset" value="0" checked> 1979~2009 平均資料<br>
 						<input type="radio" name="dataset" value="1" > 1979~2009 連續資料<br>
-						<input type="radio" name="dataset" value="2" checked> 單年資料: <input id="iyear" type="number" name="year" value="1979" min="1979" max="1982" step="10" style="width:8ex">
+						<input type="radio" name="dataset" value="2" checked> 單年資料: <input id="iyear" type="number" name="year" value="1979" min="1979" max="1982" step="3" style="width:8ex">
 					</div>
 					<div class="hor">
 						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="1980-12-31" onchange="setDays()">
@@ -176,8 +176,10 @@
 				</div>
 			</div>
 			<div id="outputcontainer">
-				<input type="button" onclick="loadRecord()" value="載入紀錄" hidden>
-				<input type="button" onclick="clearRecord()" value="清除紀錄">
+				<input type="button" onclick="newRecord()" value="新增專案">
+				<input type="button" onclick="loadRecord()" value="載入專案">
+				<input type="button" onclick="clearRecord()" value="刪除紀錄"></br>
+				專案: <span id="project"></span></br>
 				<div id="outputlist"></div>
 			</div>
 			<span id="info"></span>
