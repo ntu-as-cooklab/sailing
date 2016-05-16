@@ -1,6 +1,6 @@
 "use strict";
 
-var container, controls, info, outputlist, doConnect, icolor, iyear, heading, project;
+var container, controls, info, outputlist, doConnect, icolor, iyear, heading, project, dataset_avg, dataset_1979, dataset_1982;
 var startdate, enddate, days;
 var wsClient;
 var voyage = [];
@@ -21,6 +21,10 @@ function main()
 	heading 	= document.getElementById("heading");
 	project 	= document.getElementById("project");
 
+	dataset_avg 	= document.getElementById("dataset_avg");
+	dataset_1979 	= document.getElementById("dataset_1979");
+	dataset_1982 	= document.getElementById("dataset_1982");
+
 	//alert(icolor.value);
 
 	wsClient = new WsClient();
@@ -32,19 +36,37 @@ function main()
 function setParam(e)
 {
 	if(e.name) wsClient.send(e.name + "= " + e.value);
-	if(e == iyear)
-	{
-		startdate.min = e.value + "-01-01";
-		startdate.value = e.value + "-01-01";
-		startdate.max = (e.value+1) + "-12-31";
-		setDays();
-		wsClient.send(startdate.name + "= " + startdate.value);
-	}
+
 	if(e == heading)
 	{
 		if(heading.value<0) heading.value = Number(heading.value) + 360;
 		heading.value = heading.value%360;
 		wsClient.send("dir= " + Math.sin(heading.value*Math.PI/180.0) + " " + Math.cos(heading.value*Math.PI/180.0));
+	}
+
+	var year;
+	if (dataset_avg.checked)
+	{
+		wsClient.send("dataset= 2"); year = 9999;
+	}
+	if (dataset_1979.checked)
+	{
+		wsClient.send("dataset= 2"); year = 1979;
+	}
+	if (dataset_1982.checked)
+	{
+		wsClient.send("dataset= 2"); year = 1982;
+	}
+
+	if(e == dataset_avg || e == dataset_1979 || e == dataset_1982)
+	{
+		startdate.min = year + "-01-01";
+		startdate.value = year + "-01-01";
+		startdate.max = (year+1) + "-12-31";
+		setDays();
+		enddate.min = startdate.value;
+		enddate.max = (year+1) + "-12-31";
+		wsClient.send(startdate.name + "= " + startdate.value);
 	}
 }
 function setStartDate() { setEndDate(); enddate.min = startdate.value; if (new Date(enddate.value).getTime() < new Date(startdate.value).getTime()) enddate.value = startdate.value; setParam(enddate); }
@@ -72,4 +94,12 @@ function newRecord()
         project.innerHTML = projectName;
 		wsClient.send("project= " + projectName);
     }
+
+	for (var n=0; n<voyage.length; n++)
+	{
+		map.removeLayer(voyage[n].layerGroup);
+		voyage[n].deleted = true;
+		var item = document.getElementById("outputitem"+n);
+		if(item) item.parentNode.removeChild(item);
+	}
 }

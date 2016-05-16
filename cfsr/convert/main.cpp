@@ -6,16 +6,16 @@
 
 int main()
 {
-	SetConsoleOutputCP(65001);
+	SetConsoleOutputCP(950);
 
 	printf(
 	"\n"
-	"*************** csv->CFSR檔案轉換程式 ***************\n"
+	"*************** csv->CFSR�ɮ��ഫ�{�� ***************\n"
 	"                  2016/5/16\n"
-	"                 En Shih (石恩)\n"
+	"                 En Shih (�ۮ�)\n"
 	"\n\n");
 
-	printf("檔案轉換中，請稍候\n\n");
+	printf("�ɮ��ഫ���A�еy��... ...\n\n");
 
 	for (int i=1; i<=12; i++)
 	{
@@ -25,7 +25,7 @@ int main()
 		convertCFSR(CFSR_V, i);
 	}
 
-	printf("檔案轉換完畢\n");
+	printf("�ɮ��ഫ����\n");
 
 	return 0;
 }
