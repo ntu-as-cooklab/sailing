@@ -87,7 +87,7 @@ function resetParams()
 
 function newRecord()
 {
-	var projectName = prompt("請輸入專案名稱", "新專案");
+	var projectName = prompt("請輸入專案名稱", "New");
 
     if (projectName != null)
 	{

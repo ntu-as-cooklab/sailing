@@ -9,7 +9,7 @@ struct Date
 
 	//Date(int year, int month, int day, int hour) : year(year), month(month), day(day), hour(hour) {}
 
-	inline bool leap(int y) { return y%400?true : y%100?false : y%4?true : false; }
+	inline int leap(int y) { return (!(y%400))?1 : (!(y%100))?0 : (!(y%4))?1 : 0; }
 	inline int days(int m, int y) { return m==2 ? 28+leap(y) : (m<8 ? m&1:!(m&1)) ? 31 : 30; }
 
 	inline Date& operator++()

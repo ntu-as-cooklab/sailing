@@ -83,7 +83,7 @@ void Voyage::step()
 			// adjust boat direction and calculate boat speed gain due to wind
 			// TODO: path finding
 			sail_dir =  (
-							mode == WIND 	? 	wind.normalize() :
+							mode == WIND 	? 	(wind.norm() > 0 ? (wind / wind.norm()) : 0) :
 							mode == DIRN 	? 	dir :
 							mode == DEST 	? 	adj_direction(curr, dest).normalize() :
 							0

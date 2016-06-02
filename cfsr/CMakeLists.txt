@@ -13,6 +13,8 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast -s -static")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -pedantic -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Ofast -s -static")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")
 
 # Include headers
 
@@ -22,7 +24,7 @@ include_directories("include")
 
 file(GLOB CFSR_SRC "src/*.c")
 add_library(cfsr STATIC ${CFSR_SRC})
-target_link_libraries(cfsr netcdf.a hdf5_hl.a hdf5.a szip.a z.a curl.a gcc.a) #netcdf_c++4
+target_link_libraries(cfsr netcdf.a hdf5_hl.a hdf5.a szip.a z.a curl.a winpthread.a stdc++.a gcc.a winpthread.a) #netcdf_c++4
 
 file(GLOB EXAMPLE_SRC "convert/*.cpp")
 add_executable(convert ${EXAMPLE_SRC})
