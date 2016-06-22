@@ -143,11 +143,11 @@
 			<div id="controls" onchange="setParam(event.target)" onclick="setParam(event.target)">
 				<div class="hor">
 					<div class="hor">
-						<input type="radio" name="dataset0" value="0" id="dataset_avg" > 1979~2009 平均資料</br>
+						<input type="radio" name="dataset" value="0" id="dataset_avg" > 1979~2009 平均資料</br>
 						<!-- <input type="radio" name="dataset" value="1" > 1979~2009 連續資料<br> -->
-						<!-- <input type="radio" name="dataset" value="2" > 單年資料: <input id="iyear" type="number" name="year" value="1979" min="1979" max="1982" step="3" style="width:8ex"> -->
-						<input type="radio" name="dataset0" value="3" id="dataset_1979" checked> 單年資料: 1979</br>
-						<input type="radio" name="dataset0" value="4" id="dataset_1982"> 單年資料: 1982</br>
+						<input type="radio" name="dataset" value="2" checked> 單年資料: <input id="iyear" type="number" name="year" value="1979" min="1979" max="2009" step="1" style="width:8ex">
+						<!-- <input type="radio" name="dataset0" value="3" id="dataset_1979" checked> 單年資料: 1979</br>
+						<input type="radio" name="dataset0" value="4" id="dataset_1982"> 單年資料: 1982</br> -->
 					</div>
 					<div class="hor">
 						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="1980-12-31" onchange="setDays()">

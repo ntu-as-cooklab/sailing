@@ -45,7 +45,7 @@ function setParam(e)
 	}
 
 	var year;
-	if (dataset_avg.checked)
+	/*if (dataset_avg.checked)
 	{
 		wsClient.send("dataset= 2"); year = 9999;
 	}
@@ -56,16 +56,17 @@ function setParam(e)
 	if (dataset_1982.checked)
 	{
 		wsClient.send("dataset= 2"); year = 1982;
-	}
+	}*/
 
-	if(e == dataset_avg || e == dataset_1979 || e == dataset_1982)
+	if(e == iyear)
 	{
+		year = e.value;
 		startdate.min = year + "-01-01";
 		startdate.value = year + "-01-01";
-		startdate.max = (year+1) + "-12-31";
+		startdate.max = (Number(year)+1) + "-12-31";
 		setDays();
 		enddate.min = startdate.value;
-		enddate.max = (year+1) + "-12-31";
+		enddate.max = (Number(year)+1) + "-12-31";
 		wsClient.send(startdate.name + "= " + startdate.value);
 	}
 }
