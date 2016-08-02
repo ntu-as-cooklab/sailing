@@ -1,6 +1,8 @@
 #include <iostream>
 #include <thread>
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#endif
 
 #include "voyage.hpp"
 #include "interface.hpp"
@@ -12,7 +14,9 @@ extern WsServer* wsServer;
 
 int main()
 {
-	SetConsoleOutputCP(65001);
+	#ifdef _WIN32
+		SetConsoleOutputCP(65001);
+	#endif
 
 	std::cout <<
 	"\n"

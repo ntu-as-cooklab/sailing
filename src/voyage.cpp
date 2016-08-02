@@ -1,6 +1,8 @@
 #include <iostream>
 #include <iomanip> // for std::setprecisionma
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#endif
 
 #include "voyage.hpp"
 #include "cfsr.hpp"
@@ -136,7 +138,9 @@ bool Voyage::sail() // result: whether we reached our destination
 	json.clear();
 	json.writeHeader(this);
 	std::string projectName("output/" + project);
-	CreateDirectory(projectName.c_str(), NULL);
+	#ifdef _WIN32
+		CreateDirectory(projectName.c_str(), NULL);
+	#endif
 	std::cout << ("output/" + project + "/" + name + "\n");
 	csv.open("output/" + project + "/" + name + ".csv");
 	csv.writeHeader();

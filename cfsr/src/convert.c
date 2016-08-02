@@ -8,7 +8,7 @@
 int copy_file(char *new_filename, char *old_filename)
 {
 	FILE *ptr_old, *ptr_new;
-	errno_t err = 0, err1 = 0;
+	int err = 0, err1 = 0;
 	int  a;
 
 	err = fopen_s(&ptr_old, old_filename, "rb");
@@ -20,8 +20,8 @@ int copy_file(char *new_filename, char *old_filename)
 	{
 		fclose(ptr_old);
 		return -1;
-	}
 
+	}
 	while(1)
 	{
 		a = fgetc(ptr_old);

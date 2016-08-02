@@ -2,20 +2,24 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#endif
 
 int main()
 {
-	SetConsoleOutputCP(950);
+	#ifdef _WIN32
+		SetConsoleOutputCP(950);
+	#endif
 
 	printf(
 	"\n"
-	"*************** csv->CFSRÀÉ®×Âà´«µ{¦¡ ***************\n"
+	"*************** csv->CFSRï¿½É®ï¿½ï¿½à´«ï¿½{ï¿½ï¿½ ***************\n"
 	"                  2016/5/16\n"
-	"                 En Shih (¥Û®¦)\n"
+	"                 En Shih (ï¿½Û®ï¿½)\n"
 	"\n\n");
 
-	printf("ÀÉ®×Âà´«¤¤¡A½Ðµy­Ô... ...\n\n");
+	printf("ï¿½É®ï¿½ï¿½à´«ï¿½ï¿½ï¿½Aï¿½Ðµyï¿½ï¿½... ...\n\n");
 
 	for (int i=1; i<=12; i++)
 	{
@@ -25,7 +29,7 @@ int main()
 		convertCFSR(CFSR_V, i);
 	}
 
-	printf("ÀÉ®×Âà´«§¹²¦\n");
+	printf("ï¿½É®ï¿½ï¿½à´«ï¿½ï¿½ï¿½ï¿½\n");
 
 	return 0;
 }
