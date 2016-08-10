@@ -15,8 +15,8 @@ var WsClient = function()
 			ws = new MozWebSocket(url);
 
 		ws.onopen = function(e) { connected = true; doConnect.value="已連線"; doConnect.disabled = true; };
-		ws.onerror = function(e) { alert("連線發生錯誤! 請確認伺服器程式(sailing.exe)已開啟"); console.log(e); };
-		ws.onclose = function(e) { connected = false; doConnect.value="重新連線"; doConnect.disabled = false; alert("伺服器已斷線! 請重新連線"); console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
+		//ws.onerror = function(e) { alert("連線發生錯誤! 請確認伺服器程式(sailing.exe)已開啟"); console.log(e); };
+		//ws.onclose = function(e) { connected = false; doConnect.value="重新連線"; doConnect.disabled = false; alert("伺服器已斷線! 請重新連線"); console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
 
 		ws.onmessage = function(e)
 		{
@@ -52,7 +52,7 @@ var WsClient = function()
 						{
 							voyage.push(v);
 							parseVoyage(voyage[voyage.length-1]);
-						} else alert("此參數設定已計算過!");
+						} //else alert("此參數設定已計算過!");
 						break;
 				}
 			}
