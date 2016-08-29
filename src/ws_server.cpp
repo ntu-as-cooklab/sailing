@@ -71,6 +71,11 @@ void sendMsg(WsServer* server, connection_hdl hdl, std::string msg)
 void sendAll(WsServer* server, std::string msg)
 	{ server->sendAll(msg); }
 
+void stop(WsServer* server)
+{
+	server->stop();
+}
+
 std::thread launchWsServer(WsServer *& server)
 {
 	return server ? NULL : (server = new WsServer), std::thread(std::ref(*server));

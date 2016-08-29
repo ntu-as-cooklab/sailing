@@ -11,7 +11,7 @@ typedef websocketpp::connection_hdl connection_hdl;
 typedef std::set<connection_hdl, std::owner_less<connection_hdl>> con_list;
 typedef websocketpp::server<websocketpp::config::asio>::message_ptr message_ptr;	// pull out the type of messages sent by our config
 
-class WsServer : protected websocketpp::server<websocketpp::config::asio>
+class WsServer : public websocketpp::server<websocketpp::config::asio>
 {
 public:
 
@@ -24,6 +24,7 @@ public:
 	{
 		try
 		{
+			set_reuse_addr(true);
 			// Set logging settings: see <websocketpp/logger/levels.hpp>
 			clear_access_channels(websocketpp::log::elevel::all);
 			clear_access_channels(websocketpp::log::alevel::all);

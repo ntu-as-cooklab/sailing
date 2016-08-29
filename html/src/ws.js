@@ -1,5 +1,7 @@
 "use strict";
 
+var userid = 999;
+
 // class WsClient
 var WsClient = function()
 {
@@ -14,9 +16,13 @@ var WsClient = function()
 		else if ("MozWebSocket" in window)
 			ws = new MozWebSocket(url);
 
-		ws.onopen = function(e) { connected = true; doConnect.value="已連線"; doConnect.disabled = true; };
-		//ws.onerror = function(e) { alert("連線發生錯誤! 請確認伺服器程式(sailing.exe)已開啟"); console.log(e); };
-		//ws.onclose = function(e) { connected = false; doConnect.value="重新連線"; doConnect.disabled = false; alert("伺服器已斷線! 請重新連線"); console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
+		ws.onopen = function(e)
+		{
+			connected = true;
+			this.send("userid="+userid);
+		};
+		ws.onerror = function(e) { console.log(e); };
+		ws.onclose = function(e) { connected = false; console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
 
 		ws.onmessage = function(e)
 		{
