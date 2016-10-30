@@ -12,7 +12,8 @@
 extern Voyage* voyage;
 extern WsServer* wsServer;
 
-#define BUILD_DATE "2016/10/30"
+#define Q(x) #x
+#define QUOTE(x) Q(x)
 
 int main()
 {
@@ -23,8 +24,9 @@ int main()
 	std::cout <<
 	"\n"
 	"*************** 帆船軌跡計算程式 ***************\n"
-	"                  " BUILD_DATE "\n"
+	"                  " QUOTE(BUILD_DATE) "\n"
 	"                 En Shih (石恩)\n"
+	"              r01222055@ntu.edu.tw\n"
 	"\n";
 
 	std::thread wsThread = launchWsServer(wsServer);

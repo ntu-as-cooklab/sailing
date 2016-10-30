@@ -15,6 +15,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Ofast -s")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -W -pedantic -Wextra")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Ofast -s")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -W -pedantic -Wextra")
+string(TIMESTAMP CURRENT_DATE "%Y/%m/%d")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBUILD_DATE=${CURRENT_DATE}")
 
 if(WIN32)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -static")
