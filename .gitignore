@@ -13,3 +13,4 @@ build-linux/
 *.a
 *.zip
 .fuse_hidden*
+*.log

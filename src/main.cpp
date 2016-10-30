@@ -28,7 +28,7 @@ int main()
 	"\n";
 
 	std::thread wsThread = launchWsServer(wsServer);
-	launchURL("http://127.0.0.1:8000");
+	//launchURL("http://127.0.0.1:8000");
 
 	voyage = new Voyage(); // origin, destination
 
@@ -36,7 +36,10 @@ int main()
 	while (std::getline (std::cin, msg))
 		std::cout << execCmd(msg) << "\n";
 
+	//execCmd("stop");
 	wsThread.join();
+
+	//wsServer->stop();
 
 	//delete voyage;
 

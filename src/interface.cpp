@@ -128,6 +128,10 @@ std::string execCmd(std::string cmd)
 		;
 	}
 
+	else if (word == "userid")				PARAM(voyage->userid);
+
+	else if (word == "stop")				stop(wsServer);
+
 	else response << "Invalid " << (params.length()?"parameter":"command") << ": \"" << word << "\"";
 
 	return response.str();

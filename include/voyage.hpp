@@ -18,6 +18,8 @@ struct Voyage
 	static const int DRFT=0, WIND=1, DEST=2, DIRN=3, RAND=4;
 	static const constexpr char* MODE[5] = {"DRFT", "WIND", "DEST", "DIRN", "RAND"};
 
+	int userid;
+
 	std::string name;
 	std::string project;
 

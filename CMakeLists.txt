@@ -30,7 +30,9 @@ include_directories("cfsr/include")
 
 # Dependencies
 
-find_package(Boost COMPONENTS system thread REQUIRED)
+set(BOOST_LIBRARYDIR "/usr/lib/x86_64-linux-gnu")
+message(${BOOST_LIBRARYDIR})
+find_package(Boost 1.55.0 COMPONENTS system thread REQUIRED)
 
 add_subdirectory(cfsr)
 
