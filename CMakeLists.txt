@@ -26,7 +26,7 @@ endif()
 include_directories("include")
 include_directories("float2")
 include_directories("cfsr/include")
-include_directories("websocketpp")
+#include_directories("websocketpp")
 
 # Dependencies
 

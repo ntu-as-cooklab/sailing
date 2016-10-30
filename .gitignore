@@ -12,3 +12,4 @@ build-linux/
 *.res
 *.a
 *.zip
+.fuse_hidden*

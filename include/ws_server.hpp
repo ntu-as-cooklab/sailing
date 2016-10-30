@@ -24,24 +24,27 @@ public:
 	{
 		try
 		{
-			// Set logging settings: see <websocketpp/logger/levels.hpp>
+			/* Set logging settings: see <websocketpp/logger/levels.hpp> */
 			clear_access_channels(websocketpp::log::elevel::all);
 			clear_access_channels(websocketpp::log::alevel::all);
 			set_access_channels(websocketpp::log::alevel::access_core);
 
-			init_asio();			// Initialize Asio
+			init_asio();	// Initialize Asio
+
+			/* Set handlers */
 			using websocketpp::lib::placeholders::_1;
 			using websocketpp::lib::placeholders::_2;
 			set_message_handler(websocketpp::lib::bind(&WsServer::on_message, this, _1, _2));
 			set_http_handler(websocketpp::lib::bind(&WsServer::on_http, this, _1));
 			set_open_handler(websocketpp::lib::bind(&WsServer::on_open, this, _1));
 			set_close_handler(websocketpp::lib::bind(&WsServer::on_close, this, _1));
-			listen(8000); 			// Listen on port
+
+			listen(8001); 			// Listen on port
 			start_accept(); 		// Start the server accept loop
 			run();					// Start the ASIO io_service run loop
 		}
-		catch (websocketpp::exception const & e) { std::cout << e.what() << "\n"; }
-		//catch (...) { std::cout << "other exception" << "\n"; }
+		catch (websocketpp::exception const & e) { std::cout << "[WsServer error] " << e.what() << "\n"; }
+		catch (...) { std::cout << "[WsServer error] Other exception" << "\n"; }
 	}
 
 	void on_open(connection_hdl hdl);

@@ -4,7 +4,7 @@
 var WsClient = function()
 {
 	var ws;
-	var url = "ws://127.0.0.1:8000";
+	var url = "ws://127.0.0.1:8001";
 	var connected = false;
 
 	this.connect = function ()

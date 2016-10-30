@@ -12,6 +12,8 @@
 extern Voyage* voyage;
 extern WsServer* wsServer;
 
+#define BUILD_DATE "2016/10/30"
+
 int main()
 {
 	#ifdef _WIN32
@@ -21,7 +23,7 @@ int main()
 	std::cout <<
 	"\n"
 	"*************** 帆船軌跡計算程式 ***************\n"
-	"                  2016/6/22\n"
+	"                  " BUILD_DATE "\n"
 	"                 En Shih (石恩)\n"
 	"\n";
 

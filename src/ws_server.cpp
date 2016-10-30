@@ -32,13 +32,13 @@ void WsServer::on_http(connection_hdl hdl)
 	if (filename.length() > 1)
 		filename = docroot + filename.substr(1);
 	else
-		filename = docroot + "html/index.html";
+		filename = docroot + "index.html";
 
 	std::ifstream file;
 	file.open(filename.c_str(), std::ios_base::binary);
 	if (!file)
 	{
-		filename = docroot + "html/index.html";
+		filename = docroot + "index.html";
 		file.open(filename.c_str(), std::ios_base::binary);
 		con->set_status(websocketpp::http::status_code::ok); // not_found
 	}
