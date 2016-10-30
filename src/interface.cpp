@@ -128,7 +128,8 @@ std::string execCmd(std::string cmd)
 		;
 	}
 
-	else if (word == "userid")				PARAM(voyage->userid);
+	else if (word == "loginID")				PARAM(voyage->loginID);
+	else if (word == "runId")				PARAM(voyage->runId);
 
 	else if (word == "stop")				stop(wsServer);
 

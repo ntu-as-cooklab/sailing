@@ -137,14 +137,18 @@ bool Voyage::sail() // result: whether we reached our destination
 	std::cout << "\n[Voyage] Running simulation: " << genName() << "\n";
 	json.clear();
 	json.writeHeader(this);
-	std::string projectName("output/" + project);
+
+	// Output directory
+	std::stringstream projectName;
+	projectName << "output/" << loginID << "/" << runId;
+
 	#ifdef _WIN32
-		CreateDirectory(projectName.c_str(), NULL);
+		CreateDirectory(projectName.str().c_str(), NULL);
 	#endif
-	std::cout << ("output/" + project + "/" + name + "\n");
-	csv.open("output/" + project + "/" + name + ".csv");
+	std::cout << (projectName.str() + "/" + name + "\n");
+	csv.open(projectName.str() + "/" + name + ".csv");
 	csv.writeHeader();
-	kml.open("output/" + project + "/" + name + ".kml");
+	kml.open(projectName.str() + "/" + name + ".kml");
 	kml.writeHeader();
 
 	for (runstep = 0, sailstep = 0, curr = orig, date = startdate; ++date < enddate; runstep++)

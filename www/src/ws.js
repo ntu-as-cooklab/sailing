@@ -1,12 +1,10 @@
 "use strict";
 
-var userid = 999;
-
 // class WsClient
 var WsClient = function()
 {
 	var ws;
-	var url = "ws://127.0.0.1:8000";
+	var url = "ws://127.0.0.1";
 	//var url = "ws://140.122.146.123:8000";
 	var connected = false;
 
@@ -20,7 +18,8 @@ var WsClient = function()
 		ws.onopen = function(e)
 		{
 			connected = true;
-			this.send("userid="+userid);
+			this.send("loginID= " + params.loginID);
+			this.send("runId= " + e.runId);
 		};
 		ws.onerror = function(e) { console.log(e); };
 		ws.onclose = function(e) { connected = false; console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
@@ -104,36 +103,4 @@ function parseVoyage(v)
 	"檔案名稱: " + v.name +
 	"</div>" +
 	outputlist.innerHTML;
-}
-
-function setcolor(e, n)
-{
-	voyage[n].polyline.setStyle({color: e.value});
-	voyage[n].polyline.redraw();
-	for (var i = 0; i < voyage[n].path.length; i++)
-	{
-		voyage[n].circleMarker[i].setStyle({color: e.value});
-		voyage[n].circleMarker[i].redraw();
-	}
-}
-
-function setchecked(e, n)
-{
-	if (e.checked) voyage[n].layerGroup.addTo(map);
-	else map.removeLayer(voyage[n].layerGroup);
-}
-
-function del(n)
-{
-	map.removeLayer(voyage[n].layerGroup);
-	voyage[n].deleted = true;
-	var item = document.getElementById("outputitem"+n);
-	if(item) item.parentNode.removeChild(item);
-	wsClient.send("delete " + voyage[n].name);
-}
-
-function clearRecord()
-{
-	for (var n=0; n<voyage.length; n++)
-		del(n);
 }
