@@ -18,7 +18,7 @@ public:
 	std::string docroot;
 	con_list connections;
 
-	WsServer() : docroot("./") {}
+	WsServer() : docroot("./www/") {}
 
 	void operator()()
 	{
