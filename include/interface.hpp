@@ -3,6 +3,7 @@
 
 #include <string>
 #include <thread>
+#include "voyage.hpp"
 
 /* ws_server.cpp */
 class WsServer;
@@ -13,7 +14,7 @@ void stop(WsServer* server);
 std::thread launchWsServer(WsServer*& server);
 
 /* command.cpp */
-std::string execCmd(std::string cmd);
-void recvCmd(connection_hdl hdl, std::string cmd);
+std::string execCmd(Voyage* voyage, std::string cmd);
+void recvCmd(connection_hdl hdl, Voyage* voyage, std::string cmd);
 
 #endif

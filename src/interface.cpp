@@ -14,7 +14,7 @@ Voyage* 	voyage;
 WsServer* 	wsServer;
 CfsrReader* cfsrReader = new CfsrReader;
 
-std::string execCmd(std::string cmd)
+std::string execCmd(Voyage* voyage, std::string cmd)
 {
 	int cmdbegin = cmd.find_first_not_of(" ");
 	if (cmdbegin != std::string::npos) cmd.erase(0, cmdbegin);
@@ -138,9 +138,9 @@ std::string execCmd(std::string cmd)
 	return response.str();
 }
 
-void recvCmd(connection_hdl hdl, std::string cmd)
+void recvCmd(connection_hdl hdl, Voyage* voyage, std::string cmd)
 {
-	std::string response = execCmd(cmd);
+	std::string response = execCmd(voyage, cmd);
 	std::cout << "[" << hdl.lock().get() << "] " << response << "\n";
 	boost::replace_all(response, "\n", "</br>");
 	boost::replace_all(response, "\t", " ");

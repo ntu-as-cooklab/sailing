@@ -8,7 +8,9 @@
 #include <websocketpp/server.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
 typedef websocketpp::connection_hdl connection_hdl;
-typedef std::set<connection_hdl, std::owner_less<connection_hdl>> con_list;
+#include "voyage.hpp"
+#include "wssession.hpp"
+typedef std::map<connection_hdl, Voyage*, std::owner_less<connection_hdl>> con_list;
 typedef websocketpp::server<websocketpp::config::asio>::message_ptr message_ptr;	// pull out the type of messages sent by our config
 
 class WsServer : public websocketpp::server<websocketpp::config::asio>

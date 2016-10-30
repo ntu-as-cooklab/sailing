@@ -176,7 +176,7 @@ bool Voyage::sail() // result: whether we reached our destination
 	csv.close();
 	kml.writeFooter();
 	kml.close();
-	execCmd("send json " + json.json.str());
+	execCmd(this, "send json " + json.json.str());
 	return false;
 }
 

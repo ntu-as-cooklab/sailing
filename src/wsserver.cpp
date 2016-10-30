@@ -3,18 +3,23 @@
 #include <thread>
 
 #include "interface.hpp"
-#include "ws_server.hpp"
+#include "wsserver.hpp"
 
 void WsServer::on_open(connection_hdl hdl)
-	{ connections.insert(hdl); }
+{
+	connections.insert(std::pair<connection_hdl,Voyage*>(hdl, new Voyage()));
+}
 
 void WsServer::on_close(connection_hdl hdl)
-	{ connections.erase(hdl); }
+{
+	delete connections[hdl];
+	connections.erase(hdl);
+}
 
 // Define a callback to handle incoming messages
 void WsServer::on_message(connection_hdl hdl, message_ptr msg)
 {
-	recvCmd(hdl, msg->get_payload());
+	recvCmd(hdl, connections[hdl], msg->get_payload());
 
     // check for a special command to instruct the server to stop listening so it can be cleanly exited.
     if (msg->get_payload() == "stop-listening")
@@ -62,7 +67,7 @@ void WsServer::sendMsg(connection_hdl hdl, std::string msg)
 void WsServer::sendAll(std::string msg)
 {
 	for (con_list::iterator it = connections.begin(); it != connections.end(); ++it)
-		sendMsg(*it, msg);
+		sendMsg(it->first, msg);
 }
 
 void sendMsg(WsServer* server, connection_hdl hdl, std::string msg)
