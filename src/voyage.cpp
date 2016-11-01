@@ -143,14 +143,17 @@ bool Voyage::sail() // result: whether we reached our destination
 	json.writeHeader(this);
 
 	// Output directory
-	std::stringstream projectName;
-	projectName << "output/" << loginID << "/" << runId;
+	std::stringstream userDir;
+	userDir << "output/" << loginID;
+	std::stringstream projectDir;
+	projectDir << "output/" << loginID << "/" << runId;
 
 	#ifdef _WIN32
-		CreateDirectory(projectName.str().c_str(), NULL);
+		CreateDirectory(projectDir.str().c_str(), NULL);
 	#else
 		struct stat st = {0};
-		if (stat(projectName.str().c_str(), &st) == -1) mkdir(projectName.str().c_str(), 0755);
+		if (stat(userDir.str().c_str(), &st) == -1) mkdir(userDir.str().c_str(), 0755);
+		if (stat(projectDir.str().c_str(), &st) == -1) mkdir(projectDir.str().c_str(), 0755);
 	#endif
 	std::cout << (projectName.str() + "/" + name + "\n");
 	csv.open(projectName.str() + "/" + name + ".csv");
