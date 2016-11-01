@@ -2,6 +2,10 @@
 #include <iomanip> // for std::setprecisionma
 #ifdef _WIN32
 	#include <windows.h>
+#else
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <unistd.h>
 #endif
 
 #include "voyage.hpp"
@@ -144,6 +148,9 @@ bool Voyage::sail() // result: whether we reached our destination
 
 	#ifdef _WIN32
 		CreateDirectory(projectName.str().c_str(), NULL);
+	#else
+		struct stat st = {0};
+		if (stat(projectName.str().c_str(), &st) == -1) mkdir(projectName.str().c_str(), 0755);
 	#endif
 	std::cout << (projectName.str() + "/" + name + "\n");
 	csv.open(projectName.str() + "/" + name + ".csv");
