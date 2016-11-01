@@ -41,13 +41,13 @@ function initMap()
 
 	var iconsize = 32;
 	var origIcon = L.icon({
-			iconUrl: 	'www/orig.png',
+			iconUrl: 	'orig.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
 			popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
 	});
 	var destIcon = L.icon({
-			iconUrl: 	'www/dest.png',
+			iconUrl: 	'dest.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
 			popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
