@@ -155,10 +155,10 @@ bool Voyage::sail() // result: whether we reached our destination
 		if (stat(userDir.str().c_str(), &st) == -1) mkdir(userDir.str().c_str(), 0755);
 		if (stat(projectDir.str().c_str(), &st) == -1) mkdir(projectDir.str().c_str(), 0755);
 	#endif
-	std::cout << (projectName.str() + "/" + name + "\n");
-	csv.open(projectName.str() + "/" + name + ".csv");
+	std::cout << (projectDir.str() + "/" + name + "\n");
+	csv.open(projectDir.str() + "/" + name + ".csv");
 	csv.writeHeader();
-	kml.open(projectName.str() + "/" + name + ".kml");
+	kml.open(projectDir.str() + "/" + name + ".kml");
 	kml.writeHeader();
 
 	for (runstep = 0, sailstep = 0, curr = orig, date = startdate; ++date < enddate; runstep++)
