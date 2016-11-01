@@ -18,7 +18,7 @@ var WsClient = function()
 		{
 			connected = true;
 			this.send("loginID= " + params.loginID);
-			this.send("runId= " + e.runId);
+			this.send("runId= " + params.runId);
 		};
 		ws.onerror = function(e) { console.log(e); };
 		ws.onclose = function(e) { connected = false; console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};

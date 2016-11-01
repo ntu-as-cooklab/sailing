@@ -21,7 +21,7 @@ struct Voyage
 	std::string name;
 	std::string project;
 
-	int loginID;
+	std::string loginID;
 	int runId;
 
 	/* Parameters */
