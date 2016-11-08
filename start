@@ -1,1 +1,0 @@
-./sailing < /dev/null >> sailing.log &

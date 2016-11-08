@@ -1,0 +1,9 @@
+[Unit]
+Description=Sailing
+
+[Service]
+ExecStart=/root/sailing/startsailing
+
+[Install]
+WantedBy=multi-user.target
+

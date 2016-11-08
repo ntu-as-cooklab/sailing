@@ -1,0 +1,9 @@
+[Unit]
+Description=Mount CFSR data
+
+[Service]
+ExecStart=/root/mntdata
+
+[Install]
+WantedBy=multi-user.target
+
