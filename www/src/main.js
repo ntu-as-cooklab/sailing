@@ -136,3 +136,21 @@ function clearRecord()
 	for (var n=0; n<voyage.length; n++)
 		del(n);
 }
+
+function toggleMode(i)
+{
+	if (i == 0)
+	{
+		document.getElementById("ship").disabled = true;
+		document.getElementById("altitude").disabled = true;
+		document.getElementById("windlimit").disabled = true;
+		document.getElementById("sailopenhours").disabled = true;
+	}
+	else
+	{
+		document.getElementById("ship").disabled = false;
+		document.getElementById("altitude").disabled = false;
+		document.getElementById("windlimit").disabled = false;
+		document.getElementById("sailopenhours").disabled = false;
+	}
+}

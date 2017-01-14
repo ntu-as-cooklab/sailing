@@ -163,19 +163,19 @@
 					</div>
 				</div>
 				<div class="hor">
-					<input type="radio" name="mode" value="0"> 瓶中信 (無風帆)<br>
-					<input type="radio" name="mode" value="1"> 迎風漂流 (航向=風向)<br>
-					<input type="radio" name="mode" value="2" checked> 固定目的地<br>
-					<input type="radio" name="mode" value="3"> 固定航向: <input id="heading" type="number" name="heading" value="0" step="1" style="width:8ex"><br>
+					<input type="radio" name="mode" value="0" onclick=toggleMode(0)> 瓶中信 (無風帆)<br>
+					<input type="radio" name="mode" value="1" onclick=toggleMode(1)> 迎風漂流 (航向=風向)<br>
+					<input type="radio" name="mode" value="2" onclick=toggleMode(2) checked> 固定目的地<br>
+					<input type="radio" name="mode" value="3" onclick=toggleMode(3)> 固定航向: <input id="heading" type="number" name="heading" value="0" step="1" style="width:8ex"><br>
 					</br>
 					<input type="checkbox" id="showLatLonLines" onchange="toggleLatLonLines()" checked>顯示經緯線
 				</div>
 				<div class="hor">
-					<input type="radio" name="ship" value="small" checked> 小帆船<br><br>
+					<input type="radio" id="ship" name="ship" value="small" checked> 小帆船<br><br>
 					<table>
-						<tr><td>風帆高度: </td><td><input name="altitude" type="number" style="width:6ex" value="2" min="0" max="100" step="0.1"></td><td>m</td></tr>
-						<tr><td>張帆極限風速: </td><td><input name="windlimit" type="number" style="width:6ex" value="8" min="0" max="100" step="0.1"></td><td>m/s</td></tr>
-						<tr><td>每日張帆時數: </td><td><input name="sailopenhours" type="number" style="width:6ex" value="12" min="0" max="24" step="1"></td><td>hr</td></tr>
+						<tr><td>風帆高度: </td><td><input id="altitude" name="altitude" type="number" style="width:6ex" value="2" min="0" max="100" step="0.1"></td><td>m</td></tr>
+						<tr><td>張帆極限風速: </td><td><input id="windlimit" name="windlimit" type="number" style="width:6ex" value="8" min="0" max="100" step="0.1"></td><td>m/s</td></tr>
+						<tr><td>每日張帆時數: </td><td><input id="sailopenhours" name="sailopenhours" type="number" style="width:6ex" value="12" min="0" max="24" step="1"></td><td>hr</td></tr>
 					</table>
 					</table>
 				</div>
