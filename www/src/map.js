@@ -5,6 +5,9 @@ var orig, dest;
 var datasetName = ["1979~2009 平均資料", "1979~2009 連續資料", "單年資料"];
 var modeName = ["瓶中信 (無風帆)", "隨風漂流 (航向=風向)", "固定目的地", ""];
 
+var mainlatlonlines;
+var latlonlines;
+
 function initMap()
 {
 	map = L.map('map', {
@@ -68,18 +71,28 @@ function initMap()
 	orig.on('dragend', onOrigDragEnd);
 	dest.on('dragend', onDestDragEnd);
 
-	// Add a basic graticule with divisions every 20 degrees
-	// as a layer on a map
-	L.graticule().addTo(map);
+	toggleLatLonLines();
+}
 
-	// Specify divisions every 10 degrees
-	//L.graticule({ interval: 180 }).addTo(map);
+function toggleLatLonLines()
+{
+	var showLatLonLines = document.getElementById("showLatLonLines");
+	if(showLatLonLines.checked)
+	{
+		// Specify divisions every 10 degrees
+		latlonlines = L.graticule({ interval: 10 }).addTo(map);
 
-	// Specify bold red lines instead of thin grey lines
-	L.graticule({
-	style: {
-        	color: '#f00',
-        	weight: 1
-    	}
-	}).addTo(map);
+		// Specify bold red lines instead of thin grey lines
+		mainlatlonlines = L.graticule({
+		style: {
+	        	color: '#f00',
+	        	weight: 1
+	    	}
+		}).addTo(map);
+	}
+   	else
+	{
+        map.removeLayer(latlonlines);
+		map.removeLayer(mainlatlonlines);
+	}
 }
