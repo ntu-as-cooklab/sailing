@@ -144,9 +144,9 @@ bool Voyage::sail() // result: whether we reached our destination
 
 	// Output directory
 	std::stringstream userDir;
-	userDir << "output/" << loginID;
+	userDir << "www/output" ; //<< "/" << loginID;
 	std::stringstream projectDir;
-	projectDir << "output/" << loginID << "/" << runId;
+	projectDir << "www/output" ; //<< "/" << loginID << "/" << runId;
 
 	#ifdef _WIN32
 		CreateDirectory(projectDir.str().c_str(), NULL);

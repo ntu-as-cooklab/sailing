@@ -4,7 +4,7 @@
 var WsClient = function()
 {
 	var ws;
-	var url = "ws://140.122.146.123";
+	var url = "ws://127.0.0.1:8000";
 	var connected = false;
 
 	this.connect = function ()
@@ -100,6 +100,7 @@ function parseVoyage(v)
 	"張帆極限風速: " + v.windlimit + "m/s</br>" +
 	"每日張帆時數: " + v.sailopenhours + "hr</br>" +
 	"檔案名稱: " + v.name +
+	"</br><a href='output/" + v.name + ".csv' download class='button'>下載</a>" +
 	"</div>" +
 	outputlist.innerHTML;
 }

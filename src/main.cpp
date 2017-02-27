@@ -30,7 +30,7 @@ int main()
 	"\n";
 
 	std::thread wsThread = launchWsServer(wsServer);
-	//launchURL("http://127.0.0.1:8000");
+	launchURL("http://127.0.0.1:8000");
 
 	//voyage = new Voyage(); // origin, destination
 
