@@ -10,7 +10,7 @@ $ git submodule update
 $ mkdir build
 $ cd build
 $ cmake ..
-# make
+$ make
 ```
 
 The program expects the CFSR data to be in the `data` folder, arranged in a directory structure like:
@@ -21,14 +21,14 @@ atmo/U10/CFSR_flxf06.gdas.U_10m_YYYYMM.nc
 atmo/V10/CFSR_flxf06.gdas.V_10m_YYYYMM.nc
 ```
 
-The application follows a server-client pattern, with a C-based backend and a Javascript frontend run in the browser. Calculated sailing routes are saved into the `output` folder.
+The application follows a server-client pattern, with a C++ based backend and a Javascript frontend run in the browser. Calculated sailing routes are saved into the `www/output` folder.
 
 ## Project directory structure
 * cfsr: C code for parsing CFSR data.
-* float2: C code for handling 2-dimensional float vectors
-* include: Headers for main C application
+* float2: C++ code for handling 2-dimensional float vectors
+* include: Headers for main C++ application
 * res: Application icons
-* src: Source files for main C application
+* src: Source files for main C++ application
 * systemd: systemd unit files for auto startup on Linux
 * websocketpp: websocketpp submodule
 * www: Source files for browser frontend
