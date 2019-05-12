@@ -14,3 +14,4 @@ build-linux/
 *.zip
 .fuse_hidden*
 *.log
+.vscode/
