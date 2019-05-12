@@ -6,6 +6,9 @@
 		<meta charset="utf-8">
 		<!-- jQuery -->
 		<script src="lib/jquery.min.js"></script>
+		<!-- Cesium -->
+		<script src="https://cesiumjs.org/releases/1.57/Build/Cesium/Cesium.js"></script>
+  		<link href="https://cesiumjs.org/releases/1.57/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 		<!-- Leaflet -->
 		<link rel="stylesheet" href="lib/leaflet/leaflet.css" />
 		<link rel="stylesheet" href="lib/leaflet/plugins/leaflet.contextmenu.css"/>
@@ -16,25 +19,15 @@
 		<script src="lib/leaflet/plugins/leaflet-omnivore.min.js"></script>
 		<script src="lib/leaflet/plugins/L.Graticule.js"></script>
 		<!-- Sources -->
-		<script src="src/map.js"></script>
+		<link rel="stylesheet" href="main.css" />
+		<!-- <script src="src/map_leaflet.js"></script> -->
+		<script src="src/map_cesium.js"></script>
 		<script src="src/ws.js"></script>
 		<script src="src/main.js"></script>
 		<script src="src/session.js"></script>
 		<script>$(function(){main();});</script>
 
 		<style>
-			* {
-				margin:0;	padding:0;
-				font-family: sans-serif;
-			}
-
-			html, body {
-				width:100%;	height:100%;
-				overflow: hidden;
-				min-width:  400px;
-				min-height: 300px;
-			}
-
 			#container {
 				position: relative;
 				width:100%; height:100%;
