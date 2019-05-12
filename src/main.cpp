@@ -25,12 +25,9 @@ int main()
 	"\n"
 	"*************** 帆船軌跡計算程式 ***************\n"
 	"                  " QUOTE(BUILD_DATE) "\n"
-	"                 En Shih (石恩)\n"
-	"              r01222055@ntu.edu.tw\n"
 	"\n";
 
 	std::thread wsThread = launchWsServer(wsServer);
-	launchURL("http://127.0.0.1:8000");
 
 	//voyage = new Voyage(); // origin, destination
 

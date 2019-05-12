@@ -9,13 +9,6 @@ extern  "C" {
 #include <stdio.h>
 #include <curl/curl.h> // for downloading data
 
-typedef struct FtpFile FtpFile;
-struct FtpFile
-{
-	const char *filename;
-	FILE *stream;
-};
-
 int getCFSR(char *filename);
 static size_t my_fwrite(void *buffer, size_t size, size_t nmemb, void *stream);
 

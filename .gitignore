@@ -15,3 +15,5 @@ build-linux/
 .fuse_hidden*
 *.log
 .vscode/
+*.grb2
+bin/
