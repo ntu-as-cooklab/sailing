@@ -7,10 +7,8 @@ extern  "C" {
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <curl/curl.h> // for downloading data
 
 int getCFSR(char *filename);
-static size_t my_fwrite(void *buffer, size_t size, size_t nmemb, void *stream);
 
 #ifdef  __cplusplus
 }
