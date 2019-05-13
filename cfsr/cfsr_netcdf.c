@@ -1,4 +1,4 @@
-#include "cfsr.h"
+#include "cfsr_netcdf.h"
 #include <string.h>
 
 int err;
@@ -39,4 +39,20 @@ int closeCFSR(int ncid)
 	if ((err = nc_close(ncid))) ERR(err); // Close the file, freeing all resources.
 	//printf("\n[CFSR] File closed.\n");
 	return 0;
+}
+
+float rawOUV(int ncid, int day, int i, int j)
+{
+	size_t dim[4] = { day-1, 0, i, j };
+	float v;
+	if ((nc_get_var1_float(ncid, 4, dim, &v))) ERR(err);
+	return v;
+}
+
+float rawAUV(int ncid, int day, int i, int j)
+{
+	size_t dim[3] = { day-1, i, j };
+	float v;
+	if ((nc_get_var1_float(ncid, 0, dim, &v))) ERR(err);
+	return v;
 }

@@ -1,5 +1,5 @@
-#ifndef CFSR_H
-#define CFSR_H
+#ifndef CFSR_NETCDF_H
+#define CFSR_NETCDF_H
 
 #ifdef  __cplusplus
 extern  "C" {
@@ -27,6 +27,8 @@ extern const char* AVG_filename[4];
 
 int openCFSR(CFSR type, int year, int month);
 int closeCFSR(int ncid);
+float rawOUV(int ncid, int day, int i, int j);
+float rawAUV(int ncid, int day, int i, int j);
 
 #ifdef  __cplusplus
 }
