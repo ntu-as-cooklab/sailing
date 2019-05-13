@@ -1,5 +1,13 @@
-LDLIBS += -lcurl -lm -lnetcdf
+LDLIBS += -lcurl -lm -lnetcdf -leccodes
 
-bin/cfsr_test: test.c cfsr_*.c
+.PHONY: all clean
+all: $(patsubst %.c,bin/%,$(wildcard test_*.c))
+
+bin/test_%: test_%.c cfsr_*.c
 	mkdir -p $(@D)
 	$(CC) $^ $(LDLIBS) -o $@
+
+%.c: %.h
+
+clean:
+	rm -rf bin
