@@ -23,7 +23,7 @@ codes_handle* grib2_open (char* filename)
     return h;
 }
 
-int grib2_getkeys(codes_handle* h)
+int grib2_printkeys(codes_handle* h, char* namespace)
 {
     /* To skip read only and computed keys
      unsigned long key_iterator_filter_flags=CODES_KEYS_ITERATOR_SKIP_READ_ONLY |
@@ -31,14 +31,12 @@ int grib2_getkeys(codes_handle* h)
      */
     unsigned long key_iterator_filter_flags = CODES_KEYS_ITERATOR_ALL_KEYS |
                                               CODES_KEYS_ITERATOR_SKIP_DUPLICATES;
- 
-    /* Choose a namespace. E.g. "ls", "time", "parameter", "geography", "statistics" */
-    const char* name_space = NULL; //"ls";
- 
-    /* name_space=NULL to get all the keys */
-    /* char* name_space=0; */
 
-    codes_keys_iterator* kiter = codes_keys_iterator_new(h,key_iterator_filter_flags,name_space);
+    /* Choose a namespace. E.g. "ls", "time", "parameter", "geography", "statistics" */
+    /* name_space=NULL to get all the keys */
+    //const char* name_space = "time"; //"ls";
+
+    codes_keys_iterator* kiter = codes_keys_iterator_new(h,key_iterator_filter_flags,namespace);
     if (!kiter) {
         printf("ERROR: Unable to create keys iterator\n");
         return -1;

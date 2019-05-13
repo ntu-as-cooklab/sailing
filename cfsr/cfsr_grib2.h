@@ -4,6 +4,6 @@
 #include <eccodes.h>
 
 codes_handle* grib2_open (char* filename);
-int grib2_getkeys(codes_handle* h);
+int grib2_printkeys(codes_handle* h, char* namespace);
 
 #endif
