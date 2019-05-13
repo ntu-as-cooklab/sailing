@@ -1,4 +1,5 @@
 #include "cfsr_ftp.h"
+#include <stdint.h>
 #include <string.h>
 #include <curl/curl.h>
 
@@ -31,13 +32,14 @@ static int xferinfo(void *p, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ul
 	if(dlnow > 0 && curtime - xfer->lastruntime >= 500000)
 	{
 		xfer->lastruntime = curtime;
-		fprintf(stderr, "DOWN: %" CURL_FORMAT_CURL_OFF_T " of %" CURL_FORMAT_CURL_OFF_T "\n", dlnow, dltotal);
+		fprintf(stderr, "%s: %" CURL_FORMAT_CURL_OFF_T " of %" CURL_FORMAT_CURL_OFF_T "\n", 
+			xfer->filename, dlnow, dltotal);
 	}
 	
   	return 0;
 }
 
-int getCFSR(char* url)
+int ftp_getfile(char* url)
 {
 	CURLcode result;
 	FtpXfer xfer = {.filename = strrchr(url, '/') + 1};
@@ -66,4 +68,13 @@ int getCFSR(char* url)
     	fclose(xfer.stream); // close the local file
 
   	return 0;
+}
+
+int cfsr_getfile(char* dataset, uint16_t year, uint8_t month)
+{
+	char url[512];
+	snprintf(url, sizeof(url),
+		"ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/%04u%02u/%s.gdas.%04u%02u.grb2",
+		year, month, dataset, year, month);
+	return ftp_getfile(url);
 }

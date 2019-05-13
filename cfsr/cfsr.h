@@ -5,9 +5,8 @@
 extern  "C" {
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <netcdf.h>
+#include <stdio.h>
 
 // NetCDF error handling
 extern int err;
@@ -26,15 +25,8 @@ extern const char* CFSR_dir;
 extern const char* CFSR_filename[4];
 extern const char* AVG_filename[4];
 
-// CFSR functions
 int openCFSR(CFSR type, int year, int month);
 int closeCFSR(int ncid);
-float bilinearOUV(int ncid, float day, float lat, float lon);
-float bilinearAUV(int ncid, float day, float lat, float lon);
-int copy_file(char *new_filename, char *old_filename);
-int convertCFSR(CFSR type, int month);
-
-// TODO: Barnes interpolation
 
 #ifdef  __cplusplus
 }

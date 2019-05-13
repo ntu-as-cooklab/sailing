@@ -5,10 +5,10 @@
 extern  "C" {
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <stdint.h>
 
-int getCFSR(char *filename);
+int ftp_getfile(char *filename);
+int cfsr_getfile(char* dataset, uint16_t year, uint8_t month);
 
 #ifdef  __cplusplus
 }
