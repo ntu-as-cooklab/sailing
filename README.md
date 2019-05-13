@@ -1,6 +1,8 @@
 # Sailing
 This is a sailing simulation based on [CFSR wind and ocean current data](https://nomads.ncdc.noaa.gov/data/). The goal is to simulate the sailing route of a sailing ship during different seasons based on a simple model, which may be helpful for studies on human migration across the ocean.
 
+* [NOAA CFS](https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/climate-forecast-system-version2-cfsv2)
+
 ## Prerequisites
 
 * [libcurl](https://curl.haxx.se/libcurl/)
