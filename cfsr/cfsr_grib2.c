@@ -13,12 +13,11 @@ int grib2_open (grib2_t* grib2, char* filename)
     }
     printf("Opened file: %s\n", filename);
 
-    int count;
-    codes_count_in_file(0, in, &count);
-    printf("count: %d\n", count);
+    codes_count_in_file(0, in, &grib2->count);
+    printf("count: %d\n", grib2->count);
     
-    grib2->hh = malloc(count * sizeof(codes_handle*));
-    for (int i = 0; i < count; i++) {
+    grib2->hh = malloc(grib2->count * sizeof(codes_handle*));
+    for (int i = 0; i < grib2->count; i++) {
         int err;
         grib2->hh[i] = codes_grib_handle_new_from_file(0, in, &err);
         // printf("%d\n", i);
@@ -27,6 +26,12 @@ int grib2_open (grib2_t* grib2, char* filename)
         
     fclose(in);
     return 0;
+}
+
+void grib2_free(grib2_t* grib2)
+{
+     for (int i = 0; i < grib2->count; i++)
+        codes_handle_delete(grib2->hh[i]);
 }
 
 int grib2_printkeys(codes_handle* h, char* namespace)
