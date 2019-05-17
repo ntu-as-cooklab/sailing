@@ -27,12 +27,25 @@ int cfsr_fetch(char* dataset, uint16_t year, uint8_t month)
 
     codes_handle* h;
     int err;
-    int count = 0;
     while (h = codes_grib_handle_new_from_file(0, in, &err)) {
+        char dataDate_str[16];
+        char dataTime_str[16];
+        size_t dataDate_len = sizeof(dataDate_str);
+        size_t dataTime_len = sizeof(dataTime_str);
+        codes_get_string(h, "dataDate", dataDate_str, &dataDate_len);
+        codes_get_string(h, "dataTime", dataTime_str, &dataTime_len);
+        int dataDate = atoi(dataDate_str);
+        int dataTime = atoi(dataTime_str);
+        long startStep;
+        codes_get_long(h, "startStep", &startStep);
+        dataTime += startStep * 100;
+        printf("dataDate: %08d\n", dataDate);
+        printf("dataTime: %04d\n", dataTime);
+
         char out_filename[128];
-        snprintf(out_filename, sizeof(out_filename), "%s.gdas.%04u%02u/%d.grb2", dataset, year, month, count);
+        snprintf(out_filename, sizeof(out_filename), "%s.gdas.%04u%02u/%08d%04d.grb2", 
+                    dataset, year, month, dataDate, dataTime);
         codes_write_message(h, out_filename, "wb");
-        printf("count: %d\n", ++count);
     }
 
     codes_handle_delete(h);   

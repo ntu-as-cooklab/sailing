@@ -11,3 +11,4 @@ bin/test_%: test_%.c cfsr*.c util*.c
 
 clean:
 	rm -rf bin
+	rm -rf ocnu5.gdas.*/
