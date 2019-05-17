@@ -1,4 +1,4 @@
-#include "cfsr_ftp.h"
+#include "util_ftp.h"
 #include <stdint.h>
 #include <string.h>
 #include <curl/curl.h>
@@ -70,11 +70,3 @@ int ftp_getfile(char* url)
   	return 0;
 }
 
-int cfsr_getfile(char* dataset, uint16_t year, uint8_t month)
-{
-	char url[512];
-	snprintf(url, sizeof(url),
-		"ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/%04u%02u/%s.gdas.%04u%02u.grb2",
-		year, month, dataset, year, month);
-	return ftp_getfile(url);
-}
