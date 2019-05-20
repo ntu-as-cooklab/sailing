@@ -104,7 +104,6 @@ double cfsr_value(cfsr_dataset_t* dataset, struct tm date, double lat, double lo
     static size_t size=4;
     codes_grib_nearest_find(dataset->nearest, h, lat, lon, CODES_NEAREST_SAME_GRID, 
                             lats, lons, values, distances, indexes, &size);
-    //for (int i = 0; i < 4; i++) printf("idx: %d\n", indexes[i]);
     return cfsr_idw(values, distances, size);
 }
 
@@ -149,24 +148,16 @@ double cfsr_bilinear(cfsr_dataset_t* dataset, struct tm date, double lat, double
     double j0 = floor(j);
     double i1 = mod(i0+1, dataset->Ni);
     double j1 = mod(j0+1, dataset->Nj);
-    int n00 = cfsr_ij2n(dataset, i0, j0);
-    int n01 = cfsr_ij2n(dataset, i0, j1);
-    int n10 = cfsr_ij2n(dataset, i1, j0);
-    int n11 = cfsr_ij2n(dataset, i1, j1);
     double di = i - i0;
     double dj = j - j0;
+    int n[4] = {
+        cfsr_ij2n(dataset, i0, j0),
+        cfsr_ij2n(dataset, i0, j1),
+        cfsr_ij2n(dataset, i1, j0),
+        cfsr_ij2n(dataset, i1, j1),
+    };
     
-    double v00, v01, v10, v11;
-    codes_handle* h = cfsr_handle(dataset, date);
-    codes_get_double_element(h, "values", n00, &v00);
-    codes_get_double_element(h, "values", n01, &v01);
-    codes_get_double_element(h, "values", n10, &v10);
-    codes_get_double_element(h, "values", n11, &v11);
-    // printf("lon0: %f lat0: %f lon1: %f lat1: %f\n", dataset->lon0, dataset->lat0, dataset->lon1, dataset->lat1);
-    // printf("i: %f j: %f\n", i, j);
-    // printf("i0: %f j0: %f i1: %f j1: %f\n", i0, j0, i1, j1);
-    // printf("n00: %d n01: %d n10: %d n11: %d\n", n00, n01, n10, n11);
-    // printf("v00: %f v01: %f v10: %f v11: %f\n", v00, v01, v10, v11);
-
-    return v00*(1-di)*(1-dj) + v01*(1-di)*dj + v10*di*(1-dj) + v11*di*dj;
+    double v[4];
+    codes_get_double_elements(cfsr_handle(dataset, date), "values", n, 4, v);
+    return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
 }
