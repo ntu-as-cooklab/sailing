@@ -15,6 +15,7 @@ typedef enum cfsr_dataset_t
 } cfsr_dataset_t;
 
 int cfsr_fetch(cfsr_dataset_t dataset, struct tm date);
+int cfsr_load(cfsr_dataset_t dataset, struct tm date);
 char* cfsr_filename(cfsr_dataset_t dataset, struct tm date);
 double cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon);
 double cfsr_idw(double* values, double* distances, size_t size);
