@@ -34,16 +34,10 @@ int cfsr_load(cfsr_dataset_t dataset, struct tm date)
     codes_handle* h;
     int err;
     while (h = codes_grib_handle_new_from_file(0, in, &err)) {
-        char dataDate_str[9];
-        char dataTime_str[5];
-        size_t dataDate_len = sizeof(dataDate_str);
-        size_t dataTime_len = sizeof(dataTime_str);
-        codes_get_string(h, "dataDate", dataDate_str, &dataDate_len);
-        codes_get_string(h, "dataTime", dataTime_str, &dataTime_len);
-        long startStep;
+        long dataDate, dataTime, startStep;
+        codes_get_long(h, "dataDate", &dataDate);
+        codes_get_long(h, "dataTime", &dataTime);
         codes_get_long(h, "startStep", &startStep);
-        int dataDate = atoi(dataDate_str);
-        int dataTime = atoi(dataTime_str);
         date.tm_mday = dataDate%100;
         date.tm_hour = dataTime/100 + startStep;
         date.tm_min = dataTime%100;

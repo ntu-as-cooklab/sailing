@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "cfsr_grib2.h"
 #include "cfsr.h"
 
 int main (void)
