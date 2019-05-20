@@ -19,6 +19,7 @@ int cfsr_load(cfsr_dataset_t dataset, struct tm date);
 char* cfsr_filename(cfsr_dataset_t dataset, struct tm date);
 double cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon);
 double cfsr_idw(double* values, double* distances, size_t size);
+void cfsr_free();
 
 #define CFSR_START_YEAR 1979
 #define CFSR_END_YEAR 2012

@@ -19,5 +19,6 @@ int main (void)
         mktime(&date);
     }
 
+    cfsr_free();
     return 0;
 }

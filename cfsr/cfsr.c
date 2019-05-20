@@ -101,4 +101,16 @@ double cfsr_idw(double* values, double* distances, size_t size)
     double result = 0;
     for (int i = 0; i < size; i++) result += values[i] * weight[i];
     return result;
-} 
+}
+
+void cfsr_free()
+{
+    for (int i = 0; i < CFSR_DATASET_MAX; i++)
+        codes_grib_nearest_delete(nearest[i]);
+    
+    for (int i = 0; i < CFSR_DATASET_MAX; i++)
+        for (int j = 0; j < CFSR_END_YEAR-CFSR_START_YEAR; j++)
+            for (int k = 0; k < 31; k++)
+                for (int l = 0; l < 24; l++)
+                    codes_handle_delete(handle[i][j][k][l]);
+}
