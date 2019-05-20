@@ -4,6 +4,7 @@
 #include "util_ftp.h"
 #include <sys/stat.h>
 #include <eccodes.h>
+#include <math.h>
 
 static const char* dataset_str[] = {
     "ocnu5",
@@ -70,7 +71,7 @@ char* cfsr_filename(cfsr_dataset_t dataset, struct tm date)
 
 static codes_nearest* nearest[CFSR_DATASET_MAX];
 
-int cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon)
+double cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon)
 {
     char* filename = cfsr_filename(dataset, date);
     struct stat st;
@@ -81,7 +82,7 @@ int cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon)
 
     int err;
     FILE* in = fopen(filename, "r");
-    if (!in) return -1;
+    if (!in) return NAN;
     printf("Opened file: %s\n", filename);
     codes_handle* h = codes_grib_handle_new_from_file(0, in, &err);
     fclose(in);
@@ -95,13 +96,25 @@ int cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon)
     static size_t size=4;
     codes_grib_nearest_find(nearest[dataset], h, lat, lon, CODES_NEAREST_SAME_GRID, 
                             lats, lons, values, distances, indexes, &size);
-    printf("\nIdx\tlat\tlon\tdist\tval\n");
-    for (int i=0;i<4;i++) printf("%d\t%.2f\t%.2f\t%g\t%g\n",
-            (int)indexes[i],lats[i],lons[i],distances[i],values[i]);
-    printf("\n");
+    // printf("\nIdx\tlat\tlon\tdist\tval\n");
+    // for (int i=0;i<4;i++) printf("%d\t%.2f\t%.2f\t%g\t%g\n",
+    //         (int)indexes[i],lats[i],lons[i],distances[i],values[i]);
+    // printf("\n");
 
     codes_handle_delete(h);
     //codes_grib_nearest_delete(nearest);
 
-    return 0;
+    return cfsr_idw(values, distances, size);
+}
+
+double cfsr_idw(double* values, double* distances, size_t size)
+{
+    double weight[size]; 
+    for (int i = 0; i < size; i++) weight[i] = 1./distances[i];
+    double result = 0;
+    for (int i = 0; i < size; i++) {
+        result += values[i] * weight[i];
+        //printf("%f %f %f\n", values[i], weight[i], result);
+    }
+    return result;
 }

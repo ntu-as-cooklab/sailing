@@ -9,7 +9,8 @@ int main (void)
     struct tm date = {.tm_year=1979,.tm_mon=0,.tm_mday=1};
 
     for (int i = 0; i < 30; i++) {
-        cfsr_value(CFSR_OCNU5, date, 25.8, 123.2);
+        double val = cfsr_value(CFSR_OCNU5, date, 25.8, 123.2);
+        printf("val: %f\n", val);
         date.tm_mday++;
     }
     
