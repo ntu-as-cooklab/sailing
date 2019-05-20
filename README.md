@@ -8,6 +8,7 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 
 * [libcurl](https://curl.haxx.se/libcurl/)
 * [ecCodes](https://confluence.ecmwf.int//display/ECC/ecCodes+Home)
+* [EMOSLIB](https://confluence.ecmwf.int/display/EMOS/Emoslib)
 
 ## Instructions
 
