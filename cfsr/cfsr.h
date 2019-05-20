@@ -5,7 +5,6 @@
 extern  "C" {
 #endif
 
-#include <stdint.h>
 #include <time.h>
 
 typedef enum cfsr_dataset_t
@@ -15,7 +14,7 @@ typedef enum cfsr_dataset_t
     CFSR_DATASET_MAX,
 } cfsr_dataset_t;
 
-int cfsr_fetch(cfsr_dataset_t dataset, uint16_t year, uint8_t month);
+int cfsr_fetch(cfsr_dataset_t dataset, struct tm date);
 char* cfsr_filename(cfsr_dataset_t dataset, struct tm date);
 int cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon);
 

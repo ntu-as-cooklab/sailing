@@ -10,20 +10,21 @@ static const char* dataset_str[] = {
     "ocnv5",
 };
 
-int cfsr_fetch(cfsr_dataset_t dataset, uint16_t year, uint8_t month)
+int cfsr_fetch(cfsr_dataset_t dataset, struct tm date)
 {
 	char url[512];
     char filename[128];
-    snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u.grb2", dataset_str[dataset], year, month);
+    snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u.grb2", dataset_str[dataset], date.tm_year, date.tm_mon+1);
 
     struct stat st;
     if (stat(filename, &st)) {
-        snprintf(url, sizeof(url), "ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/%04u%02u/%s", year, month, filename);
+        snprintf(url, sizeof(url), "ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/%04u%02u/%s",
+                date.tm_year, date.tm_mon+1, filename);
 	    if (ftp_getfile(url) != 0) return -1;
     }
 
     char basename[128];
-    snprintf(basename, sizeof(basename), "%s.gdas.%04u%02u", dataset_str[dataset], year, month);
+    snprintf(basename, sizeof(basename), "%s.gdas.%04u%02u", dataset_str[dataset], date.tm_year, date.tm_mon+1);
     mkdir(basename, 0755);
 
     FILE* in = fopen(filename, "r");
@@ -49,7 +50,7 @@ int cfsr_fetch(cfsr_dataset_t dataset, uint16_t year, uint8_t month)
 
         char out_filename[128];
         snprintf(out_filename, sizeof(out_filename), "%s.gdas.%04u%02u/%08d%04d.grb2", 
-                    dataset_str[dataset], year, month, dataDate, dataTime);
+                    dataset_str[dataset], date.tm_year, date.tm_mon+1, dataDate, dataTime);
         codes_write_message(h, out_filename, "wb");
     }
 
@@ -75,7 +76,7 @@ int cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon)
     struct stat st;
     if (stat(filename, &st)) {
         printf("cfsr_fetch %s\n", filename);
-        cfsr_fetch(dataset, date.tm_year, date.tm_mon+1);
+        cfsr_fetch(dataset, date);
     }
 
     int err;
