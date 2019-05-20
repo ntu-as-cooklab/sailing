@@ -5,11 +5,16 @@
 #include <sys/stat.h>
 #include <eccodes.h>
 
-int cfsr_fetch(const char* dataset, uint16_t year, uint8_t month)
+static const char* dataset_str[] = {
+    "ocnu5",
+    "ocnv5",
+};
+
+int cfsr_fetch(cfsr_dataset_t dataset, uint16_t year, uint8_t month)
 {
 	char url[512];
     char filename[128];
-    snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u.grb2", dataset, year, month);
+    snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u.grb2", dataset_str[dataset], year, month);
 
     struct stat st;
     if (stat(filename, &st)) {
@@ -18,7 +23,7 @@ int cfsr_fetch(const char* dataset, uint16_t year, uint8_t month)
     }
 
     char basename[128];
-    snprintf(basename, sizeof(basename), "%s.gdas.%04u%02u", dataset, year, month);
+    snprintf(basename, sizeof(basename), "%s.gdas.%04u%02u", dataset_str[dataset], year, month);
     mkdir(basename, 0755);
 
     FILE* in = fopen(filename, "r");
@@ -44,7 +49,7 @@ int cfsr_fetch(const char* dataset, uint16_t year, uint8_t month)
 
         char out_filename[128];
         snprintf(out_filename, sizeof(out_filename), "%s.gdas.%04u%02u/%08d%04d.grb2", 
-                    dataset, year, month, dataDate, dataTime);
+                    dataset_str[dataset], year, month, dataDate, dataTime);
         codes_write_message(h, out_filename, "wb");
     }
 
@@ -53,20 +58,19 @@ int cfsr_fetch(const char* dataset, uint16_t year, uint8_t month)
     return 0;
 }
 
-char* cfsr_filename(const char* dataset, struct tm date)
+char* cfsr_filename(cfsr_dataset_t dataset, struct tm date)
 {
     static char filename[128];
     snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u/%04u%02u%02u%02u%02u.grb2", 
-                dataset, date.tm_year, date.tm_mon+1, 
+                dataset_str[dataset], date.tm_year, date.tm_mon+1, 
                 date.tm_year, date.tm_mon+1, date.tm_mday, date.tm_hour, date.tm_min);
     return filename;
 }
 
-codes_nearest* nearest;
+static codes_nearest* nearest[CFSR_DATASET_MAX];
 
-int cfsr_ou(struct tm date, double lat, double lon)
+int cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon)
 {
-    char* dataset = "ocnu5";
     char* filename = cfsr_filename(dataset, date);
     struct stat st;
     if (stat(filename, &st)) {
@@ -81,14 +85,14 @@ int cfsr_ou(struct tm date, double lat, double lon)
     codes_handle* h = codes_grib_handle_new_from_file(0, in, &err);
     fclose(in);
 
-    if(!nearest) nearest = codes_grib_nearest_new(h, &err);
+    if(!nearest[dataset]) nearest[dataset] = codes_grib_nearest_new(h, &err);
     static double lats[4]={0,};
     static double lons[4]={0,};
     static double values[4]={0,};
     static double distances[4]={0,};
     static int indexes[4]={0,};
     static size_t size=4;
-    codes_grib_nearest_find(nearest, h, lat, lon, CODES_NEAREST_SAME_GRID, 
+    codes_grib_nearest_find(nearest[dataset], h, lat, lon, CODES_NEAREST_SAME_GRID, 
                             lats, lons, values, distances, indexes, &size);
     printf("\nIdx\tlat\tlon\tdist\tval\n");
     for (int i=0;i<4;i++) printf("%d\t%.2f\t%.2f\t%g\t%g\n",

@@ -9,7 +9,7 @@ int main (void)
     struct tm date = {.tm_year=1979,.tm_mon=0,.tm_mday=1};
 
     for (int i = 0; i < 30; i++) {
-        cfsr_ou(date, 25.8, 123.2);
+        cfsr_value(CFSR_OCNU5, date, 25.8, 123.2);
         date.tm_mday++;
     }
     

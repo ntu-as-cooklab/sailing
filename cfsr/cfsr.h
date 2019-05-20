@@ -8,9 +8,16 @@ extern  "C" {
 #include <stdint.h>
 #include <time.h>
 
-int cfsr_fetch(const char* dataset, uint16_t year, uint8_t month);
-char* cfsr_filename(const char* dataset, struct tm date);
-int cfsr_ou(struct tm date, double lat, double lon);
+typedef enum cfsr_dataset_t
+{
+    CFSR_OCNU5,
+    CFSR_OCNV5,
+    CFSR_DATASET_MAX,
+} cfsr_dataset_t;
+
+int cfsr_fetch(cfsr_dataset_t dataset, uint16_t year, uint8_t month);
+char* cfsr_filename(cfsr_dataset_t dataset, struct tm date);
+int cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon);
 
 #define CFSR_START_YEAR 1979
 #define CFSR_END_YEAR 2012
