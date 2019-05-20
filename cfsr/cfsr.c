@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <eccodes.h>
 
-int cfsr_fetch(char* dataset, uint16_t year, uint8_t month)
+int cfsr_fetch(const char* dataset, uint16_t year, uint8_t month)
 {
 	char url[512];
     char filename[128];
@@ -23,7 +23,7 @@ int cfsr_fetch(char* dataset, uint16_t year, uint8_t month)
 
     FILE* in = fopen(filename, "r");
     if (!in) return -1;
-    printf("Opened file: %s\n", filename);
+    printf("Extracting file: %s\n", filename);
 
     codes_handle* h;
     int err;
@@ -39,8 +39,8 @@ int cfsr_fetch(char* dataset, uint16_t year, uint8_t month)
         long startStep;
         codes_get_long(h, "startStep", &startStep);
         dataTime += startStep * 100;
-        printf("dataDate: %08d\n", dataDate);
-        printf("dataTime: %04d\n", dataTime);
+        //printf("dataDate: %08d\n", dataDate);
+        //printf("dataTime: %04d\n", dataTime);
 
         char out_filename[128];
         snprintf(out_filename, sizeof(out_filename), "%s.gdas.%04u%02u/%08d%04d.grb2", 
@@ -50,5 +50,53 @@ int cfsr_fetch(char* dataset, uint16_t year, uint8_t month)
 
     codes_handle_delete(h);   
     fclose(in);
+    return 0;
+}
+
+char* cfsr_filename(const char* dataset, struct tm date)
+{
+    static char filename[128];
+    snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u/%04u%02u%02u%02u%02u.grb2", 
+                dataset, date.tm_year, date.tm_mon+1, 
+                date.tm_year, date.tm_mon+1, date.tm_mday, date.tm_hour, date.tm_min);
+    return filename;
+}
+
+codes_nearest* nearest;
+
+int cfsr_ou(struct tm date, double lat, double lon)
+{
+    char* dataset = "ocnu5";
+    char* filename = cfsr_filename(dataset, date);
+    struct stat st;
+    if (stat(filename, &st)) {
+        printf("cfsr_fetch %s\n", filename);
+        cfsr_fetch(dataset, date.tm_year, date.tm_mon+1);
+    }
+
+    int err;
+    FILE* in = fopen(filename, "r");
+    if (!in) return -1;
+    printf("Opened file: %s\n", filename);
+    codes_handle* h = codes_grib_handle_new_from_file(0, in, &err);
+    fclose(in);
+
+    if(!nearest) nearest = codes_grib_nearest_new(h, &err);
+    static double lats[4]={0,};
+    static double lons[4]={0,};
+    static double values[4]={0,};
+    static double distances[4]={0,};
+    static int indexes[4]={0,};
+    static size_t size=4;
+    codes_grib_nearest_find(nearest, h, lat, lon, CODES_NEAREST_SAME_GRID, 
+                            lats, lons, values, distances, indexes, &size);
+    printf("\nIdx\tlat\tlon\tdist\tval\n");
+    for (int i=0;i<4;i++) printf("%d\t%.2f\t%.2f\t%g\t%g\n",
+            (int)indexes[i],lats[i],lons[i],distances[i],values[i]);
+    printf("\n");
+
+    codes_handle_delete(h);
+    //codes_grib_nearest_delete(nearest);
+
     return 0;
 }
