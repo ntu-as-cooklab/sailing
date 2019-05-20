@@ -11,7 +11,7 @@ int main (void)
     cfsr_load(CFSR_OCNU5, date);
     cfsr_load(CFSR_OCNV5, date);
 
-    for (int i = 0; i < 48; i++) {
+    for (int i = 0; i < 3; i++) {
         double ou = cfsr_value(CFSR_OCNU5, date, 25.8, 123.2);
         double ov = cfsr_value(CFSR_OCNV5, date, 25.8, 123.2);
         printf("val: %f %f\n", ou, ov);
@@ -19,6 +19,5 @@ int main (void)
         mktime(&date);
     }
 
-    cfsr_free();
     return 0;
 }

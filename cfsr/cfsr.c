@@ -103,8 +103,10 @@ double cfsr_idw(double* values, double* distances, size_t size)
     return result;
 }
 
-void cfsr_free()
+void __attribute__((destructor)) cfsr_free()
 {
+    printf("Freeing CFSR resources\n");
+
     for (int i = 0; i < CFSR_DATASET_MAX; i++)
         codes_grib_nearest_delete(nearest[i]);
     

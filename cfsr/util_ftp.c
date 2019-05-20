@@ -70,3 +70,14 @@ int ftp_getfile(char* url)
   	return 0;
 }
 
+int __attribute__((constructor)) ftp_init(void)
+{
+	printf("Init CURL resources\n");
+	curl_global_init(CURL_GLOBAL_ALL);	
+}
+
+void __attribute__((destructor)) ftp_free(void)
+{
+	printf("Freeing CURL resources\n");
+	curl_global_cleanup();
+}
