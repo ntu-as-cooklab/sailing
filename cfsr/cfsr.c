@@ -15,6 +15,8 @@ typedef struct cfsr_dataset_t
     long Nj;
     double lon0;
     double lat0;
+    double lon1;
+    double lat1;
     double dx;
     double dy;
 } cfsr_dataset_t;
@@ -45,12 +47,18 @@ int cfsr_load(cfsr_dataset_t* dataset, struct tm date)
     int err;
     while (h = codes_grib_handle_new_from_file(0, in, &err)) {
 
-        codes_get_long(h,"Ni",&dataset->Ni);
-        codes_get_long(h,"Nj",&dataset->Nj);
-        codes_get_double(h,"latitudeOfFirstGridPointInDegrees",&dataset->lat0);
-        codes_get_double(h,"longitudeOfFirstGridPointInDegrees",&dataset->lon0);
-        codes_get_double(h,"jDirectionIncrementInDegrees",&dataset->dy);
-        codes_get_double(h,"iDirectionIncrementInDegrees",&dataset->dx);
+        if (!dataset->Ni) {
+            codes_get_long(h,"Ni",&dataset->Ni);
+            codes_get_long(h,"Nj",&dataset->Nj);
+            codes_get_double(h,"latitudeOfFirstGridPointInDegrees",&dataset->lat0);
+            codes_get_double(h,"longitudeOfFirstGridPointInDegrees",&dataset->lon0);
+            codes_get_double(h,"latitudeOfLastGridPointInDegrees",&dataset->lat1);
+            codes_get_double(h,"longitudeOfLastGridPointInDegrees",&dataset->lon1);
+            codes_get_double(h,"jDirectionIncrementInDegrees",&dataset->dy);
+            codes_get_double(h,"iDirectionIncrementInDegrees",&dataset->dx);
+            if (dataset->lon1 - dataset->lon0 < 0) dataset->dx *= -1;
+            if (dataset->lat1 - dataset->lat0 < 0) dataset->dy *= -1;
+        }
 
         long dataDate, dataTime, startStep;
         codes_get_long(h, "dataDate", &dataDate);
@@ -61,6 +69,7 @@ int cfsr_load(cfsr_dataset_t* dataset, struct tm date)
         date.tm_min = dataTime%100;
         dataset->handle[date.tm_year-CFSR_START_YEAR][date.tm_mday-1][date.tm_hour] = h;
     }
+
     fclose(in);
     return 0;
 }
@@ -95,15 +104,20 @@ double cfsr_value(cfsr_dataset_t* dataset, struct tm date, double lat, double lo
     static size_t size=4;
     codes_grib_nearest_find(dataset->nearest, h, lat, lon, CODES_NEAREST_SAME_GRID, 
                             lats, lons, values, distances, indexes, &size);
+    //for (int i = 0; i < 4; i++) printf("idx: %d\n", indexes[i]);
     return cfsr_idw(values, distances, size);
 }
 
 double cfsr_idw(double* values, double* distances, size_t size)
 {
-    double weight[size]; 
-    for (int i = 0; i < size; i++) weight[i] = 1./distances[i];
+    double weight_sum = 0;
     double result = 0;
-    for (int i = 0; i < size; i++) result += values[i] * weight[i];
+    for (int i = 0; i < size; i++) {
+        double weight = 1./distances[i];
+        result += values[i] * weight;
+        weight_sum += weight;
+    }
+    result /= weight_sum;
     return result;
 }
 
@@ -117,6 +131,42 @@ void cfsr_free(cfsr_dataset_t* dataset)
                 codes_handle_delete(dataset->handle[j][k][l]);
 }
 
-int cfsr_bilinear(cfsr_dataset_t* dataset)
+int cfsr_ij2n(cfsr_dataset_t* dataset, int i, int j)
 {
+    return j * dataset->Ni + i;
+}
+
+double mod(double x, double n)
+{
+    return fmod(fmod(x,n)+n, n);
+}
+
+double cfsr_bilinear(cfsr_dataset_t* dataset, struct tm date, double lat, double lon)
+{
+    double i = mod((lon-dataset->lon0)/dataset->dx, dataset->Ni);
+    double j = mod((lat-dataset->lat0)/dataset->dy, dataset->Nj);
+    double i0 = floor(i);
+    double j0 = floor(j);
+    double i1 = mod(i0+1, dataset->Ni);
+    double j1 = mod(j0+1, dataset->Nj);
+    int n00 = cfsr_ij2n(dataset, i0, j0);
+    int n01 = cfsr_ij2n(dataset, i0, j1);
+    int n10 = cfsr_ij2n(dataset, i1, j0);
+    int n11 = cfsr_ij2n(dataset, i1, j1);
+    double di = i - i0;
+    double dj = j - j0;
+    
+    double v00, v01, v10, v11;
+    codes_handle* h = cfsr_handle(dataset, date);
+    codes_get_double_element(h, "values", n00, &v00);
+    codes_get_double_element(h, "values", n01, &v01);
+    codes_get_double_element(h, "values", n10, &v10);
+    codes_get_double_element(h, "values", n11, &v11);
+    // printf("lon0: %f lat0: %f lon1: %f lat1: %f\n", dataset->lon0, dataset->lat0, dataset->lon1, dataset->lat1);
+    // printf("i: %f j: %f\n", i, j);
+    // printf("i0: %f j0: %f i1: %f j1: %f\n", i0, j0, i1, j1);
+    // printf("n00: %d n01: %d n10: %d n11: %d\n", n00, n01, n10, n11);
+    // printf("v00: %f v01: %f v10: %f v11: %f\n", v00, v01, v10, v11);
+
+    return v00*(1-di)*(1-dj) + v01*(1-di)*dj + v10*di*(1-dj) + v11*di*dj;
 }
