@@ -54,17 +54,17 @@ char* cfsr_filename(cfsr_dataset_t dataset, struct tm date)
     return filename;
 }
 
-codes_handle** cfsr_handle(cfsr_dataset_t dataset, struct tm date)
+static codes_handle* cfsr_handle(cfsr_dataset_t dataset, struct tm date)
 {
-    return &handle[dataset][date.tm_year-CFSR_START_YEAR][date.tm_mday-1][date.tm_hour];
+    return handle[dataset][date.tm_year-CFSR_START_YEAR][date.tm_mday-1][date.tm_hour];
 }
 
 double cfsr_value(cfsr_dataset_t dataset, struct tm date, double lat, double lon)
 {
-    codes_handle* h = *cfsr_handle(dataset, date);
+    codes_handle* h = cfsr_handle(dataset, date);
     if (!h) {
         cfsr_load(dataset, date);
-        h = *cfsr_handle(dataset, date);
+        h = cfsr_handle(dataset, date);
     }
     
     int err;
