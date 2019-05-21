@@ -38,28 +38,6 @@ std::string execCmd(Voyage* voyage, std::string cmd)
 	else if (word == "send")				sendAll(wsServer, params);
 	else if (word == "alert")				;
 	else if (word == "reset")				new (voyage) Voyage;
-	else if (word == "OU") {
-		int year, month, day;
-		float lat, lon;
-		std::stringstream(params) >> year >> month >> day >> lat >> lon;
-		int ouid = openCFSR(CFSR_OU, year, month);
-		response << bilinearOUV(ouid, day, lat, lon);
-		closeCFSR(ouid);
-	}
-	else if (word == "OV") {
-		int year, month, day;
-		float lat, lon;
-		std::stringstream(params) >> year >> month >> day >> lat >> lon;
-		int ovid = openCFSR(CFSR_OU, year, month);
-		response << bilinearOUV(ovid, day, lat, lon);
-		closeCFSR(ovid);
-	}
-	else if (word == "OUV") {
-		Date date;
-		LatLon latlon;
-		std::stringstream(params) >> date >> latlon;
-		response << cfsrReader->OUV(date, latlon);
-	}
 
 	else if (word == "delete") {
 		DIR *dir;
