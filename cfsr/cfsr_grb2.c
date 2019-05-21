@@ -7,6 +7,9 @@
 #include <eccodes.h>
 #include <math.h>
 
+#include "cfsr_nc.h"
+#include <netcdf.h>
+
 typedef struct cfsr_grb2_dataset_t
 {
     codes_nearest* nearest;
@@ -161,4 +164,27 @@ double cfsr_grb2_bilinear(cfsr_grb2_dataset_t* dataset, struct tm date, double l
     double v[4];
     codes_get_double_elements(cfsr_grb2_handle(dataset, date), "values", n, 4, v);
     return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
+}
+
+int cfsr_convert(cfsr_grb2_dataset_t* dataset, struct tm date)
+{
+    char filename[128];
+    snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u.nc", dataset->str, date.tm_year, date.tm_mon+1);
+
+    int ncid;
+    nc_create(filename, NC_NETCDF4, &ncid);
+
+    int latid, lonid, dateid, timeid;
+    nc_def_dim(ncid, "latitude",  dataset->Nj, &latid);
+    nc_def_dim(ncid, "longitude", dataset->Ni, &lonid);
+    nc_def_dim(ncid, "date", 31, &dateid);
+    nc_def_dim(ncid, "time", 24, &timeid);
+
+    int varid;
+    int dims[] = {dateid, timeid, latid, lonid};
+    nc_def_var(ncid, dataset->str, NC_DOUBLE, 4, dims, &varid);
+
+    nc_enddef(ncid);
+
+    nc_close(ncid);
 }
