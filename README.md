@@ -34,12 +34,5 @@ The application follows a server-client pattern, with a C++ based backend and a 
 
 ## Project directory structure
 * cfsr: C code for parsing CFSR data.
-* float2: C++ code for handling 2-dimensional float vectors
-* include: Headers for main C++ application
-* res: Application icons
-* src: Source files for main C++ application
-* systemd: systemd unit files for auto startup on Linux
-* websocketpp: websocketpp submodule
+* src: Source files for main application
 * www: Source files for browser frontend
-* barnes.cpp.for: Barnes interpolation code not yet merged into main application
-* build.bat: build script for Windows
