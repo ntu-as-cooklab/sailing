@@ -32,7 +32,7 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(field).gdas.$(
 
 %.grb2:
 	YYYYMM=$$(echo "$@"|cut -d. -f3); \
-	curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$@
+	-curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$@
 
 %.nc: %.grb2
 	grib_to_netcdf -T -I type,step -k3 -o $@ $<
