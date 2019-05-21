@@ -15,6 +15,6 @@ double norm(vec2 a)
 vec2 normalize(vec2 a)
 {
     double r = norm(a);
-    a.x /= r; a.y /= r;
+    if (r > 0) {a.x /= r; a.y /= r;}
     return a;
 }
