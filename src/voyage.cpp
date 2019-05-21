@@ -1,12 +1,8 @@
 #include <iostream>
 #include <iomanip> // for std::setprecisionma
-#ifdef _WIN32
-	#include <windows.h>
-#else
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <unistd.h>
-#endif
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "voyage.hpp"
 #include "cfsr.hpp"
