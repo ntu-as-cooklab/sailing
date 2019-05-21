@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "vec2.h"
 
 int main(void)
 {

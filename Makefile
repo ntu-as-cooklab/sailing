@@ -1,9 +1,9 @@
-LDLIBS +=
+LDLIBS += -lm
 CPPFLAGS += -O2
-CFLAGS 	+= std=gnu11
+CFLAGS 	+= -std=gnu11
 CXXFLAGS += -std=c++14
 
-SRC = $(wildcard src/*.cpp)
+SRC = $(wildcard src/*.cpp src/*.c)
 OBJ = $(patsubst src/%,build/%.o,$(SRC))
 
 bin/sailing: $(OBJ)
@@ -16,4 +16,8 @@ build/%.cpp.o: src/%.cpp
 
 build/%.c.o: src/%.c
 	mkdir -p $(@D)
-	$(CXX) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
+
+.PHONY: clean
+clean:
+	rm -rf build/ bin/
