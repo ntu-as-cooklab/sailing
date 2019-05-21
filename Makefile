@@ -24,13 +24,16 @@ build/%.c.o: src/%.c
 clean:
 	rm -rf build/ bin/
 
-define grb2_src
-$(shell d="1979-01-02"; until [[ $$d > 2011-12-31 ]]; do echo "$1.gdas.$$(date +%Y%m -d $$d).grb2"; d=$$(date -I -d "$$d + 1 month"); done)
+define data_src
+$(shell d="1979-01-02"; until [[ $$d > 2011-12-31 ]]; do echo "$1.gdas.$$(date +%Y%m -d $$d).$2"; d=$$(date -I -d "$$d + 1 month"); done)
 endef
 
 .PHONY: ocnu5 ocnv5
-ocnu5 ocnv5: %: $(call grb2_src,%)
+ocnu5 ocnv5: %: $(call data_src,%,nc)
 
 %.grb2:
 	MONTH=$$(echo "$@"|cut -d. -f3); \
 	curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$MONTH/$@
+
+%.nc: %.grb2
+	grib_to_netcdf -I type,step -k3 -o $@ $<
