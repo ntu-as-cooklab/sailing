@@ -1,4 +1,5 @@
 #include "cfsr_grb2.h"
+#include "cfsr.h"
 #include <stdint.h>
 #include <string.h>
 #include "util_ftp.h"
@@ -21,10 +22,10 @@ typedef struct cfsr_grb2_dataset_t
     double dy;
 } cfsr_grb2_dataset_t;
 
-cfsr_grb2_dataset_t  cfsr_grb2_ocnu5 = {.str = "ocnu5"},
-                cfsr_grb2_ocnv5 = {.str = "ocnv5"};
-cfsr_grb2_dataset_t *CFSR_OCNU5 = &cfsr_grb2_ocnu5;
-cfsr_grb2_dataset_t *CFSR_OCNV5 = &cfsr_grb2_ocnv5;
+cfsr_grb2_dataset_t cfsr_grb2_ocnu5 = {.str = "ocnu5"},
+                    cfsr_grb2_ocnv5 = {.str = "ocnv5"};
+cfsr_grb2_dataset_t *CFSR_GRB2_OCNU5 = &cfsr_grb2_ocnu5;
+cfsr_grb2_dataset_t *CFSR_GRB2_OCNV5 = &cfsr_grb2_ocnv5;
 
 int cfsr_grb2_fetch(cfsr_grb2_dataset_t* dataset, struct tm date)
 {

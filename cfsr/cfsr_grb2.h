@@ -17,10 +17,7 @@ double cfsr_grb2_idw(double* values, double* distances, size_t size);
 void cfsr_grb2_free(cfsr_grb2_dataset_t* dataset);
 double cfsr_grb2_bilinear(cfsr_grb2_dataset_t* dataset, struct tm date, double lat, double lon);
 
-#define CFSR_START_YEAR 1979
-#define CFSR_END_YEAR 2012
-
-extern cfsr_grb2_dataset_t *CFSR_OCNU5, *CFSR_OCNV5;
+extern cfsr_grb2_dataset_t *CFSR_GRB2_OCNU5, *CFSR_GRB2_OCNV5;
 
 #ifdef  __cplusplus
 }

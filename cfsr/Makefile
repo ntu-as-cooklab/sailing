@@ -1,4 +1,4 @@
-LDLIBS += -lcurl -lm -leccodes
+LDLIBS += -lcurl -lm -leccodes -lnetcdf
 CPPFLAGS += -Ofast
 
 .PHONY: all clean
