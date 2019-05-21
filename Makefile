@@ -33,4 +33,4 @@ ocnu5 ocnv5: %: $(call grb2_src,%)
 
 %.grb2:
 	MONTH=$$(echo "$@"|cut -d. -f3); \
-	curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$MONTH/$@
+	curl -u anonymous:password -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$MONTH/$@
