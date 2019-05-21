@@ -1,4 +1,4 @@
-#include "cfsr.h"
+#include "cfsr_grb2.h"
 #include <stdint.h>
 #include <string.h>
 #include "util_ftp.h"
@@ -6,7 +6,7 @@
 #include <eccodes.h>
 #include <math.h>
 
-typedef struct cfsr_dataset_t
+typedef struct cfsr_grb2_dataset_t
 {
     codes_nearest* nearest;
     codes_handle* handle[CFSR_END_YEAR-CFSR_START_YEAR][31][24];
@@ -19,27 +19,27 @@ typedef struct cfsr_dataset_t
     double lat1;
     double dx;
     double dy;
-} cfsr_dataset_t;
+} cfsr_grb2_dataset_t;
 
-cfsr_dataset_t  cfsr_ocnu5 = {.str = "ocnu5"},
-                cfsr_ocnv5 = {.str = "ocnv5"};
-cfsr_dataset_t *CFSR_OCNU5 = &cfsr_ocnu5;
-cfsr_dataset_t *CFSR_OCNV5 = &cfsr_ocnv5;
+cfsr_grb2_dataset_t  cfsr_grb2_ocnu5 = {.str = "ocnu5"},
+                cfsr_grb2_ocnv5 = {.str = "ocnv5"};
+cfsr_grb2_dataset_t *CFSR_OCNU5 = &cfsr_grb2_ocnu5;
+cfsr_grb2_dataset_t *CFSR_OCNV5 = &cfsr_grb2_ocnv5;
 
-int cfsr_fetch(cfsr_dataset_t* dataset, struct tm date)
+int cfsr_grb2_fetch(cfsr_grb2_dataset_t* dataset, struct tm date)
 {
-    char* filename = cfsr_filename(dataset, date);
+    char* filename = cfsr_grb2_filename(dataset, date);
     char url[512];
     snprintf(url, sizeof(url), "ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/%04u%02u/%s",
             date.tm_year, date.tm_mon+1, filename);
     return ftp_getfile(url);
 }
 
-int cfsr_load(cfsr_dataset_t* dataset, struct tm date)
+int cfsr_grb2_load(cfsr_grb2_dataset_t* dataset, struct tm date)
 {
-    char* filename = cfsr_filename(dataset, date);
+    char* filename = cfsr_grb2_filename(dataset, date);
     struct stat st;
-    if (stat(filename, &st)) cfsr_fetch(dataset, date);
+    if (stat(filename, &st)) cfsr_grb2_fetch(dataset, date);
     FILE* in = fopen(filename, "r");
     if (!in) return -1;
 
@@ -74,24 +74,24 @@ int cfsr_load(cfsr_dataset_t* dataset, struct tm date)
     return 0;
 }
 
-char* cfsr_filename(cfsr_dataset_t* dataset, struct tm date)
+char* cfsr_grb2_filename(cfsr_grb2_dataset_t* dataset, struct tm date)
 {
     static char filename[128];
     snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u.grb2", dataset->str, date.tm_year, date.tm_mon+1);
     return filename;
 }
 
-static codes_handle* cfsr_handle(cfsr_dataset_t* dataset, struct tm date)
+static codes_handle* cfsr_grb2_handle(cfsr_grb2_dataset_t* dataset, struct tm date)
 {
     return dataset->handle[date.tm_year-CFSR_START_YEAR][date.tm_mday-1][date.tm_hour];
 }
 
-double cfsr_value(cfsr_dataset_t* dataset, struct tm date, double lat, double lon)
+double cfsr_grb2_value(cfsr_grb2_dataset_t* dataset, struct tm date, double lat, double lon)
 {
-    codes_handle* h = cfsr_handle(dataset, date);
+    codes_handle* h = cfsr_grb2_handle(dataset, date);
     if (!h) {
-        cfsr_load(dataset, date);
-        h = cfsr_handle(dataset, date);
+        cfsr_grb2_load(dataset, date);
+        h = cfsr_grb2_handle(dataset, date);
     }
     
     int err;
@@ -104,10 +104,10 @@ double cfsr_value(cfsr_dataset_t* dataset, struct tm date, double lat, double lo
     static size_t size=4;
     codes_grib_nearest_find(dataset->nearest, h, lat, lon, CODES_NEAREST_SAME_GRID, 
                             lats, lons, values, distances, indexes, &size);
-    return cfsr_idw(values, distances, size);
+    return cfsr_grb2_idw(values, distances, size);
 }
 
-double cfsr_idw(double* values, double* distances, size_t size)
+double cfsr_grb2_idw(double* values, double* distances, size_t size)
 {
     double weight_sum = 0;
     double result = 0;
@@ -120,7 +120,7 @@ double cfsr_idw(double* values, double* distances, size_t size)
     return result;
 }
 
-void cfsr_free(cfsr_dataset_t* dataset)
+void cfsr_grb2_free(cfsr_grb2_dataset_t* dataset)
 {
     codes_grib_nearest_delete(dataset->nearest);
 
@@ -130,7 +130,7 @@ void cfsr_free(cfsr_dataset_t* dataset)
                 codes_handle_delete(dataset->handle[j][k][l]);
 }
 
-int cfsr_ij2n(cfsr_dataset_t* dataset, int i, int j)
+int cfsr_grb2_ij2n(cfsr_grb2_dataset_t* dataset, int i, int j)
 {
     return j * dataset->Ni + i;
 }
@@ -140,7 +140,7 @@ double mod(double x, double n)
     return fmod(fmod(x,n)+n, n);
 }
 
-double cfsr_bilinear(cfsr_dataset_t* dataset, struct tm date, double lat, double lon)
+double cfsr_grb2_bilinear(cfsr_grb2_dataset_t* dataset, struct tm date, double lat, double lon)
 {
     double i = mod((lon-dataset->lon0)/dataset->dx, dataset->Ni);
     double j = mod((lat-dataset->lat0)/dataset->dy, dataset->Nj);
@@ -151,13 +151,13 @@ double cfsr_bilinear(cfsr_dataset_t* dataset, struct tm date, double lat, double
     double di = i - i0;
     double dj = j - j0;
     int n[4] = {
-        cfsr_ij2n(dataset, i0, j0),
-        cfsr_ij2n(dataset, i0, j1),
-        cfsr_ij2n(dataset, i1, j0),
-        cfsr_ij2n(dataset, i1, j1),
+        cfsr_grb2_ij2n(dataset, i0, j0),
+        cfsr_grb2_ij2n(dataset, i0, j1),
+        cfsr_grb2_ij2n(dataset, i1, j0),
+        cfsr_grb2_ij2n(dataset, i1, j1),
     };
     
     double v[4];
-    codes_get_double_elements(cfsr_handle(dataset, date), "values", n, 4, v);
+    codes_get_double_elements(cfsr_grb2_handle(dataset, date), "values", n, 4, v);
     return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
 }

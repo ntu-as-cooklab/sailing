@@ -17,3 +17,4 @@ build-linux/
 .vscode/
 *.grb2*
 bin/
+*.nc
