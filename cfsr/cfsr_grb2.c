@@ -72,6 +72,7 @@ int cfsr_grb2_load(cfsr_grb2_dataset_t* dataset, struct tm date)
         date.tm_hour = dataTime/100 + startStep;
         date.tm_min = dataTime%100;
         dataset->handle[date.tm_year-CFSR_START_YEAR][date.tm_mday-1][date.tm_hour] = h;
+         printf("date.tm_mday-1: %d date.tm_hour: %d\n", date.tm_mday-1, date.tm_hour);
     }
 
     fclose(in);
@@ -181,9 +182,28 @@ int cfsr_convert(cfsr_grb2_dataset_t* dataset, struct tm date)
     nc_def_dim(ncid, "time", 24, &timeid);
 
     int varid;
-    int dims[] = {dateid, timeid, latid, lonid};
+    int dims[] = {dateid, timeid, lonid, latid};
     nc_def_var(ncid, dataset->str, NC_DOUBLE, 4, dims, &varid);
 
+    for (int d = 0; d < 28; d++)
+        for (int h = 0; h < 24; h++)
+        {
+            size_t start[4] = {d, h, 0, 0};
+            size_t count[4] = {1, 1, dataset->Ni, dataset->Nj};
+            double data[dataset->Ni*dataset->Nj];
+            size_t data_size = dataset->Ni*dataset->Nj;
+            codes_handle* handle = dataset->handle[date.tm_year-CFSR_START_YEAR][d][h];
+            if(!handle) { printf("err\n"); return -1; }
+            codes_get_double_array(
+                dataset->handle[date.tm_year-CFSR_START_YEAR][d][h],
+                "values",
+                data,
+                &data_size
+            );
+            nc_put_vara_double(ncid, varid, start, count, data);
+            printf("d: %d h: %d\n", d, h);
+        }
+    
     nc_enddef(ncid);
 
     nc_close(ncid);
