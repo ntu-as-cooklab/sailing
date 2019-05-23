@@ -3,12 +3,13 @@
 
 #include <time.h>
 #include "vec2.h"
+#include "latlon.h"
 
 #ifdef  __cplusplus
 extern  "C" {
 #endif
 
-vec2 cfsr_ocn(struct tm date, double lat, double lon);
+vec2 cfsr_ocn(struct tm date, latlon_t loc);
 
 #ifdef  __cplusplus
 }

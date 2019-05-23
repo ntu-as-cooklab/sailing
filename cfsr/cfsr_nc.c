@@ -1,5 +1,6 @@
 #include "cfsr_nc.h"
 #include "cfsr.h"
+#include "latlon.h"
 #include <netcdf.h>
 #include <string.h>
 #include <stdio.h>
@@ -61,15 +62,15 @@ int cfsr_nc_free(cfsr_nc_dataset_t* dataset)
     nc_close(dataset->ncid[i][j]);
 }
 
-double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, double lat, double lon)
+double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc)
 {
     int ncid = dataset->ncid[date.tm_year-CFSR_START_YEAR][date.tm_mon];
     if (!ncid) {
         cfsr_nc_load(dataset, date);
         ncid = dataset->ncid[date.tm_year-CFSR_START_YEAR][date.tm_mon];
     }
-    double i = mod((lon-dataset->lon0)/dataset->dx, dataset->Ni);
-    double j = mod((lat-dataset->lat0)/dataset->dy, dataset->Nj);
+    double i = mod((loc.lon-dataset->lon0)/dataset->dx, dataset->Ni);
+    double j = mod((loc.lat-dataset->lat0)/dataset->dy, dataset->Nj);
     double i0 = floor(i);
     double j0 = floor(j);
     double i1 = mod(i0+1, dataset->Ni);
