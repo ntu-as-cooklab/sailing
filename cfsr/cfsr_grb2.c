@@ -62,6 +62,15 @@ int cfsr_grb2_load(cfsr_grb2_dataset_t* dataset, struct tm date)
             codes_get_double(h,"iDirectionIncrementInDegrees",&dataset->dx);
             if (dataset->lon1 - dataset->lon0 < 0) dataset->dx *= -1;
             if (dataset->lat1 - dataset->lat0 < 0) dataset->dy *= -1;
+
+            printf("Ni: %d\n", dataset->Ni);
+            printf("Nj: %d\n", dataset->Nj);
+            printf("lat0: %f\n", dataset->lat0);
+            printf("lon0: %f\n", dataset->lon0);
+            printf("lat1: %f\n", dataset->lat1);
+            printf("lon1: %f\n", dataset->lon1);
+            printf("dy: %f\n", dataset->dy);
+            printf("dx: %f\n", dataset->dx);
         }
 
         long dataDate, dataTime, startStep;
@@ -138,11 +147,6 @@ void cfsr_grb2_free(cfsr_grb2_dataset_t* dataset)
 int cfsr_grb2_ij2n(cfsr_grb2_dataset_t* dataset, int i, int j)
 {
     return j * dataset->Ni + i;
-}
-
-double mod(double x, double n)
-{
-    return fmod(fmod(x,n)+n, n);
 }
 
 double cfsr_grb2_bilinear(cfsr_grb2_dataset_t* dataset, struct tm date, double lat, double lon)
