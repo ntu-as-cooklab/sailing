@@ -1,22 +1,22 @@
 SHELL:=/bin/bash
 
-LDLIBS += -lm
-CPPFLAGS += -O2
+LDLIBS += -lcurl -lm -leccodes -lnetcdf
+CPPFLAGS += -O2 -Icfsr -Isrc
 CFLAGS 	+= -std=gnu11
 CXXFLAGS += -std=c++14
 
-SRC = $(wildcard src/*.cpp src/*.c)
-OBJ = $(patsubst src/%,build/%.o,$(SRC))
+SRC = $(wildcard cfsr/*.c src/*.c src/*.cpp)
+OBJ = $(patsubst %,build/%.o,$(SRC))
 
 bin/sailing: $(OBJ)
 	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDLIBS) -o $@
 
-build/%.cpp.o: src/%.cpp
+build/%.cpp.o: %.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $^ -o $@
 
-build/%.c.o: src/%.c
+build/%.c.o: %.c
 	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
 
