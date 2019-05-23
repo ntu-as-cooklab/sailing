@@ -35,4 +35,4 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(field).gdas.$(
 	curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$@
 
 %.nc: %.grb2
-	grib_to_netcdf -T -I type,step -k3 -o $@ $<
+	grib_to_netcdf -T -I type -k3 -o $@ $<
