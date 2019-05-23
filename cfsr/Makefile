@@ -1,5 +1,5 @@
 LDLIBS += -lcurl -lm -leccodes -lnetcdf
-CPPFLAGS += -Ofast
+CPPFLAGS += -O2 -I../src
 
 .PHONY: all clean
 all: $(patsubst %.c,bin/%,$(wildcard test_*.c))

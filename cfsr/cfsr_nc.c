@@ -8,7 +8,7 @@
 
 typedef struct cfsr_nc_dataset_t
 {
-    int ncid;
+    int ncid[CFSR_END_YEAR-CFSR_START_YEAR][12];
     char* str;
     long Ni;
     long Nj;
@@ -29,43 +29,11 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 {
     int err;
     char* filename = cfsr_nc_filename(dataset, date);
-    if ((err = nc_open(filename, NC_NOWRITE, &dataset->ncid))) {
+    if ((err = nc_open(filename, NC_NOWRITE, &dataset->ncid[date.tm_year-CFSR_START_YEAR][date.tm_mon]))) {
         printf("cfsr_nc_load: failed to load file %s\n", filename);
         return err;
     }
-
-    int ndims, nvars, ngatts, unlimdimid;
-    nc_inq(dataset->ncid, &ndims, &nvars, &ngatts, &unlimdimid);
-    printf("ndims: %d nvars: %d ngatts: %d unlimdimid: %d\n", ndims, nvars, ngatts, unlimdimid);
-
-    for (int i = 0; i < ndims; i++)
-    {
-        char name[NC_MAX_NAME];
-        size_t length;
-        nc_inq_dim(dataset->ncid, i, name, &length);
-        printf("dim name: %s len: %d\n", name, length);
-    }
-
-    for (int i = 0; i < nvars; i++)
-    {
-        char name[NC_MAX_NAME];
-        size_t length;
-        nc_type xtype;
-        int ndims;
-        int dimids[NC_MAX_VAR_DIMS];
-        int natts;
-        nc_inq_var(dataset->ncid, i, name, &xtype, &ndims, dimids, &natts);
-        printf("var name: %s ndims: %d\n", name, ndims);
-    }
-
-    for (int i = 0; i < ngatts; i++)
-    {
-        char name[NC_MAX_NAME];
-        size_t len;
-        nc_type xtype;
-        nc_inq_att(dataset->ncid, NC_GLOBAL, name, &xtype, &len);
-        printf("gatt name: %s len: %d\n", name, len);
-    }
+    printf("cfsr_nc_load: loaded %s\n", filename);
 
     dataset->Ni = 720;
     dataset->Nj = 360;
@@ -88,11 +56,18 @@ char* cfsr_nc_filename(cfsr_nc_dataset_t* dataset, struct tm date)
 
 int cfsr_nc_free(cfsr_nc_dataset_t* dataset)
 {
-    nc_close(dataset->ncid);
+    for (int i = 0; i < CFSR_END_YEAR-CFSR_START_YEAR; i++)
+        for (int j = 0; j < 12; j++)
+    nc_close(dataset->ncid[i][j]);
 }
 
 double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, double lat, double lon)
 {
+    int ncid = dataset->ncid[date.tm_year-CFSR_START_YEAR][date.tm_mon];
+    if (!ncid) {
+        cfsr_nc_load(dataset, date);
+        ncid = dataset->ncid[date.tm_year-CFSR_START_YEAR][date.tm_mon];
+    }
     double i = mod((lon-dataset->lon0)/dataset->dx, dataset->Ni);
     double j = mod((lat-dataset->lat0)/dataset->dy, dataset->Nj);
     double i0 = floor(i);
@@ -111,7 +86,7 @@ double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, double lat, 
     int16_t s[4];
     double v[4];
     for (int i = 0; i < 4; i++) {
-        nc_get_var1_short(dataset->ncid, 5, dim[i], &s[i]);
+        nc_get_var1_short(ncid, 5, dim[i], &s[i]);
         v[i] = 0.03947173179924627 + s[i] * 5.6536401507637375E-5;
     }
 
