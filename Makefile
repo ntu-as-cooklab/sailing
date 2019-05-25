@@ -7,8 +7,9 @@ CXXFLAGS += -std=c++14
 
 SRC = $(wildcard cfsr/*.c src/*.c src/*.cpp)
 OBJ = $(patsubst %,build/%.o,$(SRC))
+BIN = $(patsubst apps/%,bin/%,$(basename $(wildcard apps/*.cpp apps/*.c)))
 
-bin/sailing: $(OBJ)
+bin/%: apps/%.* $(OBJ)
 	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDLIBS) -o $@
 
