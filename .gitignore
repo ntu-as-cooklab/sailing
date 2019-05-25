@@ -18,3 +18,5 @@ build-linux/
 *.grb2*
 bin/
 *.nc
+node_modules/
+package-lock.json

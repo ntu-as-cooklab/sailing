@@ -5,6 +5,8 @@ var startdate, enddate, days;
 var wsClient;
 var voyage = [];
 
+$(function(){main();});
+
 function main()
 {
 	// Get DOM elements

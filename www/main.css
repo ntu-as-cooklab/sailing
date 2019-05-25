@@ -9,3 +9,111 @@ html, body {
     min-width:  400px;
     min-height: 300px;
 }
+
+#container {
+    position: relative;
+    width:100%; height:100%;
+}
+
+#map {
+    position: absolute;
+    width:100%; height: 100%;
+    color: black;
+    z-index: 1;
+}
+
+#info {
+    position: absolute;
+    bottom:1%; width:100%;
+    text-align:center;
+    font-size: 1.5vw;
+    color: black;
+    z-index: 2;
+}
+
+#info > * {
+    font-family: 微軟正黑體, sans-serif;
+}
+
+#parameters {
+    position: absolute;
+    right: 0%; 	top: 0%;
+    background-color: rgba(0,0,0,0);
+    z-index: 3;
+}
+
+#controls {
+    font-family: 微軟正黑體, sans-serif;
+    position: absolute;
+    right: 1%; 	top: 1%;
+    width:70vw; height:20vh;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    z-index: 4;
+    overflow: auto;
+}
+
+#controls > * {
+    font-family: 微軟正黑體, sans-serif;
+    font-size: 1vw;
+}
+.hor {
+    display: inline-block;
+    vertical-align:middle;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-family: 微軟正黑體, sans-serif;
+    font-size: 1vw;
+}
+.ver {
+    font-family: 微軟正黑體, sans-serif;
+    font-size: 1vw;
+}
+.date { width:18ex; }
+
+#icolor {
+    margin-top: 10px;
+    font-size: 0.2vw;
+}
+
+#outputcontainer {
+    padding: 5px;
+    font-family: 微軟正黑體, sans-serif;
+    font-size: 0.3vw;
+    position: absolute;
+    right: 1%; 	top: 22%;
+    width:20%; height:70%;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    z-index: 5;
+    overflow: auto;
+}
+
+.outputitem {
+    padding: 5px;
+    margin: 5px;
+    font-family: 微軟正黑體, sans-serif;
+    font-size: 1vw;
+    background-color: rgba(0,0,0,0.3);
+    color: white;
+    z-index: 6;
+
+    overflow: auto;
+}
+
+.tools {
+    margin-right: 10px;
+    font-size: 2.4vh;
+    font-family: 微軟正黑體, sans-serif;
+}
+
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}
