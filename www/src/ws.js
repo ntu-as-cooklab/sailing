@@ -18,8 +18,8 @@ var WsClient = function()
 		{
 			console.log("connected");
 			connected = true;
-			this.send("loginID= ");
-			this.send("runId= ");
+			//this.send("loginID= ");
+			//this.send("runId= ");
 		};
 		ws.onerror = function(e) { console.log(e); };
 		ws.onclose = function(e) { connected = false; console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
