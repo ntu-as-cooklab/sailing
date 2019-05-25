@@ -1,6 +1,9 @@
 #include <time.h>
 #include "cfsr_nc.h"
 #include "vec2.h"
+#include "path.hpp"
+#include "cfsr_data.h"
+#include <stdio.h>
 
 void sail(struct tm startdate, struct tm enddate)
 {
@@ -14,11 +17,24 @@ void sail(struct tm startdate, struct tm enddate)
 	// }
 }
 
-void sail_step()
+int movement_factor = 1;
+int timestep = 3600; 		// size of timestep = 1 hr = 3600 sec
+latlon_t calc_next_place(latlon_t loc, vec2 speed)
+{
+	// speed: in (m/s)
+	loc.lat += movement_factor * timestep/1000 * speed.y/lat2km(loc.lat);
+	loc.lon += movement_factor * timestep/1000 * speed.x/lon2km(loc.lat);
+	return loc;
+}
+
+void sail_step(path_t& path)
 {
 	// Ocean current:
-	// vec2 ocean = cfsr_ocn(date, loc);
-	// if (norm(ocean) > 1e3) return;
+
+	pathpt_t pt = path.pts.back();
+
+	vec2 ocean = cfsr_ocn(pt.date, pt.loc);
+	if (norm(ocean) > 1e3) return;
 
 	// vec2 wind = {0, 0};
 	// vec2 sail_gain = {0, 0};
@@ -39,7 +55,14 @@ void sail_step()
 	// }
 
 	// total speed
-	// gain = ocean + sail_gain;
+	vec2 gain = ocean; // + sail_gain;
+
 	// calculate next place
-	// curr = calc_next_place(curr, gain);
+	struct tm next_date = pt.date;
+	next_date.tm_hour += 1;
+	mktime(&next_date);
+	latlon_t next_loc = calc_next_place(pt.loc, gain);
+	pathpt_t next_pt = {.date = next_date, .loc = next_loc};
+	path.pts.push_back(next_pt);
+	printf("%u-%02u-%02u %02uhr %f,%f\n", next_date.tm_year, next_date.tm_mon+1, next_date.tm_mday, next_date.tm_hour, next_loc.lat, next_loc.lon);
 }
