@@ -29,7 +29,7 @@ MONTHS := $(shell d="1979-01-02"; until [[ $$d > 2011-12-31 ]]; do echo "$$(date
 FIELDS := ocnu5 ocnv5
 
 .PHONY: grb2 nc
-grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,data/$(FIELDS),$(field).gdas.$(month).%))
+grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),data/$(field).gdas.$(month).%))
 
 %.grb2:
 	mkdir -p $(@D); \
