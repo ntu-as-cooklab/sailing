@@ -11,7 +11,7 @@ var latlonlines;
 function initMap()
 {
 	map = L.map('map', {
-		worldCopyJump: true,
+		//worldCopyJump: true,
 		minZoom: 3,
 		maxZoom: 18,
 		'center': [3.0, 160.0],
@@ -20,22 +20,17 @@ function initMap()
 		//fadeAnimation: false,
 		//zoomAnimation: false,
 		contextmenu: true,
-	    contextmenuWidth: 140,
-	    contextmenuItems: [
-			{text: '設為起點', callback: function(e){setOrig(e.latlng);onOrigDragEnd(e);} },
-			{text: '設為目的地', callback: function(e){setDest(e.latlng);onDestDragEnd(e)} },
+        contextmenuWidth: 140,
+        contextmenuItems: [
+            {text: '設為起點', callback: function(e){setOrig(e.latlng);onOrigDragEnd(e);} },
+            {text: '設為目的地', callback: function(e){setDest(e.latlng);onDestDragEnd(e)} },
 		]
 	});
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>, <p>Flat Icons by <a href="/resources/free-icons/">WhoIsHostingThis.com</a></p>',
-    	id: 'seanstone5923.phlaakpk',
-    	accessToken: 'pk.eyJ1Ijoic2VhbnN0b25lNTkyMyIsImEiOiJjaW1kOTJrZGYwMDUxdHNra2wwOGN0cTY1In0.n0m5Euk9SWbiNt4RZi8vkQ',
-		//unloadInvisibleTiles : false,
-		//reuseTiles : true,
-		//updateWhenIdle : false,
-		continousWorld : true,
-		//noWrap: false
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>, <p>Flat Icons by <a href="/resources/free-icons/">WhoIsHostingThis.com</a></p>',
+			id: 'seanstone5923.phlaakpk',
+			accessToken: 'pk.eyJ1Ijoic2VhbnN0b25lNTkyMyIsImEiOiJjaW1kOTJrZGYwMDUxdHNra2wwOGN0cTY1In0.n0m5Euk9SWbiNt4RZi8vkQ',
 	}).addTo(map);
 
 	L.control.scale().addTo(map);

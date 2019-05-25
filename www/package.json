@@ -9,6 +9,7 @@
         "leaflet-toolbar": "*",
         "@mapbox/leaflet-omnivore": "*",
         "leaflet-graticule": "*",
+        "leaflet.repeatedmarkers": "*",
         "cesium": "*"
     },
     "devDependencies": {}

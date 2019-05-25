@@ -5,9 +5,6 @@
 		<meta charset="utf-8">
 		<!-- jQuery -->
 		<script src="node_modules/jquery/dist/jquery.min.js"></script>
-		<!-- Cesium -->
-		<script src="node_modules/cesium/Build/Cesium/Cesium.js"></script>
-  		<link href="node_modules/cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 		<!-- Leaflet -->
 		<link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
 		<link rel="stylesheet" href="node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css"/>
@@ -19,25 +16,20 @@
 		<script src="node_modules/leaflet-graticule/Leaflet.Graticule.js"></script>
 		<!-- Sources -->
 		<link rel="stylesheet" href="main.css" />
-		<!-- <script src="src/map_leaflet.js"></script> -->
-		<script src="src/map_cesium.js"></script>
+		<script src="src/map_leaflet.js"></script>
 		<script src="src/ws.js"></script>
 		<script src="src/main.js"></script>
-		<script src="src/session.js"></script>
 
 	</head>
 
 	<body>
 		<div id="container">
 			<div id="map"></div>
-			<div id="controls" onchange="setParam(event.target)" onclick="setParam(event.target)">
+			<!-- <div id="controls" onchange="setParam(event.target)" onclick="setParam(event.target)">
 				<div class="hor">
 					<div class="hor">
 						<input type="radio" name="dataset" value="0" id="dataset_avg" hidden> <span hidden>1979~2009 平均資料</span></br>
-						<!-- <input type="radio" name="dataset" value="1" > 1979~2009 連續資料<br> -->
 						<input type="radio" name="dataset" value="2" checked> 單年資料: <input id="iyear" type="number" name="year" value="1979" min="1979" max="2009" step="1" style="width:8ex">
-						<!-- <input type="radio" name="dataset0" value="3" id="dataset_1979" checked> 單年資料: 1979</br>
-						<input type="radio" name="dataset0" value="4" id="dataset_1982"> 單年資料: 1982</br> -->
 					</div>
 					<div class="hor">
 						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="1980-12-31" onchange="setDays()">
@@ -68,7 +60,7 @@
 					</table>
 					</table>
 				</div>
-			</div>
+			</div> -->
 			<!-- <div id="outputcontainer">
 				<input type="button" onclick="newRecord()" value="新增專案" hidden>
 				<input type="button" onclick="loadRecord()" value="載入專案" hidden>
