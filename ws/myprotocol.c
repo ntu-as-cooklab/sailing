@@ -1,23 +1,17 @@
 #include <string.h>
 #include <stdlib.h>
+#include <libwebsockets.h>
+#include "myprotocol.h"
+
+#define LWS_PLUGIN_STATIC
 
 /* one of these created for each message */
-
 struct msg {
     void *payload; /* is malloc'd */
     size_t len;
 };
 
-/* one of these is created for each client connecting to us */
-
-struct per_session_data__minimal {
-    struct per_session_data__minimal *pss_list;
-    struct lws *wsi;
-    int last; /* the last message number we sent */
-};
-
 /* one of these is created for each vhost our protocol is used with */
-
 struct per_vhost_data__minimal {
     struct lws_context *context;
     struct lws_vhost *vhost;
@@ -30,7 +24,6 @@ struct per_vhost_data__minimal {
 };
 
 /* destroys the message when everyone has had a copy of it */
-
 static void __minimal_destroy_message(void *_msg)
 {
     struct msg *msg = _msg;
@@ -40,7 +33,7 @@ static void __minimal_destroy_message(void *_msg)
     msg->len = 0;
 }
 
-static int callback_minimal(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
+int callback_minimal(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
     struct per_session_data__minimal *pss = (struct per_session_data__minimal *)user;
     struct per_vhost_data__minimal *vhd = (struct per_vhost_data__minimal *) lws_protocol_vh_priv_get(lws_get_vhost(wsi), lws_get_protocol(wsi));
@@ -97,10 +90,7 @@ static int callback_minimal(struct lws *wsi, enum lws_callback_reasons reason, v
         memcpy((char *)vhd->amsg.payload + LWS_PRE, in, len);
         vhd->current++;
 
-        /*
-        * let everybody know we want to write something on them
-        * as soon as they are ready
-        */
+        /* let everybody know we want to write something on them as soon as they are ready */
         lws_start_foreach_llp(struct per_session_data__minimal **, ppss, vhd->pss_list) {
             lws_callback_on_writable((*ppss)->wsi);
         } lws_end_foreach_llp(ppss, pss_list);
@@ -112,12 +102,3 @@ static int callback_minimal(struct lws *wsi, enum lws_callback_reasons reason, v
 
     return 0;
 }
-
-#define LWS_PLUGIN_PROTOCOL_MINIMAL \
-    { \
-        "lws-minimal", \
-        callback_minimal, \
-        sizeof(struct per_session_data__minimal), \
-        128, \
-        0, NULL, 0 \
-    }
