@@ -10,7 +10,8 @@
         "@mapbox/leaflet-omnivore": "*",
         "leaflet-graticule": "*",
         "leaflet.repeatedmarkers": "*",
-        "cesium": "*"
+        "leaflet-easybutton": "*",
+        "cbor-js": "*"
     },
     "devDependencies": {}
 }

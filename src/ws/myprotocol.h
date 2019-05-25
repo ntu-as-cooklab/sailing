@@ -20,13 +20,6 @@ struct per_session_data__minimal {
     int last; /* the last message number we sent */
 };
 
-#define LWS_PLUGIN_PROTOCOL_MINIMAL \
-    { \
-        "lws-minimal", \
-        callback_minimal, \
-        sizeof(struct per_session_data__minimal), \
-        128, \
-        0, NULL, 0 \
-    }
+extern struct lws_protocols protocols[];
 
 #endif

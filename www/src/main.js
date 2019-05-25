@@ -27,7 +27,7 @@ function main()
 	dataset_1979 	= document.getElementById("dataset_1979");
 	dataset_1982 	= document.getElementById("dataset_1982");
 
-	//alert(icolor.value);
+	//alert("Init");
 
 	wsClient = new WsClient();
 	wsClient.connect();

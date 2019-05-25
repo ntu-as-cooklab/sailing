@@ -2,12 +2,6 @@
 #include <signal.h>
 #include "ws/myprotocol.h"
 
-static struct lws_protocols protocols[] = {
-    { "http", lws_callback_http_dummy, 0, 0 },
-    LWS_PLUGIN_PROTOCOL_MINIMAL,
-    { NULL, NULL, 0, 0 } /* terminator */
-};
-
 static int interrupted;
 static void sigint_handler(int sig)
 {

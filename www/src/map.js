@@ -8,6 +8,14 @@ var modeName = ["瓶中信 (無風帆)", "隨風漂流 (航向=風向)", "固定
 var mainlatlonlines;
 var latlonlines;
 
+function newPath(orig)
+{
+	wsClient.send(CBOR.encode({
+		command: "newPath",
+		orig: orig,
+	}));
+}
+
 function initMap()
 {
 	map = L.map('map', {
@@ -22,8 +30,7 @@ function initMap()
 		contextmenu: true,
         contextmenuWidth: 140,
         contextmenuItems: [
-            {text: '設為起點', callback: function(e){setOrig(e.latlng);onOrigDragEnd(e);} },
-            {text: '設為目的地', callback: function(e){setDest(e.latlng);onDestDragEnd(e)} },
+            {text: '新增路徑', callback: function(e){newPath(e.latlng)} },
 		]
 	});
 
@@ -55,13 +62,19 @@ function initMap()
 	setOrig(new L.LatLng(-10.0, 160.0));
 	setDest(new L.LatLng(-14.0, 188.5));
 
+	L.easyButton('fa-globe', function(btn, map){
+		var antarctica = [-77,70];
+		map.setView(antarctica);
+	}, "New").addTo(map);
+
 	/** Events **/
 
-	function onMapClick(e) {}
+	function onMapClick(e) { setOrig(e.latlng); }
 	function onMapMouseMove(e) { info.innerHTML = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
 	function onOrigDragEnd(e) { wsClient.send("orig = " + orig.getLatLng().lat + "," + orig.getLatLng().lng); }
 	function onDestDragEnd(e) { wsClient.send("dest = " + dest.getLatLng().lat + "," + dest.getLatLng().lng); }
 	map.on('click', onMapClick);
+	map.on('contextmenu', onMapClick);
 	map.on('mousemove', onMapMouseMove);
 	orig.on('dragend', onOrigDragEnd);
 	dest.on('dragend', onDestDragEnd);

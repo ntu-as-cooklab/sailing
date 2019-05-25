@@ -10,15 +10,16 @@ var WsClient = function()
 	this.connect = function ()
 	{
 		if ("WebSocket" in window)
-			ws = new WebSocket(url);
+			ws = new WebSocket(url, ["lws-minimal"], {binaryType: 'arraybuffer'});
 		else if ("MozWebSocket" in window)
-			ws = new MozWebSocket(url);
+			ws = new MozWebSocket(url, ["lws-minimal"], {binaryType: 'arraybuffer'});
 
 		ws.onopen = function(e)
 		{
+			console.log("connected");
 			connected = true;
-			this.send("loginID= " + params.loginID);
-			this.send("runId= " + params.runId);
+			this.send("loginID= ");
+			this.send("runId= ");
 		};
 		ws.onerror = function(e) { console.log(e); };
 		ws.onclose = function(e) { connected = false; console.log(e.code+(e.reason != "" ? ","+e.reason : ""));};
@@ -26,41 +27,41 @@ var WsClient = function()
 		ws.onmessage = function(e)
 		{
 			console.log(e.data);
-			var cmd = e.data.split('=');
-			if (cmd.length == 2)
-				switch (cmd[0].trim())
-				{
-					case "startdate": // TODO
-						break;
-					case "orig":
-						orig.setLatLng(cmd[1].match(/\S+/g));
-						break;
-					case "dest":
-						dest.setLatLng(cmd[1].match(/\S+/g));
-						break;
-				}
-			else
-			{
-				cmd = e.data.split(' ');
-				switch (cmd[0].trim())
-				{
-					case "kml":
-						omnivore.kml(cmd[1].trim()).addTo(map);
-						break;
-					case "json":
-						var v = JSON.parse(e.data.slice(e.data.indexOf(cmd[0]) + cmd[0].length));
+			// var cmd = e.data.split('=');
+			// if (cmd.length == 2)
+			// 	switch (cmd[0].trim())
+			// 	{
+			// 		case "startdate": // TODO
+			// 			break;
+			// 		case "orig":
+			// 			orig.setLatLng(cmd[1].match(/\S+/g));
+			// 			break;
+			// 		case "dest":
+			// 			dest.setLatLng(cmd[1].match(/\S+/g));
+			// 			break;
+			// 	}
+			// else
+			// {
+			// 	cmd = e.data.split(' ');
+			// 	switch (cmd[0].trim())
+			// 	{
+			// 		case "kml":
+			// 			omnivore.kml(cmd[1].trim()).addTo(map);
+			// 			break;
+			// 		case "json":
+			// 			var v = JSON.parse(e.data.slice(e.data.indexOf(cmd[0]) + cmd[0].length));
 
-						// Check if new voyage
-						var newv = true;
-						for (var i=0; i<voyage.length; i++) if (voyage[i].name == v.name && !voyage[i].deleted) newv = false;
-						if (newv)
-						{
-							voyage.push(v);
-							parseVoyage(voyage[voyage.length-1]);
-						} //else alert("此參數設定已計算過!");
-						break;
-				}
-			}
+			// 			// Check if new voyage
+			// 			var newv = true;
+			// 			for (var i=0; i<voyage.length; i++) if (voyage[i].name == v.name && !voyage[i].deleted) newv = false;
+			// 			if (newv)
+			// 			{
+			// 				voyage.push(v);
+			// 				parseVoyage(voyage[voyage.length-1]);
+			// 			} //else alert("此參數設定已計算過!");
+			// 			break;
+			// 	}
+			// }
 		};
 	};
 

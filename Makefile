@@ -40,3 +40,7 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),data/$(field).gd
 
 %.nc: %.grb2
 	grib_to_netcdf -T -I type -k3 -o $@ $<
+
+.PHONY: install
+install:
+	cd www; npm i

@@ -3,12 +3,6 @@
 #include <signal.h>
 #include "ws/myprotocol.h"
 
-static struct lws_protocols protocols[] = {
-    { "http", lws_callback_http_dummy, 0, 0 },
-    LWS_PLUGIN_PROTOCOL_MINIMAL,
-    { NULL, NULL, 0, 0 } /* terminator */
-};
-
 static int interrupted;
 static const struct lws_http_mount mount = {
     .mount_next             = NULL,		/* linked-list "next" */
@@ -49,10 +43,11 @@ int main(int argc, const char **argv)
     {
         .port = 8000,
         .protocols = protocols,
-        .options = LWS_SERVER_OPTION_DISABLE_IPV6,
-        .vhost_name = "localhost",
+        //.options = LWS_SERVER_OPTION_DISABLE_IPV6,
+        //.vhost_name = "localhost",
         .mounts = &mount,
-        .ws_ping_pong_interval = 10,
+        //.ws_ping_pong_interval = 10,
+        //.pt_serv_buf_size = 32 * 1024,
     };
 
     lwsl_user("LWS server starting on port %u\n", info.port);
