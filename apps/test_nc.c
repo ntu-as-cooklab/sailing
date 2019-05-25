@@ -5,7 +5,7 @@
 
 int main (void)
 {
-    struct tm date;
+    struct tm date = {};
     date.tm_year = 1979;
     date.tm_mon = 0;
     date.tm_mday = 1;
