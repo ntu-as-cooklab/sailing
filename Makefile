@@ -1,11 +1,11 @@
 SHELL:=/bin/bash
 
-LDLIBS += -lcurl -lm -leccodes -lnetcdf
-CPPFLAGS += -O2 -Icfsr -Isrc
+LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets
+CPPFLAGS += -O2 -Icfsr -Iws -Isrc
 CFLAGS 	+= -std=gnu11
 CXXFLAGS += -std=c++14
 
-SRC = $(wildcard cfsr/*.c src/*.c src/*.cpp)
+SRC = $(wildcard cfsr/*.c ws/*.c src/*.c src/*.cpp)
 OBJ = $(patsubst %,build/%.o,$(SRC))
 BIN = $(patsubst apps/%,bin/%,$(basename $(wildcard apps/*.cpp apps/*.c)))
 

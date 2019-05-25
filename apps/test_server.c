@@ -49,11 +49,11 @@ int main(int argc, const char **argv)
     struct lws_context_creation_info info =
     {
         .port = 8000,
-        .mounts = &mount,
         .protocols = protocols,
-        .vhost_name = "localhost",
-        .ws_ping_pong_interval = 10,
         .options = LWS_SERVER_OPTION_DISABLE_IPV6,
+        .vhost_name = "localhost",
+        .mounts = &mount,
+        .ws_ping_pong_interval = 10,
     };
 
     lwsl_user("LWS server starting on port %u\n", info.port);
