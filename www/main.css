@@ -45,7 +45,7 @@ html, body {
 #controls {
     font-family: 微軟正黑體, sans-serif;
     position: absolute;
-    right: 1%; 	top: 1%;
+    right: 20%; 	top: 1%;
     width:70vw; height:20vh;
     background-color: rgba(0,0,0,0.6);
     color: white;
