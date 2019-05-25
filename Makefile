@@ -9,6 +9,8 @@ SRC = $(wildcard cfsr/*.c src/*.c src/*.cpp)
 OBJ = $(patsubst %,build/%.o,$(SRC))
 BIN = $(patsubst apps/%,bin/%,$(basename $(wildcard apps/*.cpp apps/*.c)))
 
+all: $(BIN)
+
 bin/%: apps/%.* $(OBJ)
 	mkdir -p $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDLIBS) -o $@
