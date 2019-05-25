@@ -51,7 +51,7 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 char* cfsr_nc_filename(cfsr_nc_dataset_t* dataset, struct tm date)
 {
     static char filename[128];
-    snprintf(filename, sizeof(filename), "%s.gdas.%04u%02u.nc", dataset->str, date.tm_year, date.tm_mon+1);
+    snprintf(filename, sizeof(filename), "data/%s.gdas.%04u%02u.nc", dataset->str, date.tm_year, date.tm_mon+1);
     return filename;
 }
 
