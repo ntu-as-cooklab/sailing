@@ -40,43 +40,34 @@ void sigint_handler(int sig)
 
 int main(int argc, const char **argv)
 {
-    struct lws_context_creation_info info;
-    struct lws_context *context;
-    const char *p;
-    int n = 0, logs = LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE
-        /* for LLL_ verbosity above NOTICE to be built into lws,
-         * lws must have been configured and built with
-         * -DCMAKE_BUILD_TYPE=DEBUG instead of =RELEASE */
-        /* | LLL_INFO */ /* | LLL_PARSER */ /* | LLL_HEADER */
-        /* | LLL_EXT */ /* | LLL_CLIENT */ /* | LLL_LATENCY */
-        /* | LLL_DEBUG */;
+    lws_set_log_level(LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE, NULL);
+    /* for LLL_ verbosity above NOTICE to be built into lws,
+    * lws must have been configured and built with
+    * -DCMAKE_BUILD_TYPE=DEBUG instead of =RELEASE */
+    /* | LLL_INFO */ /* | LLL_PARSER */ /* | LLL_HEADER */
+    /* | LLL_EXT */ /* | LLL_CLIENT */ /* | LLL_LATENCY */
+    /* | LLL_DEBUG */
 
-    signal(SIGINT, sigint_handler);
+    struct lws_context_creation_info info =
+    {
+        .port = 8000,
+        .mounts = &mount,
+        .protocols = protocols,
+        .vhost_name = "localhost",
+        .ws_ping_pong_interval = 10,
+        .options = LWS_SERVER_OPTION_DISABLE_IPV6,
+    };
 
-    if ((p = lws_cmdline_option(argc, argv, "-d")))
-        logs = atoi(p);
-
-    lws_set_log_level(logs, NULL);
-    lwsl_user("LWS minimal ws server | visit http://localhost:7681 (-s = use TLS / https)\n");
-
-    memset(&info, 0, sizeof info); /* otherwise uninitialized garbage */
-    info.port = 8000;
-    info.mounts = &mount;
-    info.protocols = protocols;
-    info.vhost_name = "localhost";
-    info.ws_ping_pong_interval = 10;
-    info.options = LWS_SERVER_OPTION_DISABLE_IPV6; //LWS_SERVER_OPTION_HTTP_HEADERS_SECURITY_BEST_PRACTICES_ENFORCE;
-
-    context = lws_create_context(&info);
+    lwsl_user("LWS server starting on port %u\n", info.port);
+    struct lws_context *context = lws_create_context(&info);
     if (!context) {
         lwsl_err("lws init failed\n");
         return 1;
     }
 
-    while (n >= 0 && !interrupted)
-        n = lws_service(context, 1000);
+    signal(SIGINT, sigint_handler);
+    while (lws_service(context, 1000) >= 0 && !interrupted) ;
 
     lws_context_destroy(context);
-
     return 0;
 }
