@@ -40,12 +40,6 @@ struct Voyage
 	int 	sailopenhours 	= 12;
 	float 	alpha 			= 0.11;				// parameter for wind profile power law
 
-	int 	timestep 		= 3600; 		// size of timestep = 1 hr = 3600 sec
-	int 	movement_factor = 1; 				// movement factor (forward = 1, reverse = -1)
-
-	float 	range 			= 1.1; 				// for checking if within range of destination
-	LatLon 	bounds 			= {-32.0, 255.0}; 	// { -16.5, 177.5 }; // beyond --> out of range
-
 	/* Status */
 
 	Date 	date 			= startdate;
@@ -55,33 +49,15 @@ struct Voyage
 	int		runstep 		= 0; // count simulation time
 	int		sailstep 		= 0; // count simulation time
 
-	UV ocean, wind, sail_dir, sail_gain, gain;
-
 	/* Functions */
-
-	// start simulation
-	void operator()() { sail(); }
 	
 	UV adj_direction(LatLon curr, LatLon dest);
 	UV calc_sail_gain(UV wind, UV dir);
 	LatLon calc_next_place(LatLon curr, UV speed);
 
-	std::string genName();
-	void step();
-	bool sail();
-
 	KML kml;
 	CSV csv;
 	JSON json;
-
-private:
-	// Sums --> used for averages
-	float 	Total_Ocean_Sp    = 0,
-			Total_Ocean_Angle = 0,
-			Total_Wind_Sp     = 0,
-			Total_Wind_Angle  = 0,
-			Total_Wind_Gain   = 0, // speed gain due to wind
-			Total_Ocean_Gain  = 0; // speed gain due to ocean
 };
 
 #endif
