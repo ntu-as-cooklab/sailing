@@ -32,9 +32,9 @@ FIELDS := ocnu5 ocnv5
 grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,data/$(FIELDS),$(field).gdas.$(month).%))
 
 %.grb2:
-	mkdir -p $(@D)
+	mkdir -p $(@D); \
 	-YYYYMM=$$(echo "$@"|cut -d. -f3); \
-	curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$@
+	cd $(@D) && curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$@
 
 %.nc: %.grb2
 	grib_to_netcdf -T -I type -k3 -o $@ $<
