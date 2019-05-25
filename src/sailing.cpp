@@ -64,5 +64,7 @@ void sail_step(path_t& path)
 	latlon_t next_loc = calc_next_place(pt.loc, gain);
 	pathpt_t next_pt = {.date = next_date, .loc = next_loc};
 	path.pts.push_back(next_pt);
-	printf("%u-%02u-%02u %02uhr %f,%f\n", next_date.tm_year, next_date.tm_mon+1, next_date.tm_mday, next_date.tm_hour, next_loc.lat, next_loc.lon);
+	char next_date_str[30];
+    strftime(next_date_str, sizeof(next_date_str), "%Y-%m-%d %Hhr", &next_date); 
+	printf("%s %f,%f\n", next_date_str, next_loc.lat, next_loc.lon);
 }
