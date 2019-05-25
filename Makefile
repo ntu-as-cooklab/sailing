@@ -34,7 +34,7 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,data/$(FIELDS),$(field).gd
 %.grb2:
 	mkdir -p $(@D); \
 	-YYYYMM=$$(echo "$@"|cut -d. -f3); \
-	cd $(@D) && curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$@
+	cd $(@D) && curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$(notdir $@)
 
 %.nc: %.grb2
 	grib_to_netcdf -T -I type -k3 -o $@ $<
