@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <libwebsockets.h>
 #include "ws/myprotocol.h"
+#include "server_msg.h"
 
 #define LWS_PLUGIN_STATIC
 
@@ -97,6 +98,8 @@ int callback_minimal(struct lws *wsi, enum lws_callback_reasons reason, void *us
         case LWS_CALLBACK_RECEIVE:
 
             lwsl_user("LWS_CALLBACK_RECEIVE\n");
+
+            server_decode(in, len);
 
             if (vhd->amsg.payload)
                 __minimal_destroy_message(&vhd->amsg);

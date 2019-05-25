@@ -1,6 +1,6 @@
 SHELL:=/bin/bash
 
-LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets
+LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor
 CPPFLAGS += -O2 -Isrc
 CFLAGS 	+= -std=gnu11
 CXXFLAGS += -std=c++14
