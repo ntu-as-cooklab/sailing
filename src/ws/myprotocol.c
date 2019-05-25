@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <libwebsockets.h>
-#include "myprotocol.h"
+#include "ws/myprotocol.h"
 
 #define LWS_PLUGIN_STATIC
 

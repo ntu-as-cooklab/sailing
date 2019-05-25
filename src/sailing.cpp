@@ -1,8 +1,6 @@
 #include <time.h>
-#include "cfsr_nc.h"
-#include "vec2.h"
 #include "path.hpp"
-#include "cfsr_data.h"
+#include "cfsr/cfsr_data.h"
 #include <stdio.h>
 
 void sail(struct tm startdate, struct tm enddate)

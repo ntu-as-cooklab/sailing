@@ -1,5 +1,5 @@
-#include "cfsr_data.h"
-#include "cfsr_nc.h"
+#include "cfsr/cfsr_data.h"
+#include "cfsr/cfsr_nc.h"
 #include "vec2.h"
 #include "latlon.h"
 #include <time.h>

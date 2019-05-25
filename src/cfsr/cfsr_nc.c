@@ -1,5 +1,5 @@
-#include "cfsr_nc.h"
-#include "cfsr.h"
+#include "cfsr/cfsr_nc.h"
+#include "cfsr/cfsr.h"
 #include "latlon.h"
 #include <netcdf.h>
 #include <string.h>

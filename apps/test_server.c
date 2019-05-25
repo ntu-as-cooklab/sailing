@@ -1,7 +1,7 @@
 #include <libwebsockets.h>
 #include <string.h>
 #include <signal.h>
-#include "myprotocol.h"
+#include "ws/myprotocol.h"
 
 static struct lws_protocols protocols[] = {
     { "http", lws_callback_http_dummy, 0, 0 },
