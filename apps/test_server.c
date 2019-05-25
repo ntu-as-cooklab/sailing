@@ -10,7 +10,6 @@ static struct lws_protocols protocols[] = {
 };
 
 static int interrupted;
-
 static const struct lws_http_mount mount = {
     .mount_next             = NULL,		/* linked-list "next" */
     .mountpoint             = "/",		/* mountpoint URL */
@@ -31,7 +30,7 @@ static const struct lws_http_mount mount = {
     .basic_auth_login_file  = NULL,
 };
 
-void sigint_handler(int sig)
+static void sigint_handler(int sig)
 {
     interrupted = 1;
 }
