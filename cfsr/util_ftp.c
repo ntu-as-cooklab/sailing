@@ -27,7 +27,7 @@ static int xferinfo(void *p, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ul
 {
   	FtpXfer* xfer = (FtpXfer*)p;
 	curl_off_t curtime;
-	curl_easy_getinfo(xfer->curl, CURLINFO_TOTAL_TIME_T, &curtime);
+	curl_easy_getinfo(xfer->curl, CURLINFO_TOTAL_TIME, &curtime);
 	
 	if(dlnow > 0 && curtime - xfer->lastruntime >= 500000)
 	{
