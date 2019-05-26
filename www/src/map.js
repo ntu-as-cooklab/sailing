@@ -8,11 +8,14 @@ var modeName = ["瓶中信 (無風帆)", "隨風漂流 (航向=風向)", "固定
 var mainlatlonlines;
 var latlonlines;
 
-function newPath(orig)
+var curr_date = new Date(1979, 0, 1, 0);
+
+function newPath(date, orig)
 {
 	wsClient.send(CBOR.encode({
-		command: "newPath",
-		orig: orig,
+		cmd: "newPath",
+		date: [date.getYear(),date.getMonth(),date.getDay(),date.getHours()],
+		orig: [orig.lat, orig.lng],
 	}));
 }
 
@@ -30,7 +33,7 @@ function initMap()
 		contextmenu: true,
         contextmenuWidth: 140,
         contextmenuItems: [
-            {text: '新增路徑', callback: function(e){newPath(e.latlng)} },
+            {text: '新增路徑', callback: function(e){newPath(curr_date, e.latlng)} },
 		]
 	});
 
