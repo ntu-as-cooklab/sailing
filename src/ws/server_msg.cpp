@@ -26,6 +26,13 @@ int server_decode(uint8_t *in, size_t len)
             sail_step(path);
 
         json jpath({});
+        size_t len = path.pts.size();
+        for (int i = 0; i < len; i++)
+            jpath[i] = {
+                { "date", {path.pts[i].date.tm_year, path.pts[i].date.tm_mon, path.pts[i].date.tm_mday, path.pts[i].date.tm_hour}},
+                { "loc", {path.pts[i].loc.lat, path.pts[i].loc.lon}},
+            };
+        vector<uint8_t> jpath_cbor = json::to_cbor(jpath_cbor);
     }
 
     return 0;
