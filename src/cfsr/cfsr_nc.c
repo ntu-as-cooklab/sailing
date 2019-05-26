@@ -34,7 +34,7 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
         printf("cfsr_nc_load: failed to load file %s\n", filename);
         return err;
     }
-    printf("cfsr_nc_load: loaded %s\n", filename);
+    //printf("cfsr_nc_load: loaded %s\n", filename);
 
     dataset->Ni = 720;
     dataset->Nj = 360;
