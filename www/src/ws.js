@@ -31,28 +31,20 @@ var WsClient = function()
 			if (typeof e.data === "string")
 				console.log(e.data);
 			else {
-				//console.log(e.data);
-				console.log(CBOR.decode(e.data));
+				var msg = CBOR.decode(e.data);
+				//console.log(msg);
+				//console.log(msg["cmd"]);
+				switch (msg["cmd"])
+				{
+					case "newPath":
+						//console.log("addnewPath");
+						addnewPath(msg["path"]);
+					break;
+					default:
+						console.log("cmd", msg["cmd"]);
+				}
 			}
 				
-			// var cmd = e.data.split('=');
-			// if (cmd.length == 2)
-			// 	switch (cmd[0].trim())
-			// 	{
-			// 		case "startdate": // TODO
-			// 			break;
-			// 		case "orig":
-			// 			orig.setLatLng(cmd[1].match(/\S+/g));
-			// 			break;
-			// 		case "dest":
-			// 			dest.setLatLng(cmd[1].match(/\S+/g));
-			// 			break;
-			// 	}
-			// else
-			// {
-			// 	cmd = e.data.split(' ');
-			// 	switch (cmd[0].trim())
-			// 	{
 			// 		case "kml":
 			// 			omnivore.kml(cmd[1].trim()).addTo(map);
 			// 			break;
@@ -68,13 +60,34 @@ var WsClient = function()
 			// 				parseVoyage(voyage[voyage.length-1]);
 			// 			} //else alert("此參數設定已計算過!");
 			// 			break;
-			// 	}
-			// }
 		};
 	};
 
 	this.disconnect = function() { ws.close(); };
 	this.send = function(msg) { ws.send(msg); };
+}
+
+function addnewPath(path)
+{
+	//console.log(path);
+	// var v = {}
+	// v.layerGroup = L.layerGroup();
+	// v.circleMarker = [];
+
+	var points = [];
+	for (var i = 0; i < path.length; i++)
+	{
+		points.push(path[i].loc);
+		//console.log(path[i].loc);
+		// v.circleMarker.push(L.circleMarker(points[i], {radius: (i==v.path.length-1?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
+		// v.layerGroup.addLayer(v.circleMarker[i]);
+	}
+
+	var polyline = L.polyline(points, {color: 'red', opacity: 0.2});
+	// var layerGroup = L.layerGroup();
+	// layerGroup.addLayer(polyline);
+	// layerGroup.addTo(map);
+	polyline.addTo(map);
 }
 
 function parseVoyage(v)
@@ -91,6 +104,7 @@ function parseVoyage(v)
 	v.polyline = L.polyline(points, {color: icolor.value, opacity: 0.2})
 	v.layerGroup.addLayer(v.polyline);
 	v.layerGroup.addTo(map);
+
 	outputlist.innerHTML =
 	"<div class='outputitem' id='outputitem"+(voyage.length-1)+"'>" +
 	"<input type='checkbox' onchange='setchecked(this,"+(voyage.length-1)+")' checked> 顯示 " +

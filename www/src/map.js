@@ -12,6 +12,7 @@ var curr_date = new Date(1979, 0, 1, 0);
 
 function newPath(date, orig)
 {
+	console.log("newPath");
 	wsClient.send(CBOR.encode({
 		cmd: "newPath",
 		date: [date.getYear(),date.getMonth(),date.getDay(),date.getHours()],
