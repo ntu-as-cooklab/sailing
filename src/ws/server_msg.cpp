@@ -10,12 +10,12 @@
 using namespace std;
 using namespace nlohmann;
 
+// should use shared pointer
 mymsg_t response_cbor;
 
 int server_decode(uint8_t *in, size_t len)
 {
-    vector<uint8_t> v_cbor(in, in + len);
-    json j = json::from_cbor(v_cbor);
+    json j = json::from_cbor(mymsg_t(in, in + len));
     cout << j << "\n";
 
     if (j["cmd"] == "newPath")
@@ -35,6 +35,7 @@ int server_decode(uint8_t *in, size_t len)
                 { "loc", {path.pts[i].loc.lat, path.pts[i].loc.lon}},
             });
         json response = json({});
+        response["cmd"]  = "newPath";
         response["path"] = jpath;
         response_cbor = json::to_cbor(response);
         server_pushmsg(&response_cbor);
