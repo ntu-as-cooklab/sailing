@@ -117,3 +117,15 @@ a.button {
     text-decoration: none;
     color: initial;
 }
+
+.leaflet-popup-content-wrapper {
+    /*opacity: 0.5;*/
+}
+
+.leaflet-popup-content-wrapper .leaflet-popup-content {
+    /*opacity: 0.5;*/
+}
+
+.leaflet-popup-tip-container {
+    /*opacity: 0.0;*/
+}

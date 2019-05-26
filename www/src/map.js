@@ -8,7 +8,9 @@ var modeName = ["瓶中信 (無風帆)", "隨風漂流 (航向=風向)", "固定
 var mainlatlonlines;
 var latlonlines;
 
-var curr_date = new Date(1979, 0, 1, 0);
+var min_date = new Date(1979, 0,  1, 0);
+var max_date = new Date(2011, 11, 31, 0);
+var curr_date = min_date;
 
 function newPath(date, orig)
 {
@@ -18,6 +20,19 @@ function newPath(date, orig)
 		date: [date.getYear(),date.getMonth(),date.getDay(),date.getHours()],
 		orig: [orig.lat, orig.lng],
 	}));
+}
+
+function setOrig(date, latlng)
+{
+	orig.setLatLng(latlng); 
+	orig.bindPopup(`
+		<div>${latlng2str(latlng)}</div>
+		<div>
+			<input type="date" min="${date2str(min_date)}" max="${date2str(max_date)}" value="${date2str(date)}"></input>
+			<input type="time" value="${time2str(date)}" step="3600"></input>
+		</div>
+		<div><button>確定</button></div>
+	`).openPopup();
 }
 
 function initMap()
@@ -49,22 +64,24 @@ function initMap()
 	/** Markers **/
 
 	var iconsize = 32;
-	var origIcon = L.icon({
-			iconUrl: 	'orig.png',
+	orig = L.marker([3.0, 160.0], { icon: L.icon({
+			iconUrl: 	'Celtic-style_crossed_circle.svg.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
-			popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
-	});
-	var destIcon = L.icon({
-			iconUrl: 	'dest.png',
-			iconSize:     [iconsize, iconsize], // size of the icon
-			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
-			popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
-	});
-	function setOrig(latlng) { orig ? orig.setLatLng(latlng) : orig = L.marker(latlng, { icon: origIcon, draggable: true, continousWorld : true }).addTo(map); }
-	function setDest(latlng) { dest ? dest.setLatLng(latlng) : dest = L.marker(latlng, { icon: destIcon, draggable: true, continousWorld : true }).addTo(map); }
-	setOrig(new L.LatLng(-10.0, 160.0));
-	setDest(new L.LatLng(-14.0, 188.5));
+			popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+			}),
+		draggable: true, continousWorld : true }).addTo(map);
+
+	// var destIcon = L.icon({
+	// 		iconUrl: 	'dest.png',
+	// 		iconSize:     [iconsize, iconsize], // size of the icon
+	// 		iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
+	// 		popupAnchor:  [0, iconsize/2] // point from which the popup should open relative to the iconAnchor
+	// });
+
+	//function setDest(latlng) { dest ? dest.setLatLng(latlng) : dest = L.marker(latlng, { icon: destIcon, draggable: true, continousWorld : true }).addTo(map); }
+	setOrig(curr_date, new L.LatLng(-10.0, 160.0));
+	//setDest(new L.LatLng(-14.0, 188.5));
 
 	L.easyButton('fa-globe', function(btn, map){
 		var antarctica = [-77,70];
@@ -73,7 +90,7 @@ function initMap()
 
 	/** Events **/
 
-	function onMapClick(e) { setOrig(e.latlng); }
+	function onMapClick(e) { setOrig(curr_date, e.latlng); }
 	function onMapMouseMove(e) { info.innerHTML = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
 	function onOrigDragEnd(e) { wsClient.send("orig = " + orig.getLatLng().lat + "," + orig.getLatLng().lng); }
 	function onDestDragEnd(e) { wsClient.send("dest = " + dest.getLatLng().lat + "," + dest.getLatLng().lng); }

@@ -84,6 +84,7 @@ function addnewPath(path)
 	}
 
 	var polyline = L.polyline(points, {color: 'red', opacity: 0.2});
+	polyline.bindPopup("Hi");
 	// var layerGroup = L.layerGroup();
 	// layerGroup.addLayer(polyline);
 	// layerGroup.addTo(map);
