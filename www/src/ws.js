@@ -10,9 +10,11 @@ var WsClient = function()
 	this.connect = function ()
 	{
 		if ("WebSocket" in window)
-			ws = new WebSocket(url, ["lws-minimal"], {binaryType: 'arraybuffer'});
+			ws = new WebSocket(url, ["lws-minimal"]);
 		else if ("MozWebSocket" in window)
-			ws = new MozWebSocket(url, ["lws-minimal"], {binaryType: 'arraybuffer'});
+			ws = new MozWebSocket(url, ["lws-minimal"]);
+
+		ws.binaryType = 'arraybuffer';
 
 		ws.onopen = function(e)
 		{
@@ -26,7 +28,13 @@ var WsClient = function()
 
 		ws.onmessage = function(e)
 		{
-			console.log(CBOR.decode(e.data));
+			if (typeof e.data === "string")
+				console.log(e.data);
+			else {
+				//console.log(e.data);
+				console.log(CBOR.decode(e.data));
+			}
+				
 			// var cmd = e.data.split('=');
 			// if (cmd.length == 2)
 			// 	switch (cmd[0].trim())

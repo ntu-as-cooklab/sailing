@@ -10,6 +10,8 @@
 using namespace std;
 using namespace nlohmann;
 
+mymsg_t response_cbor;
+
 int server_decode(uint8_t *in, size_t len)
 {
     vector<uint8_t> v_cbor(in, in + len);
@@ -32,8 +34,10 @@ int server_decode(uint8_t *in, size_t len)
                 { "date", {path.pts[i].date.tm_year, path.pts[i].date.tm_mon, path.pts[i].date.tm_mday, path.pts[i].date.tm_hour}},
                 { "loc", {path.pts[i].loc.lat, path.pts[i].loc.lon}},
             });
-        vector<uint8_t> jpath_cbor = json::to_cbor(jpath);
-        server_pushmsg(&jpath_cbor);
+        json response = json({});
+        response["path"] = jpath;
+        response_cbor = json::to_cbor(response);
+        server_pushmsg(&response_cbor);
     }
 
     return 0;

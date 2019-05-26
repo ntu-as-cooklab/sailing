@@ -84,9 +84,9 @@ int my_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, v
             if(pss->msgq.empty()) break;
             
             /* notice we allowed for LWS_PRE in the payload already */
-            int m = lws_write(wsi, pss->msgq.front()->data() + LWS_PRE, pss->msgq.front()->size(), LWS_WRITE_BINARY);
-            if (m < (int)pss->msgq.front()->size()) {
-                lwsl_err("ERROR %d writing to ws\n", m);
+            int len = lws_write(wsi, pss->msgq.front()->data() + LWS_PRE, pss->msgq.front()->size() - LWS_PRE, LWS_WRITE_BINARY);
+            if (len < (int)pss->msgq.front()->size() - LWS_PRE) {
+                lwsl_err("ERROR msg len %d writing to ws\n", len);
                 return -1;
             }
             pss->msgq.pop();
