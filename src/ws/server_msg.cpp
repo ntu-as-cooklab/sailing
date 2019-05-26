@@ -1,4 +1,3 @@
-#include "server_msg.h"
 #include <stdio.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -6,6 +5,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include "sailing.hpp"
+#include "ws/server_msg.hpp"
 
 using namespace std;
 using namespace nlohmann;
@@ -25,14 +25,15 @@ int server_decode(uint8_t *in, size_t len)
         for (int i = 0; i < 48; i++)
             sail_step(path);
 
-        json jpath({});
+        json jpath = json::array();
         size_t len = path.pts.size();
         for (int i = 0; i < len; i++)
-            jpath[i] = {
+            jpath.push_back({
                 { "date", {path.pts[i].date.tm_year, path.pts[i].date.tm_mon, path.pts[i].date.tm_mday, path.pts[i].date.tm_hour}},
                 { "loc", {path.pts[i].loc.lat, path.pts[i].loc.lon}},
-            };
-        vector<uint8_t> jpath_cbor = json::to_cbor(jpath_cbor);
+            });
+        vector<uint8_t> jpath_cbor = json::to_cbor(jpath);
+        server_pushmsg(&jpath_cbor);
     }
 
     return 0;

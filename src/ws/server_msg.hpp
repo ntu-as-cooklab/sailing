@@ -1,14 +1,18 @@
-#ifndef SERVER_MSG_H
-#define SERVER_MSG_H
+#ifndef SERVER_MSG_HPP
+#define SERVER_MSG_HPP
 
 #include <stdint.h>
 #include <stddef.h>
+#include <vector>
 
 #ifdef  __cplusplus
 extern  "C" {
 #endif
 
+typedef std::vector<uint8_t> mymsg_t;
+
 int server_decode(uint8_t *in, size_t len);
+int server_pushmsg(mymsg_t* msg);
 
 #ifdef  __cplusplus
 }

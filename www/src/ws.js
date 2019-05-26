@@ -26,7 +26,7 @@ var WsClient = function()
 
 		ws.onmessage = function(e)
 		{
-			console.log(e.data);
+			console.log(CBOR.decode(e.data));
 			// var cmd = e.data.split('=');
 			// if (cmd.length == 2)
 			// 	switch (cmd[0].trim())

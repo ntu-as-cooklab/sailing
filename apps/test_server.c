@@ -1,7 +1,7 @@
 #include <libwebsockets.h>
 #include <string.h>
 #include <signal.h>
-#include "ws/myprotocol.h"
+#include "ws/server.h"
 
 static int interrupted;
 static const struct lws_http_mount mount = {

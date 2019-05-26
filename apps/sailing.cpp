@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <signal.h>
-#include "ws/myprotocol.h"
+#include "ws/server.h"
 
 static int interrupted;
 static void sigint_handler(int sig)
