@@ -50,6 +50,18 @@ json path2json(path_t& path)
     return j;
 }
 
+const char* datestr(struct tm *date)
+{
+    static char str[30];
+    strftime(str, sizeof(str), "%Y-%m-%d %Hhr", date);
+    return str;
+}
+
+void printpt(pathpt_t pt)
+{
+    printf("%s %f,%f\n", datestr(&pt.date), pt.loc.lat, pt.loc.lon);
+}
+
 int server_decode(uint8_t *in, size_t len)
 {
     json j;
@@ -69,7 +81,16 @@ int server_decode(uint8_t *in, size_t len)
         path->enddate   = json2date(j["enddate"]);
         path->startloc  = json2loc(j["startloc"]);
         
-        sail(path);
+        path->pts.push_back((pathpt_t){path->startdate, path->startloc});
+        printpt(path->pts.back());
+        int step = 0;
+        while(mktime(&path->pts.back().date) < mktime(&path->enddate)) {
+            sail_step(path);
+            step++;
+            if (step%(24*5) == 0) printpt(path->pts.back());
+        }
+            
+        printpt(path->pts.back());
 
         json response = json({});
         response["cmd"]  = "new_path";

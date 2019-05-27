@@ -4,7 +4,7 @@ var Session = {
     user: 0,
     token: "",
     startdate:  DATE_MIN,
-    enddate:    DATE_MIN,
+    enddate:    new Date(1979, 1, 1, 0),
     startloc:   [-10.000, 160.000],
     paths: {
     }

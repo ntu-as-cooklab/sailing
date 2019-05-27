@@ -4,25 +4,13 @@
 #include <stdio.h>
 #include "sailing.hpp"
 
-const char* datestr(struct tm *date)
-{
-    static char str[30];
-    strftime(str, sizeof(str), "%Y-%m-%d %Hhr", date);
-    return str;
-}
-
-void printpt(pathpt_t pt)
-{
-    printf("%s %f,%f\n", datestr(&pt.date), pt.loc.lat, pt.loc.lon);
-}
-
 void sail(path_t* path)
 {
-    path->pts.push_back((pathpt_t){path->startdate, path->startloc});
-	printpt(path->pts.back());
-	while(mktime(&path->pts.back().date) < mktime(&path->enddate))
-		sail_step(path);
-	printpt(path->pts.back());
+    // path->pts.push_back((pathpt_t){path->startdate, path->startloc});
+	// printpt(path->pts.back());
+	// while(mktime(&path->pts.back().date) < mktime(&path->enddate))
+	// 	sail_step(path);
+	// printpt(path->pts.back());
 }
 
 int movement_factor = 1;
