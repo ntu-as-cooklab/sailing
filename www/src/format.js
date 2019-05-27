@@ -9,12 +9,12 @@ function pad(n, width, z)
 
 function date2str(date)
 {
-	return `${date.getFullYear()}-${pad(date.getMonth()+1,2)}-${pad(date.getDay(),2)}`;
+	return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')}`;
 }
 
 function time2str(date)
 {
-	return `${pad(date.getHours(),2)}:${pad(date.getMinutes(),2)}`;
+	return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
 }
 
 function loc2str(loc)

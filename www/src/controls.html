@@ -51,19 +51,34 @@ controls.update = function()
 {
     var startdate = $("#startdate")[0];
     var starttime = $("#starttime")[0];
+    var enddate = $("#enddate")[0];
+    var endtime = $("#endtime")[0];
+
     startdate.min = date2str(DATE_MIN);
     startdate.max = date2str(DATE_MAX);
     startdate.value = date2str(Session.startdate);
     starttime.value = time2str(Session.startdate);
-    startdate.oninput = starttime.oninput = function(e){ Session.startdate = new Date(`${startdate.value}T${starttime.value}`); };
+    startdate.oninput = starttime.oninput = function(e){
+        Session.startdate = new Date(`${startdate.value}T${starttime.value}`);
+        if (Session.startdate > Session.enddate) {
+            Session.enddate = Session.startdate;
+            enddate.value = date2str(Session.enddate);
+            endtime.value = time2str(Session.enddate);
+        }
+    };
 
-    var enddate = $("#enddate")[0];
-    var endtime = $("#endtime")[0];
     enddate.min = date2str(DATE_MIN);
     enddate.max = date2str(DATE_MAX);
     enddate.value = date2str(Session.enddate);
     endtime.value = time2str(Session.enddate);
-    enddate.oninput = endtime.oninput = function(e){ Session.enddate = new Date(`${enddate.value}T${endtime.value}`); };
+    enddate.oninput = endtime.oninput = function(e){ 
+        Session.enddate = new Date(`${enddate.value}T${endtime.value}`);
+        if (Session.enddate < Session.startdate) {
+            Session.startdate = Session.enddate;
+            startdate.value = date2str(Session.startdate);
+            starttime.value = time2str(Session.startdate);
+        }
+    };
 
     $("#startloc")[0].innerText = loc2str(Session.startloc);
 }
