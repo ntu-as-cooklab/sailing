@@ -2,6 +2,7 @@ SHELL:=/bin/bash
 
 LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor
 CPPFLAGS += -O2 -Isrc
+CPPFLAGS += -MMD -MP -MF $@.d
 CFLAGS 	+= -std=gnu11
 CXXFLAGS += -std=c++14
 
@@ -17,13 +18,17 @@ bin/%: apps/%.* $(OBJ)
 
 build/%.cpp.o: %.cpp
 	mkdir -p $(@D)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 build/%.c.o: %.c
 	mkdir -p $(@D)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 .PRECIOUS: $(OBJ)
+
+-include $(OBJ:%.o=%.o.d)
+.PHONY: %.d
+
 
 .PHONY: clean
 clean:
