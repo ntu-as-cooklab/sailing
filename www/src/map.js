@@ -13,7 +13,7 @@ var curr_date = min_date;
 function newPath(date, orig)
 {
 	console.log("newPath");
-	wsClient.send(CBOR.encode({
+	ws.send(CBOR.encode({
 		cmd: "newPath",
 		date: [date.getYear(),date.getMonth(),date.getDay(),date.getHours()],
 		orig: [orig.lat, orig.lng],
@@ -78,7 +78,7 @@ function initMap()
 
 	function onMapClick(e) { setOrig(curr_date, e.latlng); controls_updateui(); }
 	function onMapMouseMove(e) { document.getElementById("info").innerHTML = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
-	//function onOrigDragEnd(e) { wsClient.send("orig = " + orig.getLatLng().lat + "," + orig.getLatLng().lng); }
+	//function onOrigDragEnd(e) {}
 	map.on('click', onMapClick);
 	map.on('contextmenu', onMapClick);
 	map.on('mousemove', onMapMouseMove);

@@ -1,15 +1,10 @@
 "use strict";
 
-var wsClient;
-
 $(function(){main();});
 
 function main()
 {
-
-	wsClient = new WsClient();
-	wsClient.connect();
-
+	ws_init();
 	initMap();
 }
 
@@ -36,5 +31,5 @@ function del(n)
 	voyage[n].deleted = true;
 	var item = document.getElementById("outputitem"+n);
 	if(item) item.parentNode.removeChild(item);
-	wsClient.send("delete " + voyage[n].name);
+	ws.send("delete " + voyage[n].name);
 }
