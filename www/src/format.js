@@ -29,7 +29,7 @@ function latlng2str(latlng)
 
 function date2array(date)
 {
-	return [date.getYear(),date.getMonth(),date.getDay(),date.getHours()];
+	return [date.getYear(),date.getMonth(),date.getDate(),date.getHours()];
 }
 
 function loc2array(loc)

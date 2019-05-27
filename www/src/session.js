@@ -12,12 +12,14 @@ var Session = {
 
 function request_new_path()
 {
-	ws.send(CBOR.encode({
+    var msg = {
         cmd:        "new_path",
         user:       Session.user,
         token:      Session.token,
         startdate:  date2array(Session.startdate),
         enddate:    date2array(Session.enddate),
         startloc:   Session.startloc,
-	}));
+    };
+    //console.log(msg);
+	ws.send(CBOR.encode(msg));
 }

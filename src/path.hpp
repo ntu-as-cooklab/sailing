@@ -4,16 +4,18 @@
 #include <time.h>
 #include "latlon.h"
 #include <vector>
+#include <stdint.h>
 
 typedef struct pathpt_t
 {
     struct tm date;
-    latlon_t loc; 
+    latlon_t loc;
 } pathpt_t;
 
 typedef struct path_t
 {
     std::vector<pathpt_t> pts;
+    uint32_t user;
 } path_t;
 
 #endif

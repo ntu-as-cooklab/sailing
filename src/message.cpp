@@ -13,6 +13,23 @@ using namespace nlohmann;
 // should use shared pointer
 mymsg_t response_cbor;
 
+struct tm json2date(json j)
+{
+    return (struct tm){.tm_hour=j[3], .tm_mday = j[2],.tm_mon = j[1],.tm_year = j[0]};
+}
+
+latlon_t json2loc(json j)
+{
+    return (latlon_t){j[0], j[1]};
+}
+
+const char* datestr(struct tm *date)
+{
+    static char str[30];
+    strftime(str, sizeof(str), "%Y-%m-%d %Hhr", date);
+    return str;
+}
+
 int server_decode(uint8_t *in, size_t len)
 {
     json j;
@@ -23,26 +40,30 @@ int server_decode(uint8_t *in, size_t len)
 
     if (j["cmd"] == "new_path")
     {
-        path_t path;
-        //struct tm date = {.tm_hour=j["date"][3], .tm_mday = j["date"][2],.tm_mon = j["date"][1],.tm_year = j["date"][0]};
-        //latlon_t orig = {j["orig"][0], j["orig"][1]};
+        path_t path = {.user = j["user"]};
 
-        // path.pts.push_back((pathpt_t){date, orig});
-        // for (int i = 0; i < 4800; i++)
-        //     sail_step(path);
+        struct tm startdate = json2date(j["startdate"]);
+        struct tm enddate   = json2date(j["enddate"]);
+        latlon_t startloc   = json2loc(j["startloc"]);
+        
+        path.pts.push_back((pathpt_t){startdate, startloc});
+        printf("%s %f,%f\n", datestr(&path.pts.back().date), path.pts.back().loc.lat, path.pts.back().loc.lon);
+        while(mktime(&path.pts.back().date) < mktime(&enddate))
+            sail_step(path);
+        printf("%s %f,%f\n", datestr(&path.pts.back().date), path.pts.back().loc.lat, path.pts.back().loc.lon);
 
-        // json jpath = json::array();
-        // size_t len = path.pts.size();
-        // for (int i = 0; i < len; i++)
-        //     jpath.push_back({
-        //         { "date", {path.pts[i].date.tm_year, path.pts[i].date.tm_mon, path.pts[i].date.tm_mday, path.pts[i].date.tm_hour}},
-        //         { "loc", {path.pts[i].loc.lat, path.pts[i].loc.lon}},
-        //     });
-        // json response = json({});
-        // response["cmd"]  = "new_path";
-        // response["path"] = jpath;
-        // response_cbor = json::to_cbor(response);
-        // server_pushmsg(&response_cbor);
+        json jpath = json::array();
+        size_t len = path.pts.size();
+        for (int i = 0; i < len; i++)
+            jpath.push_back({
+                { "date", {path.pts[i].date.tm_year, path.pts[i].date.tm_mon, path.pts[i].date.tm_mday, path.pts[i].date.tm_hour}},
+                { "loc", {path.pts[i].loc.lat, path.pts[i].loc.lon}},
+            });
+        json response = json({});
+        response["cmd"]  = "new_path";
+        response["path"] = jpath;
+        response_cbor = json::to_cbor(response);
+        server_pushmsg(&response_cbor);
     }
 
     return 0;
