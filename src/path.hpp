@@ -16,6 +16,7 @@ typedef struct path_t
 {
     std::vector<pathpt_t> pts;
     uint32_t user;
+    uint32_t id;
 } path_t;
 
 #endif

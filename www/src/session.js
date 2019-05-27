@@ -23,3 +23,27 @@ function request_new_path()
     //console.log(msg);
 	ws.send(CBOR.encode(msg));
 }
+
+function new_path(path)
+{
+	//console.log(path);
+	// var v = {}
+	// v.layerGroup = L.layerGroup();
+	// v.circleMarker = [];
+
+	var points = [];
+	for (var i = 0; i < path.loc.length; i++)
+	{
+		points.push(path.loc[i]);
+		//console.log(path[i].loc);
+		// v.circleMarker.push(L.circleMarker(points[i], {radius: (i==v.path.length-1?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
+		// v.layerGroup.addLayer(v.circleMarker[i]);
+	}
+
+	var polyline = L.polyline(points, {color: 'red', opacity: 0.2});
+	polyline.bindPopup("Hi");
+	// var layerGroup = L.layerGroup();
+	// layerGroup.addLayer(polyline);
+	// layerGroup.addTo(map);
+	polyline.addTo(map);
+}

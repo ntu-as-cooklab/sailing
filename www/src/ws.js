@@ -32,12 +32,11 @@ function ws_init()
 			var msg = CBOR.decode(e.data);
 			switch (msg["cmd"])
 			{
-				case "newPath":
-					//console.log("addnewPath");
-					addnewPath(msg["path"]);
+				case "new_path":
+					new_path(msg["path"]);
 				break;
 				default:
-					console.log("cmd", msg["cmd"]);
+					console.log("Unrecognized command: ", msg["cmd"]);
 			}
 		}
 	};
