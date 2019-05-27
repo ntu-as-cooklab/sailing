@@ -23,33 +23,6 @@ function newPath(date, orig)
 function setOrig(date, latlng)
 {
 	orig.setLatLng(latlng); 
-	orig.bindPopup(`
-		<table>
-		<tr><td>起始地點: </td><td>${latlng2str(latlng)}</td></tr>
-		<tr>
-			<td>起始時間: </td>
-			<td>
-				<input type="date" min="${date2str(min_date)}" max="${date2str(max_date)}" value="${date2str(date)}"></input>
-				<input type="time" value="${time2str(date)}" step="3600"></input>
-			</td>
-		</tr>
-		<tr>
-			<td>結束時間: </td>
-			<td>
-				<input type="date" min="${date2str(min_date)}" max="${date2str(max_date)}" value="${date2str(date)}"></input>
-				<input type="time" value="${time2str(date)}" step="3600"></input>
-			</td>
-		</tr>
-		<tr>
-			<td>時間長度: </td>
-			<td>
-				<input style="width:3.5em" type="number" min="1" value="1">天
-				<input style="width:2.5em" type="number" min="1" value="0">小時</input>
-			</td>
-		</tr>
-		<tr><td><button onclick="generatePath()">產生路徑</button></td></tr>
-		<table>
-	`).openPopup();
 }
 
 function generatePath()
@@ -103,7 +76,7 @@ function initMap()
 
 	/** Events **/
 
-	function onMapClick(e) { setOrig(curr_date, e.latlng); }
+	function onMapClick(e) { setOrig(curr_date, e.latlng); controls_updateui(); }
 	function onMapMouseMove(e) { document.getElementById("info").innerHTML = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
 	//function onOrigDragEnd(e) { wsClient.send("orig = " + orig.getLatLng().lat + "," + orig.getLatLng().lng); }
 	map.on('click', onMapClick);

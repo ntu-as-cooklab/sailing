@@ -42,21 +42,6 @@ html, body {
     z-index: 3;
 }
 
-#controls {
-    font-family: 微軟正黑體, sans-serif;
-    position: absolute;
-    right: 20%; 	top: 1%;
-    width:70vw; height:20vh;
-    background-color: rgba(0,0,0,0.6);
-    color: white;
-    z-index: 4;
-    overflow: auto;
-}
-
-#controls > * {
-    font-family: 微軟正黑體, sans-serif;
-    font-size: 1vw;
-}
 .hor {
     display: inline-block;
     vertical-align:middle;

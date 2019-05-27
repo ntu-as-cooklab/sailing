@@ -25,54 +25,18 @@
 		<script src="src/ws.js"></script>
 		<script src="src/main.js"></script>
 
+		<script> 
+			$(function(){
+			  $("#controls_wrapper").load("controls.html"); 
+			});
+		</script> 
+
 	</head>
 
 	<body>
 		<div id="container">
 			<div id="map"></div>
-			<!-- <div id="controls" onchange="setParam(event.target)" onclick="setParam(event.target)">
-				<div class="hor">
-					<div class="hor">
-						<input type="radio" name="dataset" value="0" id="dataset_avg" hidden> <span hidden>1979~2009 平均資料</span></br>
-						<input type="radio" name="dataset" value="2" checked> 單年資料: <input id="iyear" type="number" name="year" value="1979" min="1979" max="2009" step="1" style="width:8ex">
-					</div>
-					<div class="hor">
-						起始日期: <input class="date" id="startdate" type="date" name="startdate" value="1979-01-01" min="1979-01-01" max="1980-12-31" onchange="setDays()">
-						天數: <input id="days" type="number" name="days" value="15" min="1" step="1" onchange="setDays()" style="width:6ex"><br>
-						結束日期: <input class="date" id="enddate" type="date" name="enddate" value="1979-01-16" min="1979-01-01" max="1980-12-31" onchange="setEndDate()"><br>
-					</div>
-					<div style="padding-left:10px">
-						軌跡顏色: <input class="tools" id="icolor" type="color" value="#0000ff">
-						<input class="tools" type="button" name="run" value="計算">
-						<input class="tools" type="button" onclick="resetParams()" value="重設參數" hidden>
-						<input class="tools" id="doConnect" type="button" onclick="connect()" value="連線">
-					</div>
-				</div>
-				<div class="hor">
-					<input type="radio" name="mode" value="0" onclick=toggleMode(0)> 瓶中信 (無風帆)<br>
-					<input type="radio" name="mode" value="1" onclick=toggleMode(1)> 迎風漂流 (航向=風向)<br>
-					<input type="radio" name="mode" value="2" onclick=toggleMode(2) checked> 固定目的地<br>
-					<input type="radio" name="mode" value="3" onclick=toggleMode(3)> 固定航向: <input id="heading" type="number" name="heading" value="0" step="1" style="width:8ex"><br>
-					</br>
-					<input type="checkbox" id="showLatLonLines" onchange="toggleLatLonLines()" checked>顯示經緯線
-				</div>
-				<div class="hor">
-					<input type="radio" id="ship" name="ship" value="small" checked> 小帆船<br><br>
-					<table>
-						<tr><td>風帆高度: </td><td><input id="altitude" name="altitude" type="number" style="width:6ex" value="2" min="0" max="100" step="0.1"></td><td>m</td></tr>
-						<tr><td>張帆極限風速: </td><td><input id="windlimit" name="windlimit" type="number" style="width:6ex" value="8" min="0" max="100" step="0.1"></td><td>m/s</td></tr>
-						<tr><td>每日張帆時數: </td><td><input id="sailopenhours" name="sailopenhours" type="number" style="width:6ex" value="12" min="0" max="24" step="1"></td><td>hr</td></tr>
-					</table>
-					</table>
-				</div>
-			</div> -->
-			<!-- <div id="outputcontainer">
-				<input type="button" onclick="newRecord()" value="新增專案" hidden>
-				<input type="button" onclick="loadRecord()" value="載入專案" hidden>
-				<input type="button" onclick="clearRecord()" value="刪除檔案" hidden></br>
-				<span hidden>專案:</span> <span id="project"></span></br>
-				<div id="outputlist"></div>
-			</div> -->
+			<div id="controls_wrapper" style="width:78%;text-align:center;position:absolute;"></div>
 			<span id="info"></span>
 		</div>
 	</body>

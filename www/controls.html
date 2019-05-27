@@ -1,0 +1,72 @@
+<div id="controls" class="leaflet-popup-content-wrapper" style="position:absolute">
+    <table class="leaflet-popup-content">
+        <tr><td>起始地點: </td><td id="startloc"></td></tr>
+        <tr>
+            <td>起始時間: </td>
+            <td>
+                <input type="date" id="startdate"></input>
+                <input type="time" id="starttime" step="3600"></input>
+            </td>
+        </tr>
+        <tr>
+            <td>結束時間: </td>
+            <td>
+                <input type="date" id="enddate"></input>
+                <input type="time" id="endtime"step="3600"></input>
+            </td>
+        </tr>
+        <tr>
+            <td>時間長度: </td>
+            <td>
+                <input style="width:3.5em" type="number" min="1" value="1">天
+                <input style="width:2.5em" type="number" min="1" value="0">小時</input>
+            </td>
+        </tr>
+        <tr><td><button onclick="generatePath()">產生路徑</button></td></tr>
+    <table>
+</div>
+
+<style>
+#controls {
+    font-family: 微軟正黑體, sans-serif;
+    position: absolute;
+    margin: 0 auto;
+    top: 0%;
+    z-index: 4;
+    overflow: auto;
+    display: inline;
+}
+
+#controls > * {
+    font-family: 微軟正黑體, sans-serif;
+    font-size: 1.5vh;
+}
+</style>
+
+<script>
+
+function controls_updateui()
+{
+    var startdate = document.getElementById("startdate");
+    startdate.min = date2str(min_date);
+    startdate.max = date2str(max_date);
+    startdate.value = date2str(min_date);
+
+    var enddate = document.getElementById("enddate");
+    enddate.min = date2str(min_date);
+    enddate.max = date2str(max_date);
+    enddate.value = date2str(min_date);
+
+    var starttime = document.getElementById("starttime");
+    starttime.value = time2str(min_date);
+
+    var endtime = document.getElementById("endtime");
+    endtime.value = time2str(min_date);
+
+    var startloc = document.getElementById("startloc");
+    startloc.innerText = latlng2str(orig.getLatLng());
+}
+
+controls_updateui();
+
+</script>
