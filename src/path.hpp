@@ -17,6 +17,9 @@ typedef struct path_t
     std::vector<pathpt_t> pts;
     uint32_t user;
     uint32_t id;
+    struct tm startdate;
+    struct tm enddate;
+    latlon_t startloc;
 } path_t;
 
 #endif

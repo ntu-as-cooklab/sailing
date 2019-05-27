@@ -2,17 +2,27 @@
 #include "path.hpp"
 #include "cfsr/cfsr_data.h"
 #include <stdio.h>
+#include "sailing.hpp"
 
-void sail(struct tm startdate, struct tm enddate)
+const char* datestr(struct tm *date)
 {
-    // for (runstep = 0, sailstep = 0, curr = orig, date = startdate; ++date < enddate; runstep++)
-	// {
-	// 	if ((mode == SIN || mode == AVG) && date.month == 1 && date.day == 1 && date.hour == 0)
-	// 		date.year--, enddate.year--;
-	// 	sailstep += (sailopen = date.hour<=sailopenhours); // only open sail for sailopenhours
-	// 	step();
-	// 	if (ocean.norm() > 1e3 || wind.norm() > 1e3) break;
-	// }
+    static char str[30];
+    strftime(str, sizeof(str), "%Y-%m-%d %Hhr", date);
+    return str;
+}
+
+void printpt(pathpt_t pt)
+{
+    printf("%s %f,%f\n", datestr(&pt.date), pt.loc.lat, pt.loc.lon);
+}
+
+void sail(path_t* path)
+{
+    path->pts.push_back((pathpt_t){path->startdate, path->startloc});
+	printpt(path->pts.back());
+	while(mktime(&path->pts.back().date) < mktime(&path->enddate))
+		sail_step(path);
+	printpt(path->pts.back());
 }
 
 int movement_factor = 1;
@@ -25,11 +35,11 @@ latlon_t calc_next_place(latlon_t loc, vec2 speed)
 	return loc;
 }
 
-void sail_step(path_t& path)
+void sail_step(path_t* path)
 {
 	// Ocean current:
 
-	pathpt_t pt = path.pts.back();
+	pathpt_t pt = path->pts.back();
 
 	vec2 ocean = cfsr_ocn(pt.date, pt.loc);
 	if (norm(ocean) > 1e3) return;
@@ -61,7 +71,7 @@ void sail_step(path_t& path)
 	mktime(&next_date);
 	latlon_t next_loc = calc_next_place(pt.loc, gain);
 	pathpt_t next_pt = {.date = next_date, .loc = next_loc};
-	path.pts.push_back(next_pt);
+	path->pts.push_back(next_pt);
 	char next_date_str[30];
     strftime(next_date_str, sizeof(next_date_str), "%Y-%m-%d %Hhr", &next_date); 
 

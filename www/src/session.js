@@ -32,10 +32,9 @@ function new_path(path)
 	// v.circleMarker = [];
 
 	var points = [];
-	for (var i = 0; i < path.loc.length; i++)
+	for (let i = 0; i < path.loc.length; i++)
 	{
 		points.push(path.loc[i]);
-		//console.log(path[i].loc);
 		// v.circleMarker.push(L.circleMarker(points[i], {radius: (i==v.path.length-1?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
 		// v.layerGroup.addLayer(v.circleMarker[i]);
 	}

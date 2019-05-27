@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 #include "sailing.hpp"
 #include "message.hpp"
+#include "session.hpp"
 
 using namespace std;
 using namespace nlohmann;
@@ -23,18 +24,6 @@ latlon_t json2loc(json& j)
     return (latlon_t){j[0], j[1]};
 }
 
-const char* datestr(struct tm *date)
-{
-    static char str[30];
-    strftime(str, sizeof(str), "%Y-%m-%d %Hhr", date);
-    return str;
-}
-
-void printpt(pathpt_t& pt)
-{
-    printf("%s %f,%f\n", datestr(&pt.date), pt.loc.lat, pt.loc.lon);
-}
-
 json date2json(struct tm& date)
 {
     return json({date.tm_year, date.tm_mon, date.tm_mday, date.tm_hour});
@@ -44,7 +33,6 @@ json loc2json(latlon_t& loc)
 {
     return json({loc.lat, loc.lon});
 }
-
 
 json path2json(path_t& path)
 {
@@ -72,21 +60,20 @@ int server_decode(uint8_t *in, size_t len)
 
     if (j["cmd"] == "new_path")
     {
-        path_t path = {.user = j["user"]};
+        uint32_t id = Session::new_path();
+        path_t* path = &Session::paths[id];
 
-        struct tm startdate = json2date(j["startdate"]);
-        struct tm enddate   = json2date(j["enddate"]);
-        latlon_t startloc   = json2loc(j["startloc"]);
+        path->id = id; 
+        path->user = j["user"];
+        path->startdate = json2date(j["startdate"]);
+        path->enddate   = json2date(j["enddate"]);
+        path->startloc  = json2loc(j["startloc"]);
         
-        path.pts.push_back((pathpt_t){startdate, startloc});
-        printpt(path.pts.back());
-        while(mktime(&path.pts.back().date) < mktime(&enddate))
-            sail_step(path);
-        printpt(path.pts.back());
+        sail(path);
 
         json response = json({});
         response["cmd"]  = "new_path";
-        response["path"] = path2json(path);
+        response["path"] = path2json(*path);
         response_cbor = json::to_cbor(response);
         server_pushmsg(&response_cbor);
     }
