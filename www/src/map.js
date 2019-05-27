@@ -1,33 +1,15 @@
 "use strict";
 
 var map;
-var orig, dest;
+var orig;
 
 var mainlatlonlines;
 var latlonlines;
 
-var min_date = new Date(1979, 0,  1, 0);
-var max_date = new Date(2011, 11, 31, 0);
-var curr_date = min_date;
-
-function newPath(date, orig)
+function setOrig(latlng)
 {
-	console.log("newPath");
-	ws.send(CBOR.encode({
-		cmd: "newPath",
-		date: [date.getYear(),date.getMonth(),date.getDay(),date.getHours()],
-		orig: [orig.lat, orig.lng],
-	}));
-}
-
-function setOrig(date, latlng)
-{
-	orig.setLatLng(latlng); 
-}
-
-function generatePath()
-{
-	newPath(curr_date, orig.getLatLng());
+	orig.setLatLng(latlng);
+	if (typeof controls !== 'undefined') controls.update();
 }
 
 function initMap()
@@ -44,7 +26,7 @@ function initMap()
 		contextmenu: true,
         contextmenuWidth: 140,
         contextmenuItems: [
-            {text: '新增路徑', callback: function(e){newPath(curr_date, e.latlng)} },
+            // {text: '新增路徑', callback: function(e){newPath(curr_date, e.latlng)} },
 		]
 	});
 
@@ -67,16 +49,16 @@ function initMap()
 			}),
 		draggable: true, continousWorld : true }).addTo(map);
 
-	setOrig(curr_date, new L.LatLng(-10.0, 160.0));
+	setOrig(new L.LatLng(-10.0, 160.0));
 
-	L.easyButton('fa-globe', function(btn, map){
-		var antarctica = [-77,70];
-		map.setView(antarctica);
-	}, "New").addTo(map);
+	// L.easyButton('fa-globe', function(btn, map){
+	// 	var antarctica = [-77,70];
+	// 	map.setView(antarctica);
+	// }, "New").addTo(map);
 
 	/** Events **/
 
-	function onMapClick(e) { setOrig(curr_date, e.latlng); controls_updateui(); }
+	function onMapClick(e) { setOrig(e.latlng); }
 	function onMapMouseMove(e) { document.getElementById("info").innerHTML = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
 	//function onOrigDragEnd(e) {}
 	map.on('click', onMapClick);
