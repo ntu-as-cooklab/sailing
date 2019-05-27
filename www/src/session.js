@@ -9,12 +9,12 @@ var Session = {
     }
 };
 
-function request_path()
+function request_new_path()
 {
 	var startdate = new Date(document.getElementById("startdate").value);
 	var startloc = orig.getLatLng();
 	ws.send(CBOR.encode({
-        cmd:    "newPath",
+        cmd:    "new_path",
         user:   Session.user,
         token:  Session.token,
 		date:   [startdate.getYear(),startdate.getMonth(),startdate.getDay(),startdate.getHours()],

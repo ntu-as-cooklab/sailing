@@ -1,7 +1,8 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <libwebsockets.h>
-#include "server_msg.hpp"
+#include "message.hpp"
 #include "server.h"
 #include <vector>
 #include <queue>
@@ -24,23 +25,68 @@ typedef struct my_vhd_t {
     my_pss_t                    *pss_list; /* linked-list of live pss */
 } my_vhd_t;
 
-int my_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+static struct lws_context *context;
+static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+static volatile bool interrupted = false;
 
-struct lws_protocols protocols[] = {
-    { "http", lws_callback_http_dummy, 0, 0 },
+int server_init(void)
+{
+    lws_set_log_level(LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE, NULL);
+
+	const struct lws_http_mount mount = {
+		.mountpoint             = "/",		/* mountpoint URL */
+		.origin                 = "./www",  /* serve from dir */
+		.def                    = "index.html",	/* default filename */
+		.origin_protocol        = LWSMPRO_FILE,	/* files in a dir */
+		.mountpoint_len         = 1, /* char count */
+	};
+
+    struct lws_protocols protocols[] = {
+        { "http", lws_callback_http_dummy, 0, 0 },
+        {
+            .name                   = SERVER_PROTOCOL,
+            .callback               = server_callback,
+            .per_session_data_size  = sizeof(my_pss_t),
+            .rx_buffer_size         = 1024,
+            .id                     = 0,
+            .user                   = NULL,
+            .tx_packet_size         = 0,
+        },
+        {} /* terminator */
+    };
+
+	struct lws_context_creation_info info =
     {
-        .name                   = "lws-minimal",
-        .callback               = my_callback,
-        .per_session_data_size  = sizeof(my_pss_t),
-        .rx_buffer_size         = 1024,
-        .id                     = 0,
-        .user                   = NULL,
-        .tx_packet_size         = 0,
-    },
-    { NULL, NULL, 0, 0 } /* terminator */
-};
+        .port = 8000,
+        .protocols = protocols,
+        .options = LWS_SERVER_OPTION_DISABLE_IPV6,
+        .vhost_name = "localhost",
+        .mounts = &mount,
+        .ws_ping_pong_interval = 10,
+    };
 
-my_vhd_t *myvhd = NULL;
+    lwsl_user("LWS server starting on port %u\n", info.port);
+    context = lws_create_context(&info);
+    if (!context) {
+        lwsl_err("lws init failed\n");
+        return -1;
+    }
+
+    return 0;
+}
+
+void server_run(void)
+{
+    while (lws_service(context, 1000) >= 0 && !interrupted) ;
+    lws_context_destroy(context);
+}
+
+void server_stop(void)
+{
+    interrupted = true;
+}
+
+static my_vhd_t *myvhd = NULL;
 
 int server_pushmsg(mymsg_t* msg)
 {
@@ -56,7 +102,7 @@ int server_pushmsg(mymsg_t* msg)
     return 0;
 }
 
-int my_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
+static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
     my_pss_t *pss = (my_pss_t *)user;
     my_vhd_t *vhd = (my_vhd_t *)lws_protocol_vh_priv_get(lws_get_vhost(wsi), lws_get_protocol(wsi));

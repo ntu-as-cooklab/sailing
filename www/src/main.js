@@ -4,7 +4,7 @@ $(function(){main();});
 
 function main()
 {
-	$("#controls_wrapper").load("controls.html");
+	$("#controls_wrapper").load("src/controls.html");
 	ws_init();
 	initMap();
 }

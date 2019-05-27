@@ -1,5 +1,5 @@
-#ifndef SERVER_MSG_HPP
-#define SERVER_MSG_HPP
+#ifndef MESSAGE_HPP
+#define MESSAGE_HPP
 
 #include <stdint.h>
 #include <stddef.h>

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include "sailing.hpp"
-#include "ws/server_msg.hpp"
+#include "message.hpp"
 
 using namespace std;
 using namespace nlohmann;
@@ -21,7 +21,7 @@ int server_decode(uint8_t *in, size_t len)
     } catch (...) {}
     cout << j << "\n";
 
-    if (j["cmd"] == "newPath")
+    if (j["cmd"] == "new_path")
     {
         path_t path;
         struct tm date = {.tm_hour=j["date"][3], .tm_mday = j["date"][2],.tm_mon = j["date"][1],.tm_year = j["date"][0]};
@@ -38,7 +38,7 @@ int server_decode(uint8_t *in, size_t len)
                 { "loc", {path.pts[i].loc.lat, path.pts[i].loc.lon}},
             });
         json response = json({});
-        response["cmd"]  = "newPath";
+        response["cmd"]  = "new_path";
         response["path"] = jpath;
         response_cbor = json::to_cbor(response);
         server_pushmsg(&response_cbor);

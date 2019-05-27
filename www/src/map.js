@@ -42,7 +42,7 @@ function initMap()
 
 	var iconsize = 32;
 	orig = L.marker([3.0, 160.0], { icon: L.icon({
-			iconUrl: 	'Celtic-style_crossed_circle.svg.png',
+			iconUrl: 	'res/Celtic-style_crossed_circle.svg.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
 			popupAnchor:  [0, -iconsize/2] // point from which the popup should open relative to the iconAnchor
