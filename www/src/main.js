@@ -13,11 +13,6 @@ function main()
 	initMap();
 }
 
-function connect()
-{
-	wsClient.connect();
-}
-
 function setcolor(e, n)
 {
 	voyage[n].polyline.setStyle({color: e.value});
