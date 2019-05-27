@@ -29,7 +29,7 @@ static struct lws_context *context;
 static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
 static volatile bool interrupted = false;
 
-struct lws_protocols protocols[] = {
+static struct lws_protocols protocols[] = {
     { "http", lws_callback_http_dummy, 0, 0 },
     {
         .name                   = SERVER_PROTOCOL,
@@ -43,27 +43,27 @@ struct lws_protocols protocols[] = {
     {} /* terminator */
 };
 
+static const struct lws_http_mount mount = {
+    .mountpoint             = "/",		/* mountpoint URL */
+    .origin                 = "./www",  /* serve from dir */
+    .def                    = "index.html",	/* default filename */
+    .origin_protocol        = LWSMPRO_FILE,	/* files in a dir */
+    .mountpoint_len         = 1, /* char count */
+};
+
+static struct lws_context_creation_info info =
+{
+    .port = 8000,
+    .protocols = protocols,
+    .options = LWS_SERVER_OPTION_DISABLE_IPV6,
+    .vhost_name = "localhost",
+    .mounts = &mount,
+    .ws_ping_pong_interval = 10,
+};
+
 int server_init(void)
 {
     lws_set_log_level(LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE, NULL);
-
-	const struct lws_http_mount mount = {
-		.mountpoint             = "/",		/* mountpoint URL */
-		.origin                 = "./www",  /* serve from dir */
-		.def                    = "index.html",	/* default filename */
-		.origin_protocol        = LWSMPRO_FILE,	/* files in a dir */
-		.mountpoint_len         = 1, /* char count */
-	};
-
-	struct lws_context_creation_info info =
-    {
-        .port = 8000,
-        .protocols = protocols,
-        .options = LWS_SERVER_OPTION_DISABLE_IPV6,
-        .vhost_name = "localhost",
-        .mounts = &mount,
-        .ws_ping_pong_interval = 10,
-    };
 
     lwsl_user("LWS server starting on port %u\n", info.port);
     context = lws_create_context(&info);

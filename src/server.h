@@ -5,7 +5,7 @@
 #include <libwebsockets.h>
 #include <vector>
 
-#define SERVER_PROTOCOL "lws_minimal"
+#define SERVER_PROTOCOL "lws-minimal"
 
 #ifdef  __cplusplus
 extern  "C" {
