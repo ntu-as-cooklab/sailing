@@ -1,15 +1,16 @@
 "use strict";
 
 var map;
-var orig;
+var startloc_marker;
 
 var mainlatlonlines;
 var latlonlines;
 
-function setOrig(latlng)
+function startloc_input(e)
 {
-	orig.setLatLng(latlng);
-	if (typeof controls !== 'undefined') controls.update();
+	Session.startloc = [e.latlng.lat, e.latlng.lng];
+	startloc_marker.setLatLng(Session.startloc);
+	$("#startloc")[0].innerText = loc2str(Session.startloc);
 }
 
 function initMap()
@@ -41,15 +42,16 @@ function initMap()
 	/** Markers **/
 
 	var iconsize = 32;
-	orig = L.marker([3.0, 160.0], { icon: L.icon({
+	startloc_marker = L.marker([3.0, 160.0], { icon: L.icon({
 			iconUrl: 	'res/Celtic-style_crossed_circle.svg.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
 			popupAnchor:  [0, -iconsize/2] // point from which the popup should open relative to the iconAnchor
 			}),
-		draggable: true, continousWorld : true }).addTo(map);
-
-	setOrig(new L.LatLng(-10.0, 160.0));
+		draggable: false, continousWorld : true }).addTo(map);
+	startloc_marker.setLatLng(Session.startloc);
+	map.on('click', startloc_input);
+	//startloc_marker.on('dragend', function(e){startloc_input(e.target);});
 
 	// L.easyButton('fa-globe', function(btn, map){
 	// 	var antarctica = [-77,70];
@@ -57,16 +59,8 @@ function initMap()
 	// }, "New").addTo(map);
 
 	/** Events **/
-
-	function onMapClick(e) { setOrig(e.latlng); }
-	function onMapMouseMove(e) { document.getElementById("info").innerHTML = e.latlng.lat.toFixed(5) + ', ' + e.latlng.lng.toFixed(5); }
-	//function onOrigDragEnd(e) {}
-	map.on('click', onMapClick);
-	map.on('contextmenu', onMapClick);
-	map.on('mousemove', onMapMouseMove);
-	//orig.on('dragend', onOrigDragEnd);
-
-	//toggleLatLonLines();
+	//map.on('contextmenu', onMapClick);
+	map.on('mousemove', function(e){ $("#info")[0].innerText = latlng2str(e.latlng); });
 }
 
 function toggleLatLonLines()

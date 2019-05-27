@@ -17,7 +17,22 @@ function time2str(date)
 	return `${pad(date.getHours(),2)}:${pad(date.getMinutes(),2)}`;
 }
 
+function loc2str(loc)
+{
+	return `${loc[0].toFixed(6)}, ${loc[1].toFixed(6)}`;
+}
+
 function latlng2str(latlng)
 {
 	return `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
+}
+
+function date2array(date)
+{
+	return [date.getYear(),date.getMonth(),date.getDay(),date.getHours()];
+}
+
+function loc2array(loc)
+{
+	return [loc.lat, loc.lng];
 }

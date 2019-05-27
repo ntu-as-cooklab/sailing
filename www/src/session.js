@@ -3,21 +3,21 @@
 var Session = {
     user: 0,
     token: "",
-    startdate: DATE_MIN,
-    enddate: DATE_MIN,
+    startdate:  DATE_MIN,
+    enddate:    DATE_MIN,
+    startloc:   [-10.000, 160.000],
     paths: {
     }
 };
 
 function request_new_path()
 {
-	var startdate = new Date(document.getElementById("startdate").value);
-	var startloc = orig.getLatLng();
 	ws.send(CBOR.encode({
-        cmd:    "new_path",
-        user:   Session.user,
-        token:  Session.token,
-		date:   [startdate.getYear(),startdate.getMonth(),startdate.getDay(),startdate.getHours()],
-        orig:   [startloc.lat, startloc.lng],
+        cmd:        "new_path",
+        user:       Session.user,
+        token:      Session.token,
+        startdate:  date2array(Session.startdate),
+        enddate:    date2array(Session.enddate),
+        startloc:   Session.startloc,
 	}));
 }
