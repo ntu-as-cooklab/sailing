@@ -30,6 +30,11 @@ const char* datestr(struct tm *date)
     return str;
 }
 
+void printpt(pathpt_t pt)
+{
+    printf("%s %f,%f\n", datestr(&pt.date), pt.loc.lat, pt.loc.lon);
+}
+
 int server_decode(uint8_t *in, size_t len)
 {
     json j;
@@ -47,10 +52,10 @@ int server_decode(uint8_t *in, size_t len)
         latlon_t startloc   = json2loc(j["startloc"]);
         
         path.pts.push_back((pathpt_t){startdate, startloc});
-        printf("%s %f,%f\n", datestr(&path.pts.back().date), path.pts.back().loc.lat, path.pts.back().loc.lon);
+        printpt(path.pts.back());
         while(mktime(&path.pts.back().date) < mktime(&enddate))
             sail_step(path);
-        printf("%s %f,%f\n", datestr(&path.pts.back().date), path.pts.back().loc.lat, path.pts.back().loc.lon);
+        printpt(path.pts.back());
 
         json jpath = json::array();
         size_t len = path.pts.size();
