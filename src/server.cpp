@@ -29,6 +29,20 @@ static struct lws_context *context;
 static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
 static volatile bool interrupted = false;
 
+struct lws_protocols protocols[] = {
+    { "http", lws_callback_http_dummy, 0, 0 },
+    {
+        .name                   = SERVER_PROTOCOL,
+        .callback               = server_callback,
+        .per_session_data_size  = sizeof(my_pss_t),
+        .rx_buffer_size         = 1024,
+        .id                     = 0,
+        .user                   = NULL,
+        .tx_packet_size         = 0,
+    },
+    {} /* terminator */
+};
+
 int server_init(void)
 {
     lws_set_log_level(LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE, NULL);
@@ -40,20 +54,6 @@ int server_init(void)
 		.origin_protocol        = LWSMPRO_FILE,	/* files in a dir */
 		.mountpoint_len         = 1, /* char count */
 	};
-
-    struct lws_protocols protocols[] = {
-        { "http", lws_callback_http_dummy, 0, 0 },
-        {
-            .name                   = SERVER_PROTOCOL,
-            .callback               = server_callback,
-            .per_session_data_size  = sizeof(my_pss_t),
-            .rx_buffer_size         = 1024,
-            .id                     = 0,
-            .user                   = NULL,
-            .tx_packet_size         = 0,
-        },
-        {} /* terminator */
-    };
 
 	struct lws_context_creation_info info =
     {

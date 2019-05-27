@@ -23,6 +23,8 @@ build/%.c.o: %.c
 	mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $^ -o $@
 
+.PRECIOUS: $(OBJ)
+
 .PHONY: clean
 clean:
 	rm -rf build/ bin/
