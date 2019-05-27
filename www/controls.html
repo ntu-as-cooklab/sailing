@@ -50,20 +50,20 @@ var controls = document.getElementById("controls");
 controls.update = function()
 {
     var startdate = document.getElementById("startdate");
-    startdate.min = date2str(min_date);
-    startdate.max = date2str(max_date);
-    startdate.value = date2str(min_date);
+    startdate.min = date2str(DATE_MIN);
+    startdate.max = date2str(DATE_MAX);
+    startdate.value = date2str(DATE_MIN);
 
     var enddate = document.getElementById("enddate");
-    enddate.min = date2str(min_date);
-    enddate.max = date2str(max_date);
-    enddate.value = date2str(min_date);
+    enddate.min = date2str(DATE_MIN);
+    enddate.max = date2str(DATE_MAX);
+    enddate.value = date2str(DATE_MIN);
 
     var starttime = document.getElementById("starttime");
-    starttime.value = time2str(min_date);
+    starttime.value = time2str(DATE_MIN);
 
     var endtime = document.getElementById("endtime");
-    endtime.value = time2str(min_date);
+    endtime.value = time2str(DATE_MIN);
 
     var startloc = document.getElementById("startloc");
     startloc.innerText = latlng2str(orig.getLatLng());
