@@ -33,22 +33,17 @@ function request_new_path()
 function new_path(msg)
 {
 	var path = msg["path"];
+	Session.paths[path.id] = path;
 	path.date = [];
 	path.loc = [];
 	path.startdate = array2date(path.startdate);
 	path.enddate = array2date(path.enddate);
-	Session.paths[path.id] = path;
-	
-	// var v = {}
-	// v.layerGroup = L.layerGroup();
-	// v.circleMarker = [];
 
-	var options = {color: 'red', opacity: 0.5, weight: 4};
+	var options = {color: 'red', opacity: 0.2, weight: 5};
 	if (path.user != Session.user) options.color = 'grey';
-	var polyline = L.polyline([[]], options);
+	path.polyline = L.polyline([[]], options);
 
-	// console.log(path);
-	polyline.bindPopup(`<div class="popup">
+	path.polyline.bindPopup(`<div class="popup">
 		<table>
 			<tr><td>路徑ID:</td><td>${path.id}</td></tr>
 			<tr><td>建立者ID:</td><td>${path.user}</td></tr>
@@ -65,27 +60,36 @@ function new_path(msg)
 			<button>刪除</button>
 		</div>
 	</div>`, {closeOnClick: false,autoClose: false});
-	// var layerGroup = L.layerGroup();
-	// layerGroup.addLayer(polyline);
-	// layerGroup.addTo(map);
-	polyline.addTo(map);
+	path.polyline.addTo(map);
+	// path.polyline.on('mouseover', function(){console.log("over");});
+	// path.polyline.bindTooltip("Test");
 
-	Session.paths[path.id].polyline = polyline;
+	path.circleMarkers = L.layerGroup();
 }
 
 function update_path(msg)
 {
-	//console.log(msg);
 	var id = msg["id"];
 	var step = msg["step"];
+	var path = Session.paths[id];
 
 	for (let i = 0; i < msg.loc.length; i++)
 	{
-		Session.paths[id].loc[step + i]  = msg.loc[i];
-		Session.paths[id].date[step + i] = msg.date[i];
-		//points.push(path.loc[i]);
-		// v.circleMarker.push(L.circleMarker(points[i], {radius: (i==v.path.length-1?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
-		// v.layerGroup.addLayer(v.circleMarker[i]);
+		path.loc[step+i]  = msg.loc[i];
+		path.date[step+i] = array2date(msg.date[i]);
+
+		if (path.date[step+i].getHours() == 0) {
+			var options = {radius: 1.2, color: 'red', fillOpacity: 0.9, stroke: false};
+			var circle = L.circleMarker(msg.loc[i], options);
+			circle.bindTooltip(`${date2str(path.date[step+i])} (${loc2str(path.loc[step+i])})`);
+			path.circleMarkers.addLayer(circle);
+		}
+		
 	}
-	Session.paths[id].polyline.setLatLngs(Session.paths[id].loc);
+	path.polyline.setLatLngs(path.loc);
+	//startloc_marker.on('dragend', function(e){startloc_input(e.t
+
+	var options = {weight: 1, radius: 3, color: 'black', fillOpacity: 1, stroke: false};
+	if (step == 0) path.circleMarkers.addLayer(L.circleMarker(msg.loc[0], options));
+	path.circleMarkers.addTo(map);
 }
