@@ -13,8 +13,9 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * [libcbor](https://github.com/PJK/libcbor)
 * [nlohmann-json](https://github.com/nlohmann/json) (v3.6.1)
 * GCC 8 (gcc/g++)
-* nodejs, npm
 * CMake
+* nodejs
+* npm
 
 For Ubuntu 18.04,
 ```console
