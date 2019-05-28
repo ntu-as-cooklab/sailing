@@ -69,20 +69,19 @@ void printpt(pathpt_t pt)
 
 mymsg_t msg;
 
-void server_newpath(path_t* path)
+json server_newpath(path_t* path)
 {
-    server_pushall(json::to_cbor({{"cmd", "new_path"},
+    return {{"cmd", "new_path"},
             {"path", {
                 {"user", path->user},
                 {"id", path->id},
                 {"startdate", date2json(path->startdate)},
                 {"enddate", date2json(path->enddate)},
                 {"startloc", loc2json(path->startloc)}
-            }
-        }}));
+            }}};
 }
 
-void server_sendpts(path_t* path, int last_step, int step)
+json server_sendpts(path_t* path, int last_step, int step)
 {
     json j = {
         {"cmd", "pts"},
@@ -96,7 +95,7 @@ void server_sendpts(path_t* path, int last_step, int step)
         j["date"].push_back(date2json(path->pts[i].date));
         j["loc"].push_back(loc2json(path->pts[i].loc));
     }
-    server_pushall(json::to_cbor(j));
+    return j;
 }
 
 int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
@@ -105,7 +104,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
     json j;
     try {
         j = json::from_cbor(mymsg_t(in, in + len));
-    } catch (...) {}
+    } catch (...) { return -1; }
     cout << "Message: " << j << "\n";
 
     if (j["cmd"] == "new_path")
@@ -118,7 +117,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         path->enddate    = json2date(j["enddate"]);
         path->startloc   = json2loc(j["startloc"]);
 
-        server_newpath(path);
+        server_pushall(json::to_cbor(server_newpath(path)));
 
         int step = 0;
         int last_step = 0;
@@ -129,7 +128,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             if (step%(24*5) == 0) {
                 printf("id=%d ", path->id); printpt(path->pts.back());
                 // send incrementally
-                server_sendpts(path, last_step, step);
+                server_pushall(json::to_cbor(server_sendpts(path, last_step, step)));
                 last_step = step;
             }
         }
@@ -143,9 +142,10 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         for (it = Session::paths.begin(); it != Session::paths.end(); it++)
         {
             path_t* path = &it->second;
-            server_newpath(path);
-            server_sendpts(path, 0, path->pts.size()-1);
+            server_pushto(pss, json::to_cbor(server_newpath(path)));
+            server_pushto(pss, json::to_cbor(server_sendpts(path, 0, path->pts.size()-1)));
         }
+        server_pushto(pss, json::to_cbor({{"cmd"},{"ready"}}));
     }
 
     return 0;

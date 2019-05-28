@@ -38,6 +38,9 @@ function ws_init()
 				case "pts":
 					path_update(msg);
 					break;
+				case "ready":
+					console.log("Session restored");
+					break;
 				default:
 					console.log("Unrecognized command: ", msg["cmd"]);
 			}
