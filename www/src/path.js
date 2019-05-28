@@ -27,7 +27,7 @@ function path_popup(path)
 			<tr><td>結束地點:</td><td>${path.loc.length > 0 ? loc2str(path.loc[path.loc.length-1]) : ""}</td></tr>
 		</table>
 		<div>
-			<button onclick="path_hide(${path.id})">隱藏</button>
+			<button hidden onclick="path_hide(${path.id})">隱藏</button>
 			<button>下載csv</button>
 			<button>下載kml</button>
 			<button onclick="path_request_delete(${path.id})" ${path.user == Session.user ? "":"hidden"}>刪除</button>
