@@ -9,7 +9,7 @@ var Session = {
     startdate:  DATE_MIN,
     enddate:    new Date(1979, 3, 1, 0),
     startloc:   [-10.000, 160.000],
-	paths: {},
+	paths: [],
 	color: 'red',
 };
 
@@ -27,7 +27,7 @@ function session_restore()
         if(map.hasLayer(path.polyline)) map.removeLayer(path.polyline);
         if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
     }
-    Session.paths = {};
+    Session.paths = [];
 
 	ws.send(CBOR.encode({cmd:"restore"}));
 }

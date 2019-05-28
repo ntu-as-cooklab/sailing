@@ -109,8 +109,10 @@ function path_hide(id)
 
 function path_show_other()
 {
+	//console.log("path_show_other", Session.paths.length);
     for (let i = 0; i < Session.paths.length; i++) {
-        let path = Session.paths[i];
+		var path = Session.paths[i];
+		//console.log("user", path.user, Session.user);
         if(!map.hasLayer(path.polyline)) map.addLayer(path.polyline);
 	    if(!map.hasLayer(path.circles)) map.addLayer(path.circles);
     }
@@ -118,8 +120,10 @@ function path_show_other()
 
 function path_hide_other()
 {
+	//console.log("path_hide_other", Session.paths.length);
     for (let i = 0; i < Session.paths.length; i++) {
-        let path = Session.paths[i];
+		var path = Session.paths[i];
+		//console.log("user", path.user, Session.user);
         if (path.user != Session.user) {
             if(map.hasLayer(path.polyline)) map.removeLayer(path.polyline);
 	        if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
