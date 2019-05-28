@@ -18,8 +18,8 @@
         <tr>
             <td>時間長度: </td>
             <td>
-                <input style="width:3.5em" type="number" min="1" value="1">天
-                <input style="width:2.5em" type="number" min="1" value="0">小時</input>
+                <input id="days" style="width:3.5em" type="number" min="0">天
+                <input id="hours" style="width:2.5em" type="number" min="0" max="23">小時</input>
             </td>
         </tr>
         <tr><td><button onclick="request_new_path()">產生路徑</button></td></tr>
@@ -47,42 +47,48 @@
 
 var controls = $("#controls")[0];
 
-controls.update = function()
+controls.init = function()
 {
-    var startdate = $("#startdate")[0];
-    var starttime = $("#starttime")[0];
-    var enddate = $("#enddate")[0];
-    var endtime = $("#endtime")[0];
+    $("#startdate")[0].min = date2str(DATE_MIN);
+    $("#startdate")[0].max = date2str(DATE_MAX);
+    $("#enddate")[0].min = date2str(DATE_MIN);
+    $("#enddate")[0].max = date2str(DATE_MAX);
+    var hrs = (DATE_MAX - DATE_MIN)/1000/3600;
+    $("#days")[0].max = Math.floor(hrs/24);
+    $("#hours")[0].max = hrs%24;
 
-    startdate.min = date2str(DATE_MIN);
-    startdate.max = date2str(DATE_MAX);
-    startdate.value = date2str(Session.startdate);
-    starttime.value = time2str(Session.startdate);
-    startdate.oninput = starttime.oninput = function(e){
-        Session.startdate = new Date(`${startdate.value}T${starttime.value}`);
-        if (Session.startdate > Session.enddate) {
-            Session.enddate = Session.startdate;
-            enddate.value = date2str(Session.enddate);
-            endtime.value = time2str(Session.enddate);
-        }
-    };
+    $("#startdate")[0].oninput = 
+    $("#starttime")[0].oninput = 
+        function(e){
+            Session.startdate = new Date(`${startdate.value}T${starttime.value}`);
+            if (Session.enddate < Session.startdate)
+                Session.enddate = Session.startdate;
+            controls.update();
+        };
 
-    enddate.min = date2str(DATE_MIN);
-    enddate.max = date2str(DATE_MAX);
-    enddate.value = date2str(Session.enddate);
-    endtime.value = time2str(Session.enddate);
-    enddate.oninput = endtime.oninput = function(e){ 
-        Session.enddate = new Date(`${enddate.value}T${endtime.value}`);
-        if (Session.enddate < Session.startdate) {
-            Session.startdate = Session.enddate;
-            startdate.value = date2str(Session.startdate);
-            starttime.value = time2str(Session.startdate);
-        }
-    };
-
-    $("#startloc")[0].innerText = loc2str(Session.startloc);
+    $("#enddate")[0].oninput =
+    $("#endtime")[0].oninput = 
+        function(e){ 
+            Session.enddate = new Date(`${enddate.value}T${endtime.value}`);
+            if (Session.startdate > Session.enddate)
+                Session.startdate = Session.enddate;
+            controls.update();
+        };
 }
 
+controls.update = function()
+{
+    $("#startdate")[0].value = date2str(Session.startdate);
+    $("#starttime")[0].value = time2str(Session.startdate);
+    $("#enddate")[0].value = date2str(Session.enddate);
+    $("#endtime")[0].value = time2str(Session.enddate);
+    $("#startloc")[0].innerText = loc2str(Session.startloc);
+    var hrs = (Session.enddate - Session.startdate)/1000/3600;
+    $("#days")[0].value = Math.floor(hrs/24);
+    $("#hours")[0].value = hrs%24;
+}
+
+controls.init();
 controls.update();
 
 </script>

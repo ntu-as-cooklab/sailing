@@ -13,6 +13,21 @@ function startloc_input(e)
 	$("#startloc")[0].innerText = loc2str(Session.startloc);
 }
 
+function startloc_init()
+{
+	var iconsize = 32;
+	startloc_marker = L.marker([3.0, 160.0], { icon: L.icon({
+			iconUrl: 	'res/Celtic-style_crossed_circle.svg.png',
+			iconSize:     [iconsize, iconsize], // size of the icon
+			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
+			popupAnchor:  [0, -iconsize/2] // point from which the popup should open relative to the iconAnchor
+			}),
+		draggable: false, continousWorld : true }).addTo(map);
+	startloc_marker.setLatLng(Session.startloc);
+	map.on('click', startloc_input);
+	//startloc_marker.on('dragend', function(e){startloc_input(e.target);});
+}
+
 function initMap()
 {
 	map = L.map('map', {
@@ -45,17 +60,7 @@ function initMap()
 
 	var myRepeatingMarkers = L.gridLayer.repeatedMarkers().addTo(map);
 
-	var iconsize = 32;
-	startloc_marker = L.marker([3.0, 160.0], { icon: L.icon({
-			iconUrl: 	'res/Celtic-style_crossed_circle.svg.png',
-			iconSize:     [iconsize, iconsize], // size of the icon
-			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
-			popupAnchor:  [0, -iconsize/2] // point from which the popup should open relative to the iconAnchor
-			}),
-		draggable: false, continousWorld : true }).addTo(map);
-	startloc_marker.setLatLng(Session.startloc);
-	map.on('click', startloc_input);
-	//startloc_marker.on('dragend', function(e){startloc_input(e.target);});
+	startloc_init();
 
 	// L.easyButton('fa-globe', function(btn, map){
 	// 	var antarctica = [-77,70];
