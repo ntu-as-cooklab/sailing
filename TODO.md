@@ -14,3 +14,4 @@
 14. UI adjustment & mobile UI
 15. Attribution
 16. Land collision detection
+17. Send velocity vectors to UI
