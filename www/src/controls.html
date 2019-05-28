@@ -53,27 +53,35 @@ controls.init = function()
     $("#startdate")[0].max = date2str(DATE_MAX);
     $("#enddate")[0].min = date2str(DATE_MIN);
     $("#enddate")[0].max = date2str(DATE_MAX);
-    var hrs = (DATE_MAX - DATE_MIN)/1000/3600;
-    $("#days")[0].max = Math.floor(hrs/24);
-    $("#hours")[0].max = hrs%24;
 
     $("#startdate")[0].oninput = 
     $("#starttime")[0].oninput = 
-        function(e){
-            Session.startdate = new Date(`${startdate.value}T${starttime.value}`);
-            if (Session.enddate < Session.startdate)
-                Session.enddate = Session.startdate;
-            controls.update();
-        };
+    function(e){
+        Session.startdate = new Date(`${startdate.value}T${starttime.value}`);
+        if (Session.enddate < Session.startdate)
+            Session.enddate = Session.startdate;
+        controls.update();
+    };
 
     $("#enddate")[0].oninput =
     $("#endtime")[0].oninput = 
-        function(e){ 
-            Session.enddate = new Date(`${enddate.value}T${endtime.value}`);
-            if (Session.startdate > Session.enddate)
-                Session.startdate = Session.enddate;
-            controls.update();
-        };
+    function(e){ 
+        Session.enddate = new Date(`${enddate.value}T${endtime.value}`);
+        if (Session.startdate > Session.enddate)
+            Session.startdate = Session.enddate;
+        controls.update();
+    };
+
+    $("#days")[0].oninput =
+    $("#hours")[0].oninput =
+    function(e){ 
+        Session.enddate = new Date(Session.startdate);
+        Session.enddate.setDate(Session.enddate.getDate() + Number($("#days")[0].value));
+        Session.enddate.setHours(Session.enddate.getHours() + Number($("#hours")[0].value)); 
+        if (Session.enddate > DATE_MAX)
+            Session.enddate = DATE_MAX;
+        controls.update();
+    };
 }
 
 controls.update = function()
