@@ -1,37 +1,46 @@
-<div id="controls" class="leaflet-popup-content-wrapper" style="position:absolute">
-    <table class="leaflet-popup-content">
-        <tr><td>起始地點: </td><td id="startloc"></td></tr>
-        <tr>
-            <td>起始時間: </td>
-            <td>
-                <input type="date" id="startdate"></input>
-                <input type="time" id="starttime" step="3600"></input>
-            </td>
-        </tr>
-        <tr>
-            <td>結束時間: </td>
-            <td>
-                <input type="date" id="enddate"></input>
-                <input type="time" id="endtime"step="3600"></input>
-            </td>
-        </tr>
-        <tr>
-            <td>時間長度: </td>
-            <td>
-                <input id="days" style="width:3.5em" type="number" min="0">天
-                <input id="hours" style="width:2.5em" type="number" min="0" max="23">小時</input>
-            </td>
-        </tr>
-        <tr><td><button onclick="request_new_path()">產生路徑</button></td></tr>
-    <table>
+<div id="controls-wrapper">
+    <div id="controls" class="leaflet-popup-content-wrapper" style="position:absolute">
+        <table class="leaflet-popup-content">
+            <tr><td>起始地點: </td><td id="startloc"></td></tr>
+            <tr>
+                <td>起始時間: </td>
+                <td>
+                    <input type="date" id="startdate"></input>
+                    <input type="time" id="starttime" step="3600"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>結束時間: </td>
+                <td>
+                    <input type="date" id="enddate"></input>
+                    <input type="time" id="endtime"step="3600"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>時間長度: </td>
+                <td>
+                    <input id="days" style="width:3.5em" type="number" min="0">天
+                    <input id="hours" style="width:2.5em" type="number" min="0" max="23">小時</input>
+                </td>
+            </tr>
+            <tr><td><button onclick="request_new_path()">產生路徑</button></td></tr>
+        <table>
+    </div>
 </div>
 
 <style>
+#controls-wrapper {
+    position: absolute;
+    width:100%;
+    text-align:center;
+}
+
 #controls {
     font-family: 微軟正黑體, sans-serif;
     position: absolute;
     margin: 0 auto;
     top: 0%;
+    left: 40%;
     z-index: 4;
     overflow: auto;
     display: inline;
