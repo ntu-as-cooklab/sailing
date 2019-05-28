@@ -17,7 +17,7 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * CMake
 
 ```console
-# apt-get install gcc-8 g++-8 libcurl-dev libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev cmake
+# apt-get install gcc-8 g++-8 libcurl-dev libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev cmake nodejs npm
 ```
 
 ### libwebsockets:
