@@ -1,4 +1,3 @@
-1. Selectable paths: popup with info & delete function
 4. Persistent database
 5. List of paths in side bar
 7. Download csv & kml
@@ -9,7 +8,5 @@
 12. Selectable colors
 13. User info
 14. UI adjustment & mobile UI
-15. Attribution
 16. Land collision detection
 17. Send velocity vectors to UI
-18. Restore session on reload
