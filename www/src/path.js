@@ -82,6 +82,7 @@ function path_update(msg)
 	if (step == 0) path.circles.addLayer(L.circleMarker(msg.loc[0], options));
 	path.circles.addTo(map);
 
+	console.log(msg.loc.length, path.date[path.date.length-1], path.enddate);
 	if (path.date[path.date.length-1] >= path.enddate) {
 		var popup = path.polyline.bindPopup(path_popup(path), {closeOnClick: false, autoClose: false});
 		if (path.user == Session.user) popup.openPopup();

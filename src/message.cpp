@@ -128,14 +128,18 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             else {
                 step++;
                 if (step%(24*5) == 0) {
-                    printf("id=%d ", path->id); printpt(path->pts.back());
+                    // printf("id=%d ", path->id); printpt(path->pts.back());
                     // send incrementally
                     server_pushall(json::to_cbor(server_sendpts(path, last_step, step)));
                     last_step = step;
                 }
             }
         }
-        if (last_step < step) server_sendpts(path, last_step, step); // send remaining data here
+        printf("id=%d ", path->id); printpt(path->pts.back());
+        if (last_step < step) {
+            // printf("send remaining data %d %d\n", last_step, step);
+            server_pushall(json::to_cbor(server_sendpts(path, last_step, step))); // send remaining data here
+        }
         if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"id", path->id}}));
     }
     else if (j["cmd"] == "restore")
