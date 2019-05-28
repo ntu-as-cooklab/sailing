@@ -22,5 +22,12 @@ console.log("token:", Session.token);
 function session_restore()
 {
     $("#loading").show();
+    for (let i = 0; i < Session.paths.length; i++) {
+        let path = Session.paths[i];
+        if(map.hasLayer(path.polyline)) map.removeLayer(path.polyline);
+        if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
+    }
+    Session.paths = [];
+
 	ws.send(CBOR.encode({cmd:"restore"}));
 }
