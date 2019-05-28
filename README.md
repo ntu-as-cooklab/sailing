@@ -20,7 +20,7 @@ To build,
 ```console
 $ git submodule init
 $ git submodule update
-$ make
+$ CC=gcc-8 CXX=g++-8 make
 ```
 
 ## Project directory structure
