@@ -147,6 +147,16 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         }
         server_pushto(pss, json::to_cbor({{"cmd", "ready"}}));
     }
+    else if (j["cmd"] == "delete")
+    {
+        uint32_t id = j["id"];
+        uint32_t user = j["user"];
+        if (Session::paths[id].user == user)
+        {
+            Session::paths.erase(id);
+            server_pushall(json::to_cbor({{"cmd", "delete"},{"id", id}}));
+        }
+    }
 
     return 0;
 }

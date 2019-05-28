@@ -42,6 +42,9 @@ function ws_init()
 					console.log("Session restored");
 					$("#loading").hide();
 					break;
+				case "delete":
+					path_delete(msg);
+					break;
 				default:
 					console.log("Unrecognized command: ", msg["cmd"]);
 			}

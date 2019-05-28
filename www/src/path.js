@@ -30,7 +30,7 @@ function path_popup(path)
 			<button onclick="path_hide(${path.id})">隱藏</button>
 			<button>下載csv</button>
 			<button>下載kml</button>
-			<button ${path.user == Session.user ? "":"hidden"}>刪除</button>
+			<button onclick="path_request_delete(${path.id})" ${path.user == Session.user ? "":"hidden"}>刪除</button>
 		</div>
 	</div>`;
 }
@@ -111,4 +111,24 @@ function path_hide_other()
 	        if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
         }
     }
+}
+
+function path_request_delete(id)
+{
+	var msg = {
+        cmd:        "delete",
+        user:       Session.user,
+        token:      Session.token,
+        id: 		id,
+    };
+	ws.send(CBOR.encode(msg));
+}
+
+function path_delete(msg)
+{
+	var id = msg["id"];
+	var path = Session.paths[id];
+	if(map.hasLayer(path.polyline)) map.removeLayer(path.polyline);
+	if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
+	delete Session.paths[id];
 }
