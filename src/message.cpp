@@ -93,7 +93,7 @@ int server_decode(uint8_t *in, size_t len)
         path->enddate    = json2date(j["enddate"]);
         path->startloc   = json2loc(j["startloc"]);
 
-        server_pushmsg(make_shared<mymsg_t>(json::to_cbor({{"cmd", "new_path"},{"path", path2json(path,0)}})));
+        server_pushmsg(json::to_cbor({{"cmd", "new_path"},{"path", path2json(path,0)}}));
 
         //int i = path->pts.size();
         // path->pts.push_back((pathpt_t){path->startdate, path->startloc});

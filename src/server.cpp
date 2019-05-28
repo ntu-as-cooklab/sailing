@@ -10,12 +10,14 @@
 
 #define LWS_PLUGIN_STATIC
 
+using namespace std;
+
 /* per session data: one of these is created for each client connecting to us */
 typedef struct my_pss_t {
     struct my_pss_t *pss_list;
     struct lws      *wsi;
 
-    std::queue<std::shared_ptr<mymsg_t>> msgq; // message queue
+    queue<shared_ptr<mymsg_t>> msgq; // message queue
 } my_pss_t;
 
 /* per vhost data: one of these is created for each vhost our protocol is used with */
@@ -89,14 +91,16 @@ void server_stop(void)
 
 static my_vhd_t *myvhd = NULL;
 
-int server_pushmsg(std::shared_ptr<mymsg_t> msg)
+int server_pushmsg(mymsg_t msg)
 {
     my_vhd_t *vhd = myvhd;
     if (!vhd) return -1;
 
+    shared_ptr<mymsg_t> msgp = make_shared<mymsg_t>(msg);
+
     lws_start_foreach_llp(my_pss_t **, ppss, vhd->pss_list) {
-        msg->insert(msg->begin(), LWS_PRE, 0x0);
-        (*ppss)->msgq.push(msg);
+        msgp->insert(msgp->begin(), LWS_PRE, 0x0);
+        (*ppss)->msgq.push(msgp);
         lws_callback_on_writable((*ppss)->wsi);
     } lws_end_foreach_llp(ppss, pss_list);
 
@@ -120,7 +124,7 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
         case LWS_CALLBACK_ESTABLISHED:
             lws_ll_fwd_insert(pss, pss_list, vhd->pss_list); /* add ourselves to the list of live pss held in the vhd */
             pss->wsi    = wsi;
-            pss->msgq   = std::queue<std::shared_ptr<mymsg_t>>();
+            pss->msgq   = queue<shared_ptr<mymsg_t>>();
             break;
 
         case LWS_CALLBACK_CLOSED:

@@ -13,7 +13,7 @@ extern  "C" {
 typedef std::vector<uint8_t> mymsg_t;
 
 int server_decode(uint8_t *in, size_t len);
-int server_pushmsg(std::shared_ptr<mymsg_t> msg);
+int server_pushmsg(mymsg_t msg);
 
 #ifdef  __cplusplus
 }
