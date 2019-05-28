@@ -18,3 +18,8 @@ Session.user  = Number(url.searchParams.get("user"));
 Session.token = String(url.searchParams.get("token"));
 console.log("user:",  Session.user);
 console.log("token:", Session.token);
+
+function session_restore()
+{
+	ws.send(CBOR.encode({cmd:"restore"}));
+}

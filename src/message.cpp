@@ -69,9 +69,9 @@ void printpt(pathpt_t pt)
 
 mymsg_t msg;
 
-int server_decode(uint8_t *in, size_t len)
+int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
 {
-    printf("server_decode\n");
+    //printf("server_decode\n");
     json j;
     try {
         j = json::from_cbor(mymsg_t(in, in + len));
@@ -88,7 +88,7 @@ int server_decode(uint8_t *in, size_t len)
         path->enddate    = json2date(j["enddate"]);
         path->startloc   = json2loc(j["startloc"]);
 
-        server_pushmsg(json::to_cbor({{"cmd", "new_path"},
+        server_pushall(json::to_cbor({{"cmd", "new_path"},
             {"path", {
                 {"user", path->user},
                 {"id", path->id},
@@ -121,13 +121,19 @@ int server_decode(uint8_t *in, size_t len)
                     j1["date"].push_back(date2json(path->pts[i].date));
                     j1["loc"].push_back(loc2json(path->pts[i].loc));
                 }
-                server_pushmsg(json::to_cbor(j1));
+                server_pushall(json::to_cbor(j1));
 
                 last_step = step;
             }
         }
 
         // send remaining data here!
+    }
+    else if (j["cmd"] == "restore")
+    {
+        printf("restore 0x%x\n", pss);
+        json j1 = {{"cmd", "restore"}};
+        server_pushto(pss, json::to_cbor(j1));
     }
 
     return 0;

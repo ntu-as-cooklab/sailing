@@ -12,6 +12,7 @@ function ws_init()
 	ws.onopen = function(e) {
 		console.log("Websocket connected");
 		$("#offline").hide();
+		session_restore();
 	};
 
 	ws.onerror = function(e) {

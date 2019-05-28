@@ -92,7 +92,7 @@ void server_stop(void)
 
 static my_vhd_t *myvhd = NULL;
 
-int server_pushmsg(mymsg_t msg)
+int server_pushall(mymsg_t msg)
 {
     my_vhd_t *vhd = myvhd;
     if (!vhd) return -1;
@@ -107,6 +107,17 @@ int server_pushmsg(mymsg_t msg)
         (*ppss)->msgq.push(msgp);
         lws_callback_on_writable((*ppss)->wsi);
     } lws_end_foreach_llp(ppss, pss_list);
+
+    return 0;
+}
+
+int server_pushto(my_pss_t *pss, mymsg_t msg)
+{
+    shared_ptr<mymsg_t> msgp = make_shared<mymsg_t>(msg); // FIXME: defeats use of shared pointer
+
+    msgp->insert(msgp->begin(), LWS_PRE, 0x0);
+    pss->msgq.push(msgp);
+    lws_callback_on_writable(pss->wsi);
 
     return 0;
 }
@@ -152,7 +163,7 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
         } break;
 
         case LWS_CALLBACK_RECEIVE: {
-            thread t = thread(server_decode, (uint8_t*)in, len);
+            thread t = thread(server_decode, pss, (uint8_t*)in, len);
             t.detach();
             // server_decode((uint8_t*)in, len);
         } break;

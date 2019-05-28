@@ -11,9 +11,11 @@ extern  "C" {
 #endif
 
 typedef std::vector<uint8_t> mymsg_t;
+typedef struct my_pss_t my_pss_t;
 
-int server_decode(uint8_t *in, size_t len);
-int server_pushmsg(mymsg_t msg);
+int server_decode(my_pss_t *pss, uint8_t *in, size_t len);
+int server_pushall(mymsg_t msg);
+int server_pushto(my_pss_t *pss, mymsg_t msg);
 
 #ifdef  __cplusplus
 }
