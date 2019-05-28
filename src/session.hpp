@@ -8,6 +8,8 @@
 namespace Session {
     extern std::map<uint32_t, path_t> paths;
     int new_path();
+    int writeBson();
+    int loadBson();
 }
 
 #endif

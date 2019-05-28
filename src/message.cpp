@@ -35,26 +35,6 @@ json loc2json(latlon_t& loc)
     return json({loc.lat, loc.lon});
 }
 
-json path2json(path_t* path, int step)
-{
-    json j;
-    j["id"]     = path->id;
-    j["user"]   = path->user;
-    j["startdate"] = date2json(path->startdate);
-    j["enddate"] = date2json(path->enddate);
-    j["startloc"] = loc2json(path->startloc);
-
-    j["step"] = step;
-    j["date"] = json::array();
-    j["loc"]  = json::array();
-    for (int i = step; i < path->pts.size(); i++)
-    {
-        j["date"].push_back(date2json(path->pts[i].date));
-        j["loc"].push_back(loc2json(path->pts[i].loc));
-    }
-    return j;
-}
-
 std::string datestr(struct tm *date)
 {
     char str[30];
@@ -65,6 +45,44 @@ std::string datestr(struct tm *date)
 void printpt(pathpt_t pt)
 {
     printf("%s %f,%f\n", datestr(&pt.date).c_str(), pt.loc.lat, pt.loc.lon);
+}
+
+json path2json(path_t* path)
+{
+    json j;
+    j["id"]     = path->id;
+    j["user"]   = path->user;
+    j["startdate"] = date2json(path->startdate);
+    j["enddate"] = date2json(path->enddate);
+    j["startloc"] = loc2json(path->startloc);
+    j["land_collision"] = path->land_collision;
+
+    j["date"] = json::array();
+    j["loc"]  = json::array();
+    for (int i = 0; i < path->pts.size(); i++)
+    {
+        j["date"].push_back(date2json(path->pts[i].date));
+        j["loc"].push_back(loc2json(path->pts[i].loc));
+    }
+    return j;
+}
+
+path_t json2path(json j)
+{
+    path_t path;
+    path.id = j["id"];
+    path.user = j["user"];
+    path.startdate = json2date(j["startdate"]);
+    path.enddate = json2date(j["enddate"]);
+    path.startloc = json2loc(j["startloc"]);
+    path.land_collision = j["land_collision"];
+
+    for (json::iterator date = j["date"].begin(), loc = j["loc"].begin(); date != j["date"].end(); ++date, ++loc) {
+        pathpt_t pt = {.date = json2date(*date), .loc = json2loc(*loc)};
+        //printpt(pt);
+        path.pts.push_back(pt);
+    }
+    return path;
 }
 
 mymsg_t msg;
