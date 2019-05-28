@@ -4,7 +4,9 @@ $(function(){main();});
 
 function main()
 {
-	$("#controls_wrapper").load("src/controls.html");
+	$('[include]').each(function(e) {
+		$(this).load($(this).attr('include'));
+	});
 	ws_init();
 	initMap();
 }

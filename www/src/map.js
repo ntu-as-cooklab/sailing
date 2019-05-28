@@ -17,6 +17,8 @@ function initMap()
 {
 	map = L.map('map', {
 		//worldCopyJump: true,
+		//fadeAnimation: false,
+		//zoomAnimation: false,
 		minZoom: 3,
 		maxZoom: 18,
 		'center': [3.0, 160.0],
@@ -41,6 +43,8 @@ function initMap()
 
 	/** Markers **/
 
+	var myRepeatingMarkers = L.gridLayer.repeatedMarkers().addTo(map);
+
 	var iconsize = 32;
 	startloc_marker = L.marker([3.0, 160.0], { icon: L.icon({
 			iconUrl: 	'res/Celtic-style_crossed_circle.svg.png',
@@ -60,7 +64,6 @@ function initMap()
 
 	/** Events **/
 	//map.on('contextmenu', onMapClick);
-	map.on('mousemove', function(e){ $("#info")[0].innerText = latlng2str(e.latlng); });
 }
 
 function toggleLatLonLines()

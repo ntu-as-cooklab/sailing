@@ -16,6 +16,7 @@
 		<script src="node_modules/@mapbox/leaflet-omnivore/leaflet-omnivore.min.js"></script>
 		<script src="node_modules/leaflet-graticule/Leaflet.Graticule.js"></script>
 		<script src="node_modules/leaflet-easybutton/src/easy-button.js"></script>
+		<script src="node_modules/leaflet.repeatedmarkers/Leaflet.RepeatedMarkers.js"></script>
 		<!-- libs -->
 		<script src="node_modules/cbor-js/cbor.js"></script>
 		<!-- Sources -->
@@ -33,8 +34,8 @@
 	<body>
 		<div id="container">
 			<div id="map"></div>
-			<div id="controls_wrapper" style="width:78%;text-align:center;position:absolute;"></div>
-			<span id="info"></span>
+			<div include="src/controls.html" style="width:78%;text-align:center;position:absolute;"></div>
+			<div include="src/latlng.html"></div>
 		</div>
 	</body>
 </html>

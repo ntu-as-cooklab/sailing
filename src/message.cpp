@@ -87,7 +87,10 @@ int server_decode(uint8_t *in, size_t len)
         while(mktime(&path->pts.back().date) < mktime(&path->enddate)) {
             sail_step(path);
             step++;
-            if (step%(24*5) == 0) printpt(path->pts.back());
+            if (step%(24*5) == 0) {
+                printpt(path->pts.back());
+                // send incrementally
+            }
         }
             
         printpt(path->pts.back());

@@ -10,6 +10,12 @@ var Session = {
     }
 };
 
+var url = new URL(window.location.href);
+Session.user  = Number(url.searchParams.get("user"));
+Session.token = String(url.searchParams.get("token"));
+console.log("user:",  Session.user);
+console.log("token:", Session.token);
+
 function request_new_path()
 {
     var msg = {

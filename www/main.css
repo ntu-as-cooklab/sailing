@@ -22,19 +22,6 @@ html, body {
     z-index: 1;
 }
 
-#info {
-    position: absolute;
-    bottom:1%; width:100%;
-    text-align:center;
-    font-size: 1.5vw;
-    color: black;
-    z-index: 2;
-}
-
-#info > * {
-    font-family: 微軟正黑體, sans-serif;
-}
-
 #parameters {
     position: absolute;
     right: 0%; 	top: 0%;
