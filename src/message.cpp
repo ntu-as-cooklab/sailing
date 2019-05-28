@@ -62,12 +62,6 @@ std::string datestr(struct tm *date)
     return std::string(str);
 }
 
-// void update_path(path_t* path, int i0, int i1)
-// {
-//     mymsg_t msg = json::to_cbor({{"cmd", "new_path"},{"path", path2json(path)}});
-//     server_pushmsg(&msg);
-// }
-
 void printpt(pathpt_t pt)
 {
     printf("%s %f,%f\n", datestr(&pt.date).c_str(), pt.loc.lat, pt.loc.lon);
@@ -104,9 +98,6 @@ int server_decode(uint8_t *in, size_t len)
             }
         }}));
 
-        //int i = path->pts.size();
-        // path->pts.push_back((pathpt_t){path->startdate, path->startloc});
-        // printpt(path->pts.back());
         int step = 0;
         int last_step = 0;
         path->pts.push_back({path->startdate, path->startloc});
@@ -135,13 +126,8 @@ int server_decode(uint8_t *in, size_t len)
                 last_step = step;
             }
         }
-        // printpt(path->pts.back());
 
-        // json response = json({});
-        // response["cmd"]  = "new_path";
-        // response["path"] = path2json(*path);
-        // response_cbor = json::to_cbor(response);
-        // server_pushmsg(&response_cbor);
+        // send remaining data here!
     }
 
     return 0;
