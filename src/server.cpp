@@ -97,9 +97,12 @@ int server_pushmsg(mymsg_t msg)
     my_vhd_t *vhd = myvhd;
     if (!vhd) return -1;
 
-    shared_ptr<mymsg_t> msgp = make_shared<mymsg_t>(msg);
+    // shared_ptr<mymsg_t> msgp = make_shared<mymsg_t>(msg);
 
     lws_start_foreach_llp(my_pss_t **, ppss, vhd->pss_list) {
+
+        shared_ptr<mymsg_t> msgp = make_shared<mymsg_t>(msg); // FIXME: defeats use of shared pointer
+
         msgp->insert(msgp->begin(), LWS_PRE, 0x0);
         (*ppss)->msgq.push(msgp);
         lws_callback_on_writable((*ppss)->wsi);
@@ -123,6 +126,7 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
             break;
 
         case LWS_CALLBACK_ESTABLISHED:
+            lwsl_user("New connection established\n");
             lws_ll_fwd_insert(pss, pss_list, vhd->pss_list); /* add ourselves to the list of live pss held in the vhd */
             pss->wsi    = wsi;
             pss->msgq   = queue<shared_ptr<mymsg_t>>();
@@ -137,6 +141,7 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
             
             /* notice we allowed for LWS_PRE in the payload already */
             int len = lws_write(wsi, pss->msgq.front()->data() + LWS_PRE, pss->msgq.front()->size() - LWS_PRE, LWS_WRITE_BINARY);
+            //lwsl_user("Write %d len %d\n", pss->wsi, len);
             if (len < (int)pss->msgq.front()->size() - LWS_PRE) {
                 lwsl_err("ERROR msg len %d writing to ws\n", len);
                 return -1;
@@ -147,8 +152,9 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
         } break;
 
         case LWS_CALLBACK_RECEIVE: {
-            thread t = thread(server_decode, (uint8_t*)in, len);
-            t.detach();
+            //thread t = thread(server_decode, (uint8_t*)in, len);
+            //t.detach();
+            server_decode((uint8_t*)in, len);
         } break;
 
         default:
