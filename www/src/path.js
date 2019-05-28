@@ -93,12 +93,22 @@ function path_hide(id)
 	if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
 }
 
-function show_other_users()
+function path_show_other()
 {
-
+    for (let i = 0; i < Session.paths.length; i++) {
+        let path = Session.paths[i];
+        if(!map.hasLayer(path.polyline)) map.addLayer(path.polyline);
+	    if(!map.hasLayer(path.circles)) map.addLayer(path.circles);
+    }
 }
 
-function hide_other_users()
+function path_hide_other()
 {
-	
+    for (let i = 0; i < Session.paths.length; i++) {
+        let path = Session.paths[i];
+        if (path.user != Session.user) {
+            if(map.hasLayer(path.polyline)) map.removeLayer(path.polyline);
+	        if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
+        }
+    }
 }
