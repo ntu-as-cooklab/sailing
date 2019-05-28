@@ -9,6 +9,10 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * [libcurl](https://curl.haxx.se/libcurl/)
 * [ecCodes](https://confluence.ecmwf.int//display/ECC/ecCodes+Home)
 * [libwebsockets](https://libwebsockets.org/)
+* [netcdf](https://www.unidata.ucar.edu/software/netcdf/)
+* [libcbor](https://github.com/PJK/libcbor)
+* GCC 8 (gcc/g++)
+* nodejs, npm
 
 ## Instructions
 
@@ -16,23 +20,9 @@ To build,
 ```console
 $ git submodule init
 $ git submodule update
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
+$ CC=gcc-8 CXX=g++-8 make
 ```
-
-The program expects the CFSR data to be in the `data` folder, arranged in a directory structure like:
-```
-ocea/OU/CFSR_ocnh06.gdas.OU_YYYYMM_5.nc
-ocea/OV/CFSR_ocnh06.gdas.OV_YYYYMM_5.nc
-atmo/U10/CFSR_flxf06.gdas.U_10m_YYYYMM.nc
-atmo/V10/CFSR_flxf06.gdas.V_10m_YYYYMM.nc
-```
-
-The application follows a server-client pattern, with a C++ based backend and a Javascript frontend run in the browser. Calculated sailing routes are saved into the `www/output` folder.
 
 ## Project directory structure
-* cfsr: C code for parsing CFSR data.
 * src: Source files for main application
 * www: Source files for browser frontend
