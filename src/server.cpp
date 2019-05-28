@@ -6,6 +6,7 @@
 #include "server.h"
 #include <vector>
 #include <queue>
+#include <memory>
 
 #define LWS_PLUGIN_STATIC
 
@@ -14,7 +15,7 @@ typedef struct my_pss_t {
     struct my_pss_t *pss_list;
     struct lws      *wsi;
 
-    std::queue<mymsg_t*> msgq; // message queue
+    std::queue<std::shared_ptr<mymsg_t>> msgq; // message queue
 } my_pss_t;
 
 /* per vhost data: one of these is created for each vhost our protocol is used with */
@@ -88,7 +89,7 @@ void server_stop(void)
 
 static my_vhd_t *myvhd = NULL;
 
-int server_pushmsg(mymsg_t* msg)
+int server_pushmsg(std::shared_ptr<mymsg_t> msg)
 {
     my_vhd_t *vhd = myvhd;
     if (!vhd) return -1;
@@ -119,7 +120,7 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
         case LWS_CALLBACK_ESTABLISHED:
             lws_ll_fwd_insert(pss, pss_list, vhd->pss_list); /* add ourselves to the list of live pss held in the vhd */
             pss->wsi    = wsi;
-            pss->msgq   = std::queue<mymsg_t*>();
+            pss->msgq   = std::queue<std::shared_ptr<mymsg_t>>();
             break;
 
         case LWS_CALLBACK_CLOSED:

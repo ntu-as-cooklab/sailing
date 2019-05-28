@@ -32,7 +32,8 @@ function request_new_path()
 
 function new_path(path)
 {
-	//console.log(path);
+	Session.paths[path.id] = path;
+	console.log(Session.paths);
 	// var v = {}
 	// v.layerGroup = L.layerGroup();
 	// v.circleMarker = [];

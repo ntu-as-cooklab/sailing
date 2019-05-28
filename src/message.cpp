@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <iostream>
+#include <string>
 #include <nlohmann/json.hpp>
 #include "sailing.hpp"
 #include "message.hpp"
@@ -34,33 +35,45 @@ json loc2json(latlon_t& loc)
     return json({loc.lat, loc.lon});
 }
 
-json path2json(path_t& path)
+json path2json(path_t* path, int step)
 {
     json j;
-    j["id"]     = path.id;
-    j["user"]   = path.user;
+    j["id"]     = path->id;
+    j["user"]   = path->user;
+    j["startdate"] = date2json(path->startdate);
+    j["enddate"] = date2json(path->enddate);
+    j["startloc"] = loc2json(path->startloc);
 
+    j["step"] = step;
     j["date"] = json::array();
     j["loc"]  = json::array();
-    for (int i = 0; i < path.pts.size(); i++)
+    for (int i = step; i < path->pts.size(); i++)
     {
-        j["date"].push_back(date2json(path.pts[i].date));
-        j["loc"].push_back(loc2json(path.pts[i].loc));
+        j["date"].push_back(date2json(path->pts[i].date));
+        j["loc"].push_back(loc2json(path->pts[i].loc));
     }
     return j;
 }
 
-const char* datestr(struct tm *date)
+std::string datestr(struct tm *date)
 {
-    static char str[30];
+    char str[30];
     strftime(str, sizeof(str), "%Y-%m-%d %Hhr", date);
-    return str;
+    return std::string(str);
 }
+
+// void update_path(path_t* path, int i0, int i1)
+// {
+//     mymsg_t msg = json::to_cbor({{"cmd", "new_path"},{"path", path2json(path)}});
+//     server_pushmsg(&msg);
+// }
 
 void printpt(pathpt_t pt)
 {
-    printf("%s %f,%f\n", datestr(&pt.date), pt.loc.lat, pt.loc.lon);
+    printf("%s %f,%f\n", datestr(&pt.date).c_str(), pt.loc.lat, pt.loc.lon);
 }
+
+mymsg_t msg;
 
 int server_decode(uint8_t *in, size_t len)
 {
@@ -68,38 +81,43 @@ int server_decode(uint8_t *in, size_t len)
     try {
         j = json::from_cbor(mymsg_t(in, in + len));
     } catch (...) {}
-    cout << j << "\n";
+    cout << "Message: " << j << "\n";
 
     if (j["cmd"] == "new_path")
     {
         uint32_t id = Session::new_path();
         path_t* path = &Session::paths[id];
+        path->id         = id;
+        path->user       = j["user"];
+        path->startdate  = json2date(j["startdate"]);
+        path->enddate    = json2date(j["enddate"]);
+        path->startloc   = json2loc(j["startloc"]);
 
-        path->id = id; 
-        path->user = j["user"];
-        path->startdate = json2date(j["startdate"]);
-        path->enddate   = json2date(j["enddate"]);
-        path->startloc  = json2loc(j["startloc"]);
-        
-        path->pts.push_back((pathpt_t){path->startdate, path->startloc});
-        printpt(path->pts.back());
+        server_pushmsg(make_shared<mymsg_t>(json::to_cbor({{"cmd", "new_path"},{"path", path2json(path,0)}})));
+
+        //int i = path->pts.size();
+        // path->pts.push_back((pathpt_t){path->startdate, path->startloc});
+        // printpt(path->pts.back());
         int step = 0;
+        int last_step = 0;
+        path->pts.push_back({path->startdate, path->startloc});
         while(mktime(&path->pts.back().date) < mktime(&path->enddate)) {
             sail_step(path);
             step++;
             if (step%(24*5) == 0) {
+                printf("id=%d last_step=%d step=%d ", path->id, last_step, step);
                 printpt(path->pts.back());
                 // send incrementally
+                last_step = step;
             }
         }
-            
-        printpt(path->pts.back());
+        // printpt(path->pts.back());
 
-        json response = json({});
-        response["cmd"]  = "new_path";
-        response["path"] = path2json(*path);
-        response_cbor = json::to_cbor(response);
-        server_pushmsg(&response_cbor);
+        // json response = json({});
+        // response["cmd"]  = "new_path";
+        // response["path"] = path2json(*path);
+        // response_cbor = json::to_cbor(response);
+        // server_pushmsg(&response_cbor);
     }
 
     return 0;

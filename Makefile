@@ -1,9 +1,9 @@
 SHELL:=/bin/bash
 
 LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor
-CPPFLAGS += -O2 -Isrc
+CPPFLAGS += -O2 -Isrc -fms-extensions
 CPPFLAGS += -MMD -MP -MF $@.d
-CFLAGS 	+= -std=gnu11
+CFLAGS 	+= -std=gnu11 -fplan9-extensions
 CXXFLAGS += -std=c++14
 
 SRC = $(wildcard src/*.c* src/*/*.c*)

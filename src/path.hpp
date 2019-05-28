@@ -14,12 +14,12 @@ typedef struct pathpt_t
 
 typedef struct path_t
 {
-    std::vector<pathpt_t> pts;
-    uint32_t user;
     uint32_t id;
+    uint32_t user;
     struct tm startdate;
     struct tm enddate;
     latlon_t startloc;
+    std::vector<pathpt_t> pts;
 } path_t;
 
 #endif
