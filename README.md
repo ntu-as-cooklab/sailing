@@ -14,6 +14,18 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * GCC 8 (gcc/g++)
 * nodejs, npm
 
+### libwebsockets:
+```console
+$ git clone https://github.com/warmcat/libwebsockets
+$ cd libwebsockets;
+$ git checkout v3.1.0
+$ mkdir build; cd build
+$ cmake ..
+$ make
+$ sudo make install
+$ sudo ldconfig
+```
+
 ## Instructions
 
 To build,
