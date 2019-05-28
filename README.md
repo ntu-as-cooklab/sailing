@@ -55,6 +55,11 @@ $ make install
 $ CC=gcc-8 CXX=g++-8 make
 ```
 
+To run,
+```console
+$ sudo bin/sailing
+```
+
 ## Project directory structure
 * src: Source files for main application
 * www: Source files for browser frontend
