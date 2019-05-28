@@ -152,9 +152,9 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
         } break;
 
         case LWS_CALLBACK_RECEIVE: {
-            //thread t = thread(server_decode, (uint8_t*)in, len);
-            //t.detach();
-            server_decode((uint8_t*)in, len);
+            thread t = thread(server_decode, (uint8_t*)in, len);
+            t.detach();
+            // server_decode((uint8_t*)in, len);
         } break;
 
         default:

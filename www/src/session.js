@@ -49,7 +49,10 @@ function new_path(msg)
 		// v.layerGroup.addLayer(v.circleMarker[i]);
 	}
 
-	var polyline = L.polyline(points, {color: 'red', opacity: 0.2});
+	var options = {color: 'red', opacity: 0.5};
+	if (path.user != Session.user) options = {color: 'grey', opacity: 0.5};
+	var polyline = L.polyline(points, options);
+
 	//console.log(polyline);
 	polyline.bindPopup("Hi");
 	// var layerGroup = L.layerGroup();
