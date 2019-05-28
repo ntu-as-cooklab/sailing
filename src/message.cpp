@@ -77,6 +77,7 @@ mymsg_t msg;
 
 int server_decode(uint8_t *in, size_t len)
 {
+    printf("server_decode\n");
     json j;
     try {
         j = json::from_cbor(mymsg_t(in, in + len));

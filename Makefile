@@ -1,6 +1,6 @@
 SHELL:=/bin/bash
 
-LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor
+LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor -lpthread
 CPPFLAGS += -O2 -Isrc -fms-extensions
 CPPFLAGS += -MMD -MP -MF $@.d
 CFLAGS 	+= -std=gnu11 -fplan9-extensions

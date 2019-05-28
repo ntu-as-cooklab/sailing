@@ -7,6 +7,7 @@
 #include <vector>
 #include <queue>
 #include <memory>
+#include <thread>
 
 #define LWS_PLUGIN_STATIC
 
@@ -145,9 +146,10 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
             if(!pss->msgq.empty()) lws_callback_on_writable(wsi);
         } break;
 
-        case LWS_CALLBACK_RECEIVE:
-            server_decode((uint8_t*)in, len);
-            break;
+        case LWS_CALLBACK_RECEIVE: {
+            thread t = thread(server_decode, (uint8_t*)in, len);
+            t.detach();
+        } break;
 
         default:
             break;
