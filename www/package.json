@@ -11,7 +11,8 @@
         "leaflet-graticule": "*",
         "leaflet.repeatedmarkers": "*",
         "leaflet-easybutton": "*",
-        "cbor-js": "*"
+        "cbor-js": "*",
+        "reconnecting-websocket": "*"
     },
     "devDependencies": {}
 }

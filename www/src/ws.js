@@ -5,11 +5,7 @@ var ws;
 function ws_init()
 {
 	var url = "ws://" + window.location.host;
-
-	if ("WebSocket" in window)
-		ws = new WebSocket(url, ["lws-minimal"]);
-	else if ("MozWebSocket" in window)
-		ws = new MozWebSocket(url, ["lws-minimal"]);
+	ws = new ReconnectingWebSocket(url, ["lws-minimal"], {debug: false, reconnectInterval: 1000});
 
 	ws.binaryType = 'arraybuffer';
 

@@ -1,9 +1,6 @@
 1. Selectable paths: popup with info & delete function
-2. Tooltip on paths
-3. Color the origin black
 4. Persistent database
 5. List of paths in side bar
-6. Reconnection and connection status indication
 7. Download csv & kml
 8. User token authentication
 9. Repeating markers
