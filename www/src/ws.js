@@ -34,10 +34,10 @@ function ws_init()
 			switch (msg["cmd"])
 			{
 				case "new_path":
-					new_path(msg);
+					path_new(msg);
 					break;
 				case "pts":
-					update_path(msg);
+					path_update(msg);
 					break;
 				default:
 					console.log("Unrecognized command: ", msg["cmd"]);
