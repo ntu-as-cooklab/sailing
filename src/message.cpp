@@ -93,7 +93,15 @@ int server_decode(uint8_t *in, size_t len)
         path->enddate    = json2date(j["enddate"]);
         path->startloc   = json2loc(j["startloc"]);
 
-        server_pushmsg(json::to_cbor({{"cmd", "new_path"},{"path", path2json(path,0)}}));
+        server_pushmsg(json::to_cbor({{"cmd", "new_path"},
+            {"path", {
+                {"user", path->user},
+                {"id", path->id},
+                {"startdate", date2json(path->startdate)},
+                {"enddate", date2json(path->enddate)},
+                {"startloc", loc2json(path->startloc)}
+            }
+        }}));
 
         //int i = path->pts.size();
         // path->pts.push_back((pathpt_t){path->startdate, path->startloc});
@@ -105,9 +113,24 @@ int server_decode(uint8_t *in, size_t len)
             sail_step(path);
             step++;
             if (step%(24*5) == 0) {
-                printf("id=%d last_step=%d step=%d ", path->id, last_step, step);
+                printf("id=%d ", path->id);
                 printpt(path->pts.back());
+
                 // send incrementally
+                json j1 = {
+                    {"cmd", "pts"},
+                    {"user", path->user},
+                    {"id", path->id},
+                    {"step", last_step},
+                    {"date", json::array()},
+                    {"loc", json::array()},
+                };
+                for (int i = last_step; i <= step; i++) {
+                    j1["date"].push_back(date2json(path->pts[i].date));
+                    j1["loc"].push_back(loc2json(path->pts[i].loc));
+                }
+                server_pushmsg(json::to_cbor(j1));
+
                 last_step = step;
             }
         }

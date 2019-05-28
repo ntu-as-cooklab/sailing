@@ -30,11 +30,15 @@ function ws_init()
 			console.log(e.data);
 		else {
 			var msg = CBOR.decode(e.data);
+			console.log(msg["cmd"]);
 			switch (msg["cmd"])
 			{
 				case "new_path":
-					new_path(msg["path"]);
-				break;
+					new_path(msg);
+					break;
+				case "pts":
+					update_path(msg);
+					break;
 				default:
 					console.log("Unrecognized command: ", msg["cmd"]);
 			}

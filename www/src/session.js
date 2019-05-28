@@ -30,15 +30,18 @@ function request_new_path()
 	ws.send(CBOR.encode(msg));
 }
 
-function new_path(path)
+function new_path(msg)
 {
+	var path = msg["path"];
+	path.date = [];
+	path.loc = [];
 	Session.paths[path.id] = path;
-	console.log(Session.paths);
+	
 	// var v = {}
 	// v.layerGroup = L.layerGroup();
 	// v.circleMarker = [];
 
-	var points = [];
+	var points = [[0,0]];
 	for (let i = 0; i < path.loc.length; i++)
 	{
 		points.push(path.loc[i]);
@@ -47,9 +50,29 @@ function new_path(path)
 	}
 
 	var polyline = L.polyline(points, {color: 'red', opacity: 0.2});
+	//console.log(polyline);
 	polyline.bindPopup("Hi");
 	// var layerGroup = L.layerGroup();
 	// layerGroup.addLayer(polyline);
 	// layerGroup.addTo(map);
 	polyline.addTo(map);
+
+	Session.paths[path.id].polyline = polyline;
+}
+
+function update_path(msg)
+{
+	console.log(msg);
+	var id = msg["id"];
+	var step = msg["step"];
+
+	for (let i = 0; i < msg.loc.length; i++)
+	{
+		Session.paths[id].loc[step + i]  = msg.loc[i];
+		Session.paths[id].date[step + i] = msg.date[i];
+		//points.push(path.loc[i]);
+		// v.circleMarker.push(L.circleMarker(points[i], {radius: (i==v.path.length-1?6:v.path[i].date.hour?1:3), color: icolor.value, fillOpacity: 0.6, stroke: false}).addTo(map));
+		// v.layerGroup.addLayer(v.circleMarker[i]);
+	}
+	Session.paths[id].polyline.setLatLngs(Session.paths[id].loc);
 }
