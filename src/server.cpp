@@ -57,7 +57,7 @@ static const struct lws_http_mount mount = {
 
 static struct lws_context_creation_info info =
 {
-    .port = 8000,
+    .port = 80,
     .protocols = protocols,
     .options = LWS_SERVER_OPTION_DISABLE_IPV6,
     .vhost_name = "localhost",
