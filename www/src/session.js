@@ -6,8 +6,8 @@ var Session = {
     startdate:  DATE_MIN,
     enddate:    new Date(1979, 3, 1, 0),
     startloc:   [-10.000, 160.000],
-    paths: {
-    }
+	paths: [],
+	color: 'red',
 };
 
 var url = new URL(window.location.href);
@@ -30,7 +30,7 @@ function request_new_path()
 	ws.send(CBOR.encode(msg));
 }
 
-function popup(path)
+function popup_div(path)
 {
 	return `<div class="popup">
 		<table>
@@ -46,7 +46,7 @@ function popup(path)
 			<button onclick="hide_path(${path.id})">隱藏</button>
 			<button>下載csv</button>
 			<button>下載kml</button>
-			<button>刪除</button>
+			<button ${path.user == Session.user ? "":"hidden"}>刪除</button>
 		</div>
 	</div>`;
 }
@@ -60,12 +60,16 @@ function new_path(msg)
 	path.startdate = array2date(path.startdate);
 	path.enddate = array2date(path.enddate);
 
-	var options = {color: 'red', opacity: 0.2, weight: 5};
-	if (path.user != Session.user) options.color = 'grey';
+	var options = {color: path_color(path), opacity: 0.2, weight: 5};
 	path.polyline = L.polyline([[]], options);
 	path.polyline.addTo(map);
 
 	path.circles = L.layerGroup();
+}
+
+function path_color(path)
+{
+	return path.user == Session.user ? Session.color:'grey';
 }
 
 function update_path(msg)
@@ -80,7 +84,7 @@ function update_path(msg)
 		path.date[step+i] = array2date(msg.date[i]);
 
 		if (path.date[step+i].getHours() == 0) {
-			var options = {radius: 1.2, color: 'red', fillOpacity: 0.9, stroke: false};
+			var options = {radius: 1.2, color: path_color(path), fillOpacity: 0.9, stroke: false};
 			var circle = L.circleMarker(msg.loc[i], options);
 			circle.bindTooltip(`${date2str(path.date[step+i])} (${loc2str(path.loc[step+i])})`);
 			path.circles.addLayer(circle);
@@ -92,8 +96,10 @@ function update_path(msg)
 	if (step == 0) path.circles.addLayer(L.circleMarker(msg.loc[0], options));
 	path.circles.addTo(map);
 
-	if (path.date[path.date.length-1] >= path.enddate)
-		path.polyline.bindPopup(popup(path), {closeOnClick: false, autoClose: false}).openPopup();
+	if (path.date[path.date.length-1] >= path.enddate) {
+		var popup = path.polyline.bindPopup(popup_div(path), {closeOnClick: false, autoClose: false});
+		if (path.user == Session.user) popup.openPopup();
+	}
 }
 
 function hide_path(id)
