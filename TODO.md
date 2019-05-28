@@ -8,5 +8,4 @@
 12. Selectable colors
 13. User info
 14. UI adjustment & mobile UI
-16. Land collision detection
 17. Send velocity vectors to UI
