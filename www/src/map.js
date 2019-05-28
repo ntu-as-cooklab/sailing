@@ -24,9 +24,8 @@ function startloc_init()
 			}),
 		draggable: false, continousWorld : true }).addTo(map);
 	startloc_marker.setLatLng(Session.startloc);
-	//map.on('click', startloc_input);
-	map.on('contextmenu', startloc_input); // rightclick
-	//startloc_marker.on('dragend', function(e){startloc_input(e.target);});
+	map.on('click', startloc_input);
+	//map.on('contextmenu', startloc_input); // rightclick
 }
 
 function initMap()

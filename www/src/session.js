@@ -30,6 +30,27 @@ function request_new_path()
 	ws.send(CBOR.encode(msg));
 }
 
+function popup(path)
+{
+	return `<div class="popup">
+		<table>
+			<tr><td>路徑ID:</td><td>${path.id}</td></tr>
+			<tr><td>建立者ID:</td><td>${path.user}</td></tr>
+			<tr><td>起始時間:</td><td>${date2str(path.startdate) + " " + time2str(path.startdate)}</td></tr>
+			<tr><td>結束時間:</td><td>${date2str(path.enddate) + " " + time2str(path.enddate)}</td></tr>
+			<tr><td>時間長度:</td><td>${dates2intervalstr(path.startdate,path.enddate)}</td></tr>
+			<tr><td>起始地點:</td><td>${loc2str(path.startloc)}</td></tr>
+			<tr><td>結束地點:</td><td>${path.loc.length > 0 ? loc2str(path.loc[path.loc.length-1]) : ""}</td></tr>
+		</table>
+		<div>
+			<button onclick="hide_path(${path.id})">隱藏</button>
+			<button>下載csv</button>
+			<button>下載kml</button>
+			<button>刪除</button>
+		</div>
+	</div>`;
+}
+
 function new_path(msg)
 {
 	var path = msg["path"];
@@ -42,29 +63,9 @@ function new_path(msg)
 	var options = {color: 'red', opacity: 0.2, weight: 5};
 	if (path.user != Session.user) options.color = 'grey';
 	path.polyline = L.polyline([[]], options);
-
-	path.polyline.bindPopup(`<div class="popup">
-		<table>
-			<tr><td>路徑ID:</td><td>${path.id}</td></tr>
-			<tr><td>建立者ID:</td><td>${path.user}</td></tr>
-			<tr><td>起始時間:</td><td>${date2str(path.startdate) + " " + time2str(path.startdate)}</td></tr>
-			<tr><td>結束時間:</td><td>${date2str(path.enddate) + " " + time2str(path.enddate)}</td></tr>
-			<tr><td>時間長度:</td><td>${dates2intervalstr(path.startdate,path.enddate)}</td></tr>
-			<tr><td>起始地點:</td><td>${loc2str(path.startloc)}</td></tr>
-			<tr><td>結束地點:</td><td></td></tr>
-		</table>
-		<div>
-			<button>隱藏</button>
-			<button>下載csv</button>
-			<button>下載kml</button>
-			<button>刪除</button>
-		</div>
-	</div>`, {closeOnClick: false,autoClose: false});
 	path.polyline.addTo(map);
-	// path.polyline.on('mouseover', function(){console.log("over");});
-	// path.polyline.bindTooltip("Test");
 
-	path.circleMarkers = L.layerGroup();
+	path.circles = L.layerGroup();
 }
 
 function update_path(msg)
@@ -82,14 +83,22 @@ function update_path(msg)
 			var options = {radius: 1.2, color: 'red', fillOpacity: 0.9, stroke: false};
 			var circle = L.circleMarker(msg.loc[i], options);
 			circle.bindTooltip(`${date2str(path.date[step+i])} (${loc2str(path.loc[step+i])})`);
-			path.circleMarkers.addLayer(circle);
+			path.circles.addLayer(circle);
 		}
-		
 	}
 	path.polyline.setLatLngs(path.loc);
-	//startloc_marker.on('dragend', function(e){startloc_input(e.t
 
 	var options = {weight: 1, radius: 3, color: 'black', fillOpacity: 1, stroke: false};
-	if (step == 0) path.circleMarkers.addLayer(L.circleMarker(msg.loc[0], options));
-	path.circleMarkers.addTo(map);
+	if (step == 0) path.circles.addLayer(L.circleMarker(msg.loc[0], options));
+	path.circles.addTo(map);
+
+	if (path.date[path.date.length-1] >= path.enddate)
+		path.polyline.bindPopup(popup(path), {closeOnClick: false, autoClose: false}).openPopup();
+}
+
+function hide_path(id)
+{
+	var path = Session.paths[id];
+	if(map.hasLayer(path.polyline)) map.removeLayer(path.polyline);
+	if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
 }
