@@ -9,3 +9,5 @@
 9. Repeating markers
 10. Fix possible errornous data generation
 11. Restore sailing ship models
+12. Selectable colors
+13. User info
