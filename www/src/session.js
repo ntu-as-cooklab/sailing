@@ -21,5 +21,6 @@ console.log("token:", Session.token);
 
 function session_restore()
 {
+    $("#loading").show();
 	ws.send(CBOR.encode({cmd:"restore"}));
 }

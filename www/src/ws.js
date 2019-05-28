@@ -40,6 +40,7 @@ function ws_init()
 					break;
 				case "ready":
 					console.log("Session restored");
+					$("#loading").hide();
 					break;
 				default:
 					console.log("Unrecognized command: ", msg["cmd"]);

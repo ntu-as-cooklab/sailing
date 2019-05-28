@@ -145,7 +145,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             server_pushto(pss, json::to_cbor(server_newpath(path)));
             server_pushto(pss, json::to_cbor(server_sendpts(path, 0, path->pts.size()-1)));
         }
-        server_pushto(pss, json::to_cbor({{"cmd"},{"ready"}}));
+        server_pushto(pss, json::to_cbor({{"cmd", "ready"}}));
     }
 
     return 0;
