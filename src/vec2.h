@@ -13,6 +13,7 @@ extern  "C" {
 
 double dot(vec2 a, vec2 b);
 double norm(vec2 a);
+double norm2(vec2 a);
 vec2 normalize(vec2 a);
 
 #ifdef  __cplusplus

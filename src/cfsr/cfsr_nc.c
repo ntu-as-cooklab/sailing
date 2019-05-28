@@ -88,8 +88,11 @@ double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc
     double v[4];
     for (int i = 0; i < 4; i++) {
         nc_get_var1_short(ncid, 5, dim[i], &s[i]);
+        if (s[i] == -32767) { /*printf("NaN\n");*/ return NAN; }
         v[i] = 0.03947173179924627 + s[i] * 5.6536401507637375E-5;
     }
+
+    //printf("%d %d %d %d\n", s[0], s[1], s[2], s[3]);
 
     return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
 }

@@ -3,6 +3,7 @@
 #include "cfsr/cfsr_data.h"
 #include <stdio.h>
 #include "sailing.hpp"
+#include <cmath>
 
 void sail(path_t* path)
 {
@@ -23,14 +24,18 @@ latlon_t calc_next_place(latlon_t loc, vec2 speed)
 	return loc;
 }
 
-void sail_step(path_t* path)
+int sail_step(path_t* path)
 {
 	// Ocean current:
 
 	pathpt_t pt = path->pts.back();
 
 	vec2 ocean = cfsr_ocn(pt.date, pt.loc);
-	if (norm(ocean) > 1e3) return;
+	//printf("ocean: %f %f (%f) %f\n", ocean.x, ocean.y, norm(ocean), norm2(ocean));
+	if (std::isnan(norm2(ocean)) || norm2(ocean) < 0 || (norm2(ocean) > 1e3)) {
+		printf("Land collision!\n");
+		return -1;
+	}
 
 	// vec2 wind = {0, 0};
 	// vec2 sail_gain = {0, 0};
@@ -64,4 +69,5 @@ void sail_step(path_t* path)
     strftime(next_date_str, sizeof(next_date_str), "%Y-%m-%d %Hhr", &next_date); 
 
 	// printf("%s %f,%f (%f,%f)\n", next_date_str, next_loc.lat, next_loc.lon, gain.x, gain.y);
+	return 0;
 }

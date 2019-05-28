@@ -123,7 +123,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         int last_step = 0;
         path->pts.push_back({path->startdate, path->startloc});
         while(mktime(&path->pts.back().date) < mktime(&path->enddate)) {
-            sail_step(path);
+            if (sail_step(path) != 0) break;
             step++;
             if (step%(24*5) == 0) {
                 printf("id=%d ", path->id); printpt(path->pts.back());
