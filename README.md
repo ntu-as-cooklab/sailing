@@ -11,22 +11,34 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * [libwebsockets](https://libwebsockets.org/) (v3.1.0)
 * [netcdf](https://www.unidata.ucar.edu/software/netcdf/)
 * [libcbor](https://github.com/PJK/libcbor)
-* [nlohmann-json](https://github.com/nlohmann/json)
+* [nlohmann-json](https://github.com/nlohmann/json) (v3.6.1)
 * GCC 8 (gcc/g++)
 * nodejs, npm
+* CMake
 
 ```console
-# apt-get install gcc-8 g++-8 libcurl-dev libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev nlohmann-json-dev
+# apt-get install gcc-8 g++-8 libcurl-dev libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev cmake
 ```
 
 ### libwebsockets:
 ```console
 $ git clone https://github.com/warmcat/libwebsockets
-$ cd libwebsockets;
+$ cd libwebsockets
 $ git checkout v3.1.0
 $ mkdir build; cd build
 $ cmake ..
-$ make
+$ make -j8
+$ sudo make install
+$ sudo ldconfig
+```
+### nlohmann-json:
+```console
+$ git clone https://github.com/nlohmann/json
+$ cd json
+$ git checkout v3.6.1
+$ mkdir build; cd build
+$ cmake ..
+$ make -j8
 $ sudo make install
 $ sudo ldconfig
 ```
