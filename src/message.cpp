@@ -69,6 +69,36 @@ void printpt(pathpt_t pt)
 
 mymsg_t msg;
 
+void server_newpath(path_t* path)
+{
+    server_pushall(json::to_cbor({{"cmd", "new_path"},
+            {"path", {
+                {"user", path->user},
+                {"id", path->id},
+                {"startdate", date2json(path->startdate)},
+                {"enddate", date2json(path->enddate)},
+                {"startloc", loc2json(path->startloc)}
+            }
+        }}));
+}
+
+void server_sendpts(path_t* path, int last_step, int step)
+{
+    json j = {
+        {"cmd", "pts"},
+        {"user", path->user},
+        {"id", path->id},
+        {"step", last_step},
+        {"date", json::array()},
+        {"loc", json::array()},
+    };
+    for (int i = last_step; i <= step; i++) {
+        j["date"].push_back(date2json(path->pts[i].date));
+        j["loc"].push_back(loc2json(path->pts[i].loc));
+    }
+    server_pushall(json::to_cbor(j));
+}
+
 int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
 {
     //printf("server_decode\n");
@@ -88,15 +118,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         path->enddate    = json2date(j["enddate"]);
         path->startloc   = json2loc(j["startloc"]);
 
-        server_pushall(json::to_cbor({{"cmd", "new_path"},
-            {"path", {
-                {"user", path->user},
-                {"id", path->id},
-                {"startdate", date2json(path->startdate)},
-                {"enddate", date2json(path->enddate)},
-                {"startloc", loc2json(path->startloc)}
-            }
-        }}));
+        server_newpath(path);
 
         int step = 0;
         int last_step = 0;
@@ -105,35 +127,25 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             sail_step(path);
             step++;
             if (step%(24*5) == 0) {
-                printf("id=%d ", path->id);
-                printpt(path->pts.back());
-
+                printf("id=%d ", path->id); printpt(path->pts.back());
                 // send incrementally
-                json j1 = {
-                    {"cmd", "pts"},
-                    {"user", path->user},
-                    {"id", path->id},
-                    {"step", last_step},
-                    {"date", json::array()},
-                    {"loc", json::array()},
-                };
-                for (int i = last_step; i <= step; i++) {
-                    j1["date"].push_back(date2json(path->pts[i].date));
-                    j1["loc"].push_back(loc2json(path->pts[i].loc));
-                }
-                server_pushall(json::to_cbor(j1));
-
+                server_sendpts(path, last_step, step);
                 last_step = step;
             }
         }
-
-        // send remaining data here!
+        if (last_step < step) server_sendpts(path, last_step, step); // send remaining data here
     }
     else if (j["cmd"] == "restore")
     {
         printf("restore 0x%x\n", pss);
-        json j1 = {{"cmd", "restore"}};
-        server_pushto(pss, json::to_cbor(j1));
+
+        map<uint32_t, path_t>::iterator it;
+        for (it = Session::paths.begin(); it != Session::paths.end(); it++)
+        {
+            path_t* path = &it->second;
+            server_newpath(path);
+            server_sendpts(path, 0, path->pts.size()-1);
+        }
     }
 
     return 0;
