@@ -16,6 +16,7 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * nodejs, npm
 * CMake
 
+For Ubuntu 18.04,
 ```console
 # apt-get install gcc-8 g++-8 libcurl-dev libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev cmake libssl1.0-dev nodejs-dev npm
 ```
