@@ -36,3 +36,14 @@ function loc2array(loc)
 {
 	return [loc.lat, loc.lng];
 }
+
+function array2date(arr)
+{
+	return new Date(1900+arr[0],arr[1],arr[2],arr[3])
+}
+
+function dates2intervalstr(startdate, enddate)
+{
+	var hrs = (enddate - startdate)/1000/3600;
+	return `${Math.floor(hrs/24)}天${hrs%24}小時`;
+}

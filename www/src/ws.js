@@ -30,7 +30,7 @@ function ws_init()
 			console.log(e.data);
 		else {
 			var msg = CBOR.decode(e.data);
-			console.log(msg["cmd"]);
+			//console.log(msg["cmd"]);
 			switch (msg["cmd"])
 			{
 				case "new_path":

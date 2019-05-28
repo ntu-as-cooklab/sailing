@@ -101,3 +101,7 @@ a.button {
 .leaflet-popup-tip-container {
     /*opacity: 0.0;*/
 }
+
+.popup * {
+    font-size: 1em;
+}

@@ -11,3 +11,6 @@
 11. Restore sailing ship models
 12. Selectable colors
 13. User info
+14. UI adjustment & mobile UI
+15. Attribution
+16. Land collision detection
