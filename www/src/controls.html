@@ -23,12 +23,19 @@
                     <input id="hours" style="width:2.5em" type="number" min="0" max="23">小時</input>
                 </td>
             </tr>
-            <tr><td><button onclick="request_new_path()">產生路徑</button></td></tr>
+            <tr><td><button onclick="request_new_path()" class="button" style="margin-top:1ex">產生路徑</button></td></tr>
         <table>
     </div>
 </div>
 
 <style>
+
+.button {
+    background-color: white;
+    padding: 0.5ex;
+    border-radius: 1ex;
+}
+
 #controls-wrapper {
     position: absolute;
     width:100%;
