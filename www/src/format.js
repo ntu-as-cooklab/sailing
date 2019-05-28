@@ -1,12 +1,5 @@
 "use strict";
 
-function pad(n, width, z)
-{
-	z = z || '0';
-	n = n + '';
-	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-}
-
 function date2str(date)
 {
 	return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')}`;
