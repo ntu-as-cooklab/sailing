@@ -11,6 +11,7 @@ function ws_init()
 
 	ws.onopen = function(e) {
 		console.log("Websocket connected");
+		$("#offline").hide();
 	};
 
 	ws.onerror = function(e) {
@@ -19,6 +20,7 @@ function ws_init()
 
 	ws.onclose = function(e) {
 		console.log("Websocket closed: ", e.code, e.reason);
+		$("#offline").show();
 	};
 
 	ws.onmessage = function(e) {
