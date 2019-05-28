@@ -86,14 +86,23 @@ double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc
     };
     int16_t s[4];
     double v[4];
+
+    int nan_count = 0;
     for (int i = 0; i < 4; i++) {
         nc_get_var1_short(ncid, 5, dim[i], &s[i]);
-        if (s[i] == -32767) { /*printf("NaN\n");*/ return NAN; }
+        if (s[i] == -32767) nan_count++;
         v[i] = 0.03947173179924627 + s[i] * 5.6536401507637375E-5;
     }
 
-    //printf("%d %d %d %d\n", s[0], s[1], s[2], s[3]);
-
-    return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
+    switch (nan_count)
+    {
+        case 0: return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
+        case 1:
+            if (s[0] == -32767) return v[1]*(1-di) + v[2]*(1-dj) + v[3]*di*dj;
+            if (s[1] == -32767) return v[0]*(1-di) + v[2]*di*(1-dj) + v[3]*dj;
+            if (s[2] == -32767) return v[0]*(1-dj) + v[1]*(1-di)*dj + v[3]*di;
+            if (s[3] == -32767) return v[0]*(1-di-dj) + v[1]*dj + v[2]*di;
+        default: return NAN;
+    }
 }
 
