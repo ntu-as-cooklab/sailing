@@ -10,7 +10,9 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * [ecCodes](https://confluence.ecmwf.int//display/ECC/ecCodes+Home)
 * [libwebsockets](https://libwebsockets.org/)
 * [netcdf](https://www.unidata.ucar.edu/software/netcdf/)
+* [libcbor](https://github.com/PJK/libcbor)
 * GCC 8 (gcc/g++)
+* nodejs, npm
 
 ## Instructions
 
