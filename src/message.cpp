@@ -116,6 +116,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         path->startdate  = json2date(j["startdate"]);
         path->enddate    = json2date(j["enddate"]);
         path->startloc   = json2loc(j["startloc"]);
+        path->land_collision = false;
 
         server_pushall(json::to_cbor(server_newpath(path)));
 
@@ -123,16 +124,19 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         int last_step = 0;
         path->pts.push_back({path->startdate, path->startloc});
         while(mktime(&path->pts.back().date) < mktime(&path->enddate)) {
-            if (sail_step(path) != 0) break;
-            step++;
-            if (step%(24*5) == 0) {
-                printf("id=%d ", path->id); printpt(path->pts.back());
-                // send incrementally
-                server_pushall(json::to_cbor(server_sendpts(path, last_step, step)));
-                last_step = step;
+            if (sail_step(path) != 0) { printf("Land collision!\n"); path->land_collision = true; path->enddate = path->pts.back().date; }
+            else {
+                step++;
+                if (step%(24*5) == 0) {
+                    printf("id=%d ", path->id); printpt(path->pts.back());
+                    // send incrementally
+                    server_pushall(json::to_cbor(server_sendpts(path, last_step, step)));
+                    last_step = step;
+                }
             }
         }
         if (last_step < step) server_sendpts(path, last_step, step); // send remaining data here
+        if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"id", path->id}}));
     }
     else if (j["cmd"] == "restore")
     {

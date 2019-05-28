@@ -25,6 +25,7 @@ function path_popup(path)
 			<tr><td>時間長度:</td><td>${dates2intervalstr(path.startdate,path.enddate)}</td></tr>
 			<tr><td>起始地點:</td><td>${loc2str(path.startloc)}</td></tr>
 			<tr><td>結束地點:</td><td>${path.loc.length > 0 ? loc2str(path.loc[path.loc.length-1]) : ""}</td></tr>
+			<tr><td>${path.land_collision ? "觸及陸地!": ""}</td></tr>
 		</table>
 		<div>
 			<button hidden onclick="path_hide(${path.id})">隱藏</button>
@@ -43,6 +44,7 @@ function path_new(msg)
 	path.loc = [];
 	path.startdate = array2date(path.startdate);
 	path.enddate = array2date(path.enddate);
+	path.land_collision = false;
 
 	var options = {color: path_color(path), opacity: 0.2, weight: 5};
 	path.polyline = L.polyline([[]], options);
@@ -84,6 +86,17 @@ function path_update(msg)
 		var popup = path.polyline.bindPopup(path_popup(path), {closeOnClick: false, autoClose: false});
 		if (path.user == Session.user) popup.openPopup();
 	}
+}
+
+function path_collision(msg)
+{
+	var id = msg["id"];
+	console.log("collision", id);
+	var path = Session.paths[id];
+	path.land_collision = true;
+	path.enddate = path.date[path.date.length-1];
+	var popup = path.polyline.bindPopup(path_popup(path), {closeOnClick: false, autoClose: false});
+	if (path.user == Session.user) popup.openPopup();
 }
 
 function path_hide(id)

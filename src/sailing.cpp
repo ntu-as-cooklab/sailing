@@ -33,7 +33,7 @@ int sail_step(path_t* path)
 	vec2 ocean = cfsr_ocn(pt.date, pt.loc);
 	//printf("ocean: %f %f (%f) %f\n", ocean.x, ocean.y, norm(ocean), norm2(ocean));
 	if (std::isnan(norm2(ocean)) || norm2(ocean) < 0 || (norm2(ocean) > 1e3)) {
-		printf("Land collision!\n");
+		//printf("Land collision!\n");
 		return -1;
 	}
 

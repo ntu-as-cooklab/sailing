@@ -45,6 +45,9 @@ function ws_init()
 				case "delete":
 					path_delete(msg);
 					break;
+				case "land_collision":
+					path_collision(msg);
+					break;
 				default:
 					console.log("Unrecognized command: ", msg["cmd"]);
 			}

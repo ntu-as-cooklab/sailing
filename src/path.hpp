@@ -5,6 +5,7 @@
 #include "latlon.h"
 #include <vector>
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct pathpt_t
 {
@@ -19,6 +20,7 @@ typedef struct path_t
     struct tm startdate;
     struct tm enddate;
     latlon_t startloc;
+    bool land_collision;
     std::vector<pathpt_t> pts;
 } path_t;
 
