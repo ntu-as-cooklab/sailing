@@ -29,12 +29,22 @@ typedef struct my_vhd_t {
     my_pss_t                    *pss_list; /* linked-list of live pss */
 } my_vhd_t;
 
+typedef struct http_pss_t {
+	char path[128];
+
+	int times;
+	int budget;
+
+	int content_lines;
+} http_pss_t;
+
 static struct lws_context *context;
 static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
 static volatile bool interrupted = false;
 
 static struct lws_protocols protocols[] = {
-    { "http", lws_callback_http_dummy, 0, 0 },
+    { "http", callback_dynamic_http, sizeof(struct http_pss_t), 0 },
     {
         .name                   = SERVER_PROTOCOL,
         .callback               = server_callback,
@@ -47,7 +57,15 @@ static struct lws_protocols protocols[] = {
     {} /* terminator */
 };
 
+static const struct lws_http_mount mount_dyn = {
+	.mountpoint         = "/dyn", /* mountpoint URL */
+	.protocol           = "http",
+	.origin_protocol    = LWSMPRO_CALLBACK, /* dynamic */
+	.mountpoint_len     = 4, /* char count */
+};
+
 static const struct lws_http_mount mount = {
+    .mount_next             = &mount_dyn,
     .mountpoint             = "/",		/* mountpoint URL */
     .origin                 = "./www",  /* serve from dir */
     .def                    = "index.html",	/* default filename */
@@ -173,4 +191,144 @@ static int server_callback(struct lws *wsi, enum lws_callback_reasons reason, vo
     }
 
     return 0;
+}
+
+static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
+{
+	http_pss_t *pss = (http_pss_t*)user;
+	uint8_t buf[LWS_PRE + 2048];
+    uint8_t *start = &buf[LWS_PRE];
+    uint8_t *end = &buf[sizeof(buf) - LWS_PRE - 1];
+
+	switch (reason)
+    {
+	    case LWS_CALLBACK_HTTP: {
+            // printf("LWS_CALLBACK_HTTP\n");
+
+            /* in contains the url part after our mountpoint /dyn, if any */
+            lws_snprintf(pss->path, sizeof(pss->path), "%s", (const char *)in);
+
+            /*
+            * prepare and write http headers... with regards to content-
+            * length, there are three approaches:
+            *
+            *  - http/1.0 or connection:close: no need, but no pipelining
+            *  - http/1.1 or connected:keep-alive
+            *     (keep-alive is default for 1.1): content-length required
+            *  - http/2: no need, LWS_WRITE_HTTP_FINAL closes the stream
+            *
+            * giving the api below LWS_ILLEGAL_HTTP_CONTENT_LEN instead of
+            * a content length forces the connection response headers to
+            * send back "connection: close", disabling keep-alive.
+            *
+            * If you know the final content-length, it's always OK to give
+            * it and keep-alive can work then if otherwise possible.  But
+            * often you don't know it and avoiding having to compute it
+            * at header-time makes life easier at the server.
+            */
+
+            uint8_t *p = start;
+            if (lws_add_http_common_headers(wsi, HTTP_STATUS_OK, "text/html", LWS_ILLEGAL_HTTP_CONTENT_LEN, /* no content len */ &p, end))
+                return 1;
+            if (lws_finalize_write_http_header(wsi, start, &p, end))
+                return 1;
+
+            pss->times = 0;
+            pss->budget = atoi((char *)in + 1);
+            pss->content_lines = 0;
+            if (!pss->budget)
+                pss->budget = 10;
+
+            /* write the body separately */
+            lws_callback_on_writable(wsi);
+
+            return 0;
+        }
+
+	case LWS_CALLBACK_HTTP_WRITEABLE: {
+        //printf("LWS_CALLBACK_HTTP_WRITEABLE\n");
+
+		if (!pss || pss->times > pss->budget)
+			break;
+
+		/*
+		 * We send a large reply in pieces of around 2KB each.
+		 *
+		 * For http/1, it's possible to send a large buffer at once,
+		 * but lws will malloc() up a temp buffer to hold any data
+		 * that the kernel didn't accept in one go.  This is expensive
+		 * in memory and cpu, so it's better to stage the creation of
+		 * the data to be sent each time.
+		 *
+		 * For http/2, large data frames would block the whole
+		 * connection, not just the stream and are not allowed.  Lws
+		 * will call back on writable when the stream both has transmit
+		 * credit and the round-robin fair access for sibling streams
+		 * allows it.
+		 *
+		 * For http/2, we must send the last part with
+		 * LWS_WRITE_HTTP_FINAL to close the stream representing
+		 * this transaction.
+		 */
+
+        uint8_t *p = start;
+
+		int n = LWS_WRITE_HTTP;
+		if (pss->times == pss->budget)
+			n = LWS_WRITE_HTTP_FINAL;
+
+		if (!pss->times) {
+			/*
+			 * the first time, we print some html title
+			 */
+			time_t t = time(NULL);
+			/*
+			 * to work with http/2, we must take care about LWS_PRE
+			 * valid behind the buffer we will send.
+			 */
+			p += lws_snprintf((char *)p, end - p, "<html>"
+				"<head><meta charset=utf-8 "
+				"http-equiv=\"Content-Language\" "
+				"content=\"en\"/></head><body>"
+				"<img src=\"/libwebsockets.org-logo.svg\">"
+				"<br>Dynamic content for '%s' from mountpoint."
+				"<br>Time: %s<br><br>"
+				"</body></html>", pss->path, ctime(&t));
+		} else {
+			/*
+			 * after the first time, we create bulk content.
+			 *
+			 * Again we take care about LWS_PRE valid behind the
+			 * buffer we will send.
+			 */
+
+			while (lws_ptr_diff(end, p) > 80)
+				p += lws_snprintf((char *)p, end - p, "%d.%d: this is some content... ", pss->times, pss->content_lines++);
+
+			p += lws_snprintf((char *)p, end - p, "<br><br>");
+		}
+
+		pss->times++;
+		if (lws_write(wsi, (uint8_t *)start, lws_ptr_diff(p, start), (lws_write_protocol)n) != lws_ptr_diff(p, start))
+			return 1;
+
+		/*
+		 * HTTP/1.0 no keepalive: close network connection
+		 * HTTP/1.1 or HTTP1.0 + KA: wait / process next transaction
+		 * HTTP/2: stream ended, parent connection remains up
+		 */
+		if (n == LWS_WRITE_HTTP_FINAL) {
+		    if (lws_http_transaction_completed(wsi))
+			return -1;
+		} else
+			lws_callback_on_writable(wsi);
+
+		return 0;
+    }
+
+        default:
+            break;
+	}
+
+	return lws_callback_http_dummy(wsi, reason, user, in, len);
 }
