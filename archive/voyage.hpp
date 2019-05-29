@@ -20,9 +20,4 @@ struct Voyage
 
 	bool 	sailopen 		= true;
 	UV 		dir				= 0;
-
-	/* Functions */
-	
-	UV adj_direction(LatLon curr, LatLon dest);
-	UV calc_sail_gain(UV wind, UV dir);
 };

@@ -1,17 +1,15 @@
-UV Voyage::adj_direction(LatLon curr, LatLon dest)
+vec2 adj_direction(latlon_t curr, latlon_t dest)
 {
-	return UV(	lon2km((curr+dest).lat()/2) * (dest-curr).lon(),
-				lat2km((curr+dest).lat()/2) * (dest-curr).lat()
-			).normalize();
+	return normalize(	lon2km((curr+dest).lat/2) * (dest-curr).lon,
+				lat2km((curr+dest).lat/2) * (dest-curr).lat
+			);
 }
 
-UV Voyage::calc_sail_gain(UV wind, UV dir)
+vec2 calc_sail_gain(vec2 wind, vec2 dir)
 {
-	float wind_speed = norm(wind)<windlimit ? norm(wind) : 0;
-	float angle_diff = anglediff(wind, dir);
-	float boat_speed = 0;
-
-	//std::cout << wind << "\t" << dir << "\t" << angle_diff << "\n";
+	double wind_speed = norm(wind)<windlimit ? norm(wind) : 0;
+	double angle_diff = anglediff(wind, dir);
+	double boat_speed = 0;
 
 	if (angle_diff <= 30)
 	    boat_speed = (-0.0008*pow(wind_speed,3) - 0.0037*pow(wind_speed,2) + 0.5548*wind_speed ) * ( -0.0333*angle_diff+1 ) +
