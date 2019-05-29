@@ -110,7 +110,7 @@ function path_hide(id)
 function path_show_other()
 {
 	//console.log("path_show_other", Session.paths.length);
-    for (let i in  Session.paths.length) {
+    for (let i in Session.paths) {
 		var path = Session.paths[i];
 		//console.log("user", path.user, Session.user);
         if(!map.hasLayer(path.polyline)) map.addLayer(path.polyline);
