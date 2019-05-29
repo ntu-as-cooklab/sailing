@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdint.h>
 #include <stdbool.h>
+#include "model.hpp"
 
 typedef struct pathpt_t
 {
@@ -21,6 +22,8 @@ typedef struct path_t
     struct tm enddate;
     latlon_t startloc;
     bool land_collision;
+    DATASET dataset;
+    MODE mode;
     std::vector<pathpt_t> pts;
 } path_t;
 

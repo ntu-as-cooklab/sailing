@@ -1,15 +1,6 @@
 struct Voyage
 {
-	static const constexpr char* DATASET[3] = {"AVG", "ALL", "SIN"};
-	static const constexpr char* MODE[5] = {"DRFT", "WIND", "DEST", "DIRN", "RAND"};
-
-	std::string name;
-	std::string project;
-
 	/* Parameters */
-
-	int 	dataset			= SIN;
-	int 	mode 			= DEST;
 
 	float 	altitude 		= 2;
 	float 	windlimit 		= 8;
