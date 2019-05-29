@@ -203,9 +203,7 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 	switch (reason)
     {
 	    case LWS_CALLBACK_HTTP: {
-            // printf("LWS_CALLBACK_HTTP\n");
-
-            /* in contains the url part after our mountpoint /dyn, if any */
+            /* in contains the url part after our mountpoint, if any */
             lws_snprintf(pss->path, sizeof(pss->path), "%s", (const char *)in);
 
             /*
@@ -228,16 +226,10 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
             */
 
             uint8_t *p = start;
-            if (lws_add_http_common_headers(wsi, HTTP_STATUS_OK, "text/html", LWS_ILLEGAL_HTTP_CONTENT_LEN, /* no content len */ &p, end))
+            if (lws_add_http_common_headers(wsi, HTTP_STATUS_OK, "text/html", LWS_ILLEGAL_HTTP_CONTENT_LEN /* no content len */, &p, end))
                 return 1;
             if (lws_finalize_write_http_header(wsi, start, &p, end))
                 return 1;
-
-            pss->times = 0;
-            pss->budget = atoi((char *)in + 1);
-            pss->content_lines = 0;
-            if (!pss->budget)
-                pss->budget = 10;
 
             /* write the body separately */
             lws_callback_on_writable(wsi);
@@ -246,11 +238,7 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
         }
 
 	case LWS_CALLBACK_HTTP_WRITEABLE: {
-        //printf("LWS_CALLBACK_HTTP_WRITEABLE\n");
-
-		if (!pss || pss->times > pss->budget)
-			break;
-
+		if (!pss) break;
 		/*
 		 * We send a large reply in pieces of around 2KB each.
 		 *
@@ -271,45 +259,13 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 		 * this transaction.
 		 */
 
-        uint8_t *p = start;
+        uint8_t* p = start;
+		p += lws_snprintf((char*)p, end - p, "this is some content... ");
 
-		int n = LWS_WRITE_HTTP;
-		if (pss->times == pss->budget)
-			n = LWS_WRITE_HTTP_FINAL;
+        lws_write_protocol n = LWS_WRITE_HTTP_FINAL;
+		//if (/* content remaining */) n = LWS_WRITE_HTTP_FINAL;
 
-		if (!pss->times) {
-			/*
-			 * the first time, we print some html title
-			 */
-			time_t t = time(NULL);
-			/*
-			 * to work with http/2, we must take care about LWS_PRE
-			 * valid behind the buffer we will send.
-			 */
-			p += lws_snprintf((char *)p, end - p, "<html>"
-				"<head><meta charset=utf-8 "
-				"http-equiv=\"Content-Language\" "
-				"content=\"en\"/></head><body>"
-				"<img src=\"/libwebsockets.org-logo.svg\">"
-				"<br>Dynamic content for '%s' from mountpoint."
-				"<br>Time: %s<br><br>"
-				"</body></html>", pss->path, ctime(&t));
-		} else {
-			/*
-			 * after the first time, we create bulk content.
-			 *
-			 * Again we take care about LWS_PRE valid behind the
-			 * buffer we will send.
-			 */
-
-			while (lws_ptr_diff(end, p) > 80)
-				p += lws_snprintf((char *)p, end - p, "%d.%d: this is some content... ", pss->times, pss->content_lines++);
-
-			p += lws_snprintf((char *)p, end - p, "<br><br>");
-		}
-
-		pss->times++;
-		if (lws_write(wsi, (uint8_t *)start, lws_ptr_diff(p, start), (lws_write_protocol)n) != lws_ptr_diff(p, start))
+		if (lws_write(wsi, (uint8_t*)start, lws_ptr_diff(p, start), n) != lws_ptr_diff(p, start))
 			return 1;
 
 		/*
