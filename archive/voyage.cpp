@@ -1,19 +1,3 @@
-#include <iostream>
-#include <iomanip> // for std::setprecisionma
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "voyage.hpp"
-#include "cfsr.hpp"
-#include "interface.hpp"
-
-extern CfsrReader* cfsrReader;
-bool Voyage::debug = false;
-
-constexpr const char* const Voyage::DATASET[3];
-constexpr const char* const Voyage::MODE[5];
-
 UV Voyage::adj_direction(LatLon curr, LatLon dest)
 {
 	return UV(	lon2km((curr+dest).lat()/2) * (dest-curr).lon(),
