@@ -2,7 +2,7 @@
 #include "path.hpp"
 #include "cfsr/cfsr_data.h"
 #include <stdio.h>
-#include "sailing.hpp"
+#include "model.hpp"
 #include <cmath>
 
 void sail(path_t* path)

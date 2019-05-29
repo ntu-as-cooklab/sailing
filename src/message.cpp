@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 #include <nlohmann/json.hpp>
-#include "sailing.hpp"
+#include "model.hpp"
 #include "message.hpp"
 #include "session.hpp"
 

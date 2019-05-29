@@ -1,5 +1,5 @@
-#ifndef UV_H
-#define UV_H
+#ifndef SAILING_H
+#define SAILING_H
 
 #include "vec2.h"
 

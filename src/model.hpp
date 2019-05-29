@@ -1,5 +1,5 @@
-#ifndef SAILING_HPP
-#define SAILING_HPP
+#ifndef MODEL_HPP
+#define MODEL_HPP
 
 #include "path.hpp"
 
