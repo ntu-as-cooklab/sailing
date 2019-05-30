@@ -1,6 +1,5 @@
 4. Persistent database
 5. List of paths in side bar
-7. Download csv & kml
 8. User token authentication
 9. Repeating markers
 10. Fix possible errornous data generation
