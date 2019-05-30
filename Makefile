@@ -59,7 +59,7 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(DATA_DIR)/$(fi
 	grib_to_netcdf -T -I type -k3 -o $@ $*.grb2
 	rm $*.grb2
 
-.PHONY: install
-install:
+.PHONY: npm
+npm:
 	cd www; npm i
 
