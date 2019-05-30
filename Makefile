@@ -1,5 +1,12 @@
 SHELL:=/bin/bash
 
+ifneq (, $(shell which gcc-8))
+CC := gcc-8
+endif
+ifneq (, $(shell which g++-8))
+CXX := g++-8
+endif
+
 LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor -lpthread
 CPPFLAGS += -O2 -Isrc -fms-extensions
 CPPFLAGS += -MMD -MP -MF $@.d
