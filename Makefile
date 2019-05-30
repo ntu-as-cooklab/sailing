@@ -8,7 +8,7 @@ CXX := g++-8
 endif
 
 LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor -lpthread
-CPPFLAGS += -O2 -Isrc -fms-extensions
+CPPFLAGS += -O3 -Isrc -fms-extensions
 CPPFLAGS += -MMD -MP -MF $@.d
 CFLAGS 	+= -std=gnu11 -fplan9-extensions
 CXXFLAGS += -std=c++14

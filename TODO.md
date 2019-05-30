@@ -10,3 +10,4 @@
 17. Send velocity vectors to UI
 18. Wrap around longitude
 20. Add help and project info
+21. json error handling
