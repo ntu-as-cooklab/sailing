@@ -52,7 +52,7 @@ To build,
 $ git submodule init
 $ git submodule update
 $ make install
-$ CC=gcc-8 CXX=g++-8 make
+$ make
 ```
 
 To run,
