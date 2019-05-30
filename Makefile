@@ -44,14 +44,14 @@ clean:
 DATA_DIR ?= ./data/
 
 MONTHS := $(shell d="1979-01-02"; until [[ $$d > 2011-12-31 ]]; do echo "$$(date +%Y%m -d $$d)"; d=$$(date -I -d "$$d + 1 month"); done)
-FIELDS := ocnu5 ocnv5
+FIELDS := ocnu5 ocnv5 wnd10m.l
 
 .PHONY: grb2 nc
 grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(DATA_DIR)/$(field).gdas.$(month).%))
 
 %.grb2:
 	-mkdir -p $(@D); \
-	YYYYMM=$$(echo "$@"|cut -d. -f3); \
+	YYYYMM=$$(echo "$@" | rev | cut -d. -f2 | rev); \
 	cd $(@D) && curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$(notdir $@)
 
 %.nc:
