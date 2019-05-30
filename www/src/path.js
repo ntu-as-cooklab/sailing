@@ -29,8 +29,8 @@ function path_popup(path)
 		</table>
 		<div>
 			<button hidden onclick="path_hide(${path.id})">隱藏</button>
-			<button>下載csv</button>
-			<button>下載kml</button>
+			<a href="./gen/${path.id.toString().padStart(4,'0')}.csv"><button>下載csv</button></a>
+			<a href="./gen/${path.id.toString().padStart(4,'0')}.kml"><button>下載kml</button></a>
 			<button onclick="path_request_delete(${path.id})" ${path.user == Session.user ? "":"hidden"}>刪除</button>
 		</div>
 	</div>`;

@@ -58,7 +58,7 @@ static struct lws_protocols protocols[] = {
 };
 
 static const struct lws_http_mount mount_dyn = {
-	.mountpoint         = "/dyn", /* mountpoint URL */
+	.mountpoint         = "/gen", /* mountpoint URL */
 	.protocol           = "http",
 	.origin_protocol    = LWSMPRO_CALLBACK, /* dynamic */
 	.mountpoint_len     = 4, /* char count */
@@ -205,6 +205,9 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 	    case LWS_CALLBACK_HTTP: {
             /* in contains the url part after our mountpoint, if any */
             lws_snprintf(pss->path, sizeof(pss->path), "%s", (const char *)in);
+            std::string path(pss->path);
+            std::string ext = path.substr(path.find_last_of(".") + 1);
+            //printf("Http request: %s ext %s\n", pss->path, ext.c_str());
 
             /*
             * prepare and write http headers... with regards to content-
@@ -226,13 +229,37 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
             */
 
             uint8_t *p = start;
-            if (lws_add_http_common_headers(wsi, HTTP_STATUS_OK, "text/html", LWS_ILLEGAL_HTTP_CONTENT_LEN /* no content len */, &p, end))
+            const char* mime = "text/html";
+            enum http_status status = HTTP_STATUS_OK;
+            if     (ext == "csv")
+            {
+                mime = "text/csv";
+            }
+            else if(ext == "kml")
+            {
+                mime = "application/vnd.google-earth.kml+xml";
+            }
+            else
+            {
+                status = HTTP_STATUS_NOT_FOUND;
+            }
+
+            if (lws_add_http_common_headers(wsi, status, mime, LWS_ILLEGAL_HTTP_CONTENT_LEN /* no content len */, &p, end))
                 return 1;
+
+            const char* val = "attachment";
+            if (lws_add_http_header_by_token(wsi, WSI_TOKEN_HTTP_CONTENT_DISPOSITION, (const uint8_t*)val, sizeof(val), &p, end))
+                return 1;
+
             if (lws_finalize_write_http_header(wsi, start, &p, end))
                 return 1;
 
-            /* write the body separately */
-            lws_callback_on_writable(wsi);
+            if (status == HTTP_STATUS_OK)
+            {
+                /* write the body separately */
+                lws_callback_on_writable(wsi);
+            }
+            else if (lws_http_transaction_completed(wsi)) return 1;
 
             return 0;
         }
