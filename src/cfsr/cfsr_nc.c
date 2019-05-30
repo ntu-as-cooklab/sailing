@@ -29,10 +29,13 @@ cfsr_nc_dataset_t *CFSR_NC_OCNV5 = &cfsr_nc_ocnv5;
 int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 {
     int err;
-    char* filename = cfsr_nc_filename(dataset, date);
+    char* filename = cfsr_nc_filename("data", dataset, date);
     if ((err = nc_open(filename, NC_NOWRITE, &dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon]))) {
-        printf("cfsr_nc_load: failed to load file %s\n", filename);
-        return err;
+        filename = cfsr_nc_filename("/data", dataset, date);
+        if ((err = nc_open(filename, NC_NOWRITE, &dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon]))) {
+            printf("cfsr_nc_load: failed to load file %s\n", filename);
+            return err;
+        }
     }
     //printf("cfsr_nc_load: loaded %s\n", filename);
 
@@ -48,10 +51,10 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
     return 0;
 }
 
-char* cfsr_nc_filename(cfsr_nc_dataset_t* dataset, struct tm date)
+char* cfsr_nc_filename(const char* root, cfsr_nc_dataset_t* dataset, struct tm date)
 {
     static char filename[128];
-    snprintf(filename, sizeof(filename), "data/%s.gdas.%04u%02u.nc", dataset->str, 1900+date.tm_year, date.tm_mon+1);
+    snprintf(filename, sizeof(filename), "%s/%s.gdas.%04u%02u.nc", root, dataset->str, 1900+date.tm_year, date.tm_mon+1);
     return filename;
 }
 

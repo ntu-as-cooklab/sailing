@@ -11,7 +11,7 @@ extern  "C" {
 typedef struct cfsr_nc_dataset_t cfsr_nc_dataset_t;
 
 int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date);
-char* cfsr_nc_filename(cfsr_nc_dataset_t* dataset, struct tm date);
+char* cfsr_nc_filename(const char* root, cfsr_nc_dataset_t* dataset, struct tm date);
 int cfsr_nc_free(cfsr_nc_dataset_t* dataset);
 double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc);
 
