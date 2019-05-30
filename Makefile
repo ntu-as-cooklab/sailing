@@ -54,7 +54,8 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(DATA_DIR)/$(fi
 	YYYYMM=$$(echo "$@"|cut -d. -f3); \
 	cd $(@D) && curl -O ftp://nomads.ncdc.noaa.gov/CFSR/HP_time_series/$$YYYYMM/$(notdir $@)
 
-%.nc: %.grb2
+%.nc:
+	$(MAKE) $*.grb2
 	grib_to_netcdf -T -I type -k3 -o $@ $<
 
 .PHONY: install
