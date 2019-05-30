@@ -69,7 +69,7 @@ double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc
 {
     int ncid = dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon];
     if (!ncid) {
-        cfsr_nc_load(dataset, date);
+        if (cfsr_nc_load(dataset, date) < 0) return NAN;
         ncid = dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon];
     }
     double i = mod((loc.lon-dataset->lon0)/dataset->dx, dataset->Ni);
