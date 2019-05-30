@@ -57,6 +57,7 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(DATA_DIR)/$(fi
 %.nc:
 	$(MAKE) $*.grb2
 	grib_to_netcdf -T -I type -k3 -o $@ $<
+	rm $*.grb2
 
 .PHONY: install
 install:
