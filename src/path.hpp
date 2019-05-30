@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include "model.hpp"
 #include "vec2.h"
+#include <string>
 
 typedef struct pathpt_t
 {
@@ -22,7 +23,8 @@ typedef struct pathpt_t
 typedef struct path_t
 {
     uint32_t id;
-    uint32_t user;
+    uint32_t runID;
+    std::string loginID;
     struct tm startdate;
     struct tm enddate;
     latlon_t startloc;

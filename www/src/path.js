@@ -3,8 +3,9 @@
 function path_request()
 {
     var msg = {
-        cmd:        "new_path",
-        user:       Session.user,
+		cmd:        "new_path",
+		runID:      Session.runID,
+        loginID:    Session.loginID,
         token:      Session.token,
         startdate:  date2array(Session.startdate),
         enddate:    date2array(Session.enddate),
@@ -19,7 +20,7 @@ function path_popup(path)
 	return `<div class="popup">
 		<table>
 			<tr><td>路徑ID:</td><td>${path.id}</td></tr>
-			<tr><td>建立者ID:</td><td>${path.user}</td></tr>
+			<tr><td>建立者ID:</td><td>${path.loginID}</td></tr>
 			<tr><td>起始時間:</td><td>${date2str(path.startdate) + " " + time2str(path.startdate)}</td></tr>
 			<tr><td>結束時間:</td><td>${date2str(path.enddate) + " " + time2str(path.enddate)}</td></tr>
 			<tr><td>時間長度:</td><td>${dates2intervalstr(path.startdate,path.enddate)}</td></tr>
@@ -31,7 +32,7 @@ function path_popup(path)
 			<button hidden onclick="path_hide(${path.id})">隱藏</button>
 			<a href="./gen/${path.id.toString().padStart(4,'0')}.csv"><button>下載csv</button></a>
 			<a href="./gen/${path.id.toString().padStart(4,'0')}.kml"><button>下載kml</button></a>
-			<button onclick="path_request_delete(${path.id})" ${path.user == Session.user ? "":"hidden"}>刪除</button>
+			<button onclick="path_request_delete(${path.id})" ${path.loginID == Session.loginID ? "":"hidden"}>刪除</button>
 		</div>
 	</div>`;
 }
@@ -39,6 +40,7 @@ function path_popup(path)
 function path_new(msg)
 {
 	var path = msg["path"];
+	if (path.runID != Session.runID) return;
 	Session.paths[path.id] = path;
 	path.date = [];
 	path.loc = [];
@@ -55,11 +57,12 @@ function path_new(msg)
 
 function path_color(path)
 {
-	return path.user == Session.user ? Session.color:'grey';
+	return path.loginID == Session.loginID ? Session.color:'grey';
 }
 
 function path_update(msg)
 {
+	if (msg.runID != Session.runID) return;
 	var id = msg["id"];
 	var step = msg["step"];
 	var path = Session.paths[id];
@@ -85,19 +88,20 @@ function path_update(msg)
 	//console.log(msg.loc.length, path.date[path.date.length-1], path.enddate);
 	if (path.date[path.date.length-1] >= path.enddate) {
 		var popup = path.polyline.bindPopup(path_popup(path), {closeOnClick: false, autoClose: false});
-		if (path.user == Session.user) popup.openPopup();
+		if (path.loginID == Session.loginID) popup.openPopup();
 	}
 }
 
 function path_collision(msg)
 {
+	if (msg.runID != Session.runID) return;
 	var id = msg["id"];
 	//console.log("collision", id);
 	var path = Session.paths[id];
 	path.land_collision = true;
 	path.enddate = path.date[path.date.length-1];
 	var popup = path.polyline.bindPopup(path_popup(path), {closeOnClick: false, autoClose: false});
-	if (path.user == Session.user) popup.openPopup();
+	if (path.loginID == Session.loginID) popup.openPopup();
 }
 
 function path_hide(id)
@@ -112,7 +116,7 @@ function path_show_other()
 	//console.log("path_show_other", Session.paths.length);
     for (let i in Session.paths) {
 		var path = Session.paths[i];
-		//console.log("user", path.user, Session.user);
+		//console.log("loginID", path.loginID, Session.loginID);
         if(!map.hasLayer(path.polyline)) map.addLayer(path.polyline);
 	    if(!map.hasLayer(path.circles)) map.addLayer(path.circles);
     }
@@ -123,8 +127,8 @@ function path_hide_other()
 	//console.log("path_hide_other", Session.paths.length);
     for (let i in Session.paths) {
 		var path = Session.paths[i];
-		//console.log("user", path.user, Session.user);
-        if (path.user != Session.user) {
+		//console.log("loginID", path.loginID, Session.loginID);
+        if (path.loginID != Session.loginID) {
             if(map.hasLayer(path.polyline)) map.removeLayer(path.polyline);
 	        if(map.hasLayer(path.circles)) map.removeLayer(path.circles);
         }
@@ -134,8 +138,9 @@ function path_hide_other()
 function path_request_delete(id)
 {
 	var msg = {
-        cmd:        "delete",
-        user:       Session.user,
+		cmd:        "delete",
+		runID:      Session.runID,
+        loginID:    Session.loginID,
         token:      Session.token,
         id: 		id,
     };

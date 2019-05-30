@@ -51,7 +51,8 @@ json path2json(path_t* path)
 {
     json j;
     j["id"]     = path->id;
-    j["user"]   = path->user;
+    j["runID"]    = path->runID;
+    j["loginID"]   = path->loginID;
     j["startdate"] = date2json(path->startdate);
     j["enddate"] = date2json(path->enddate);
     j["startloc"] = loc2json(path->startloc);
@@ -71,7 +72,8 @@ path_t json2path(json j)
 {
     path_t path;
     path.id = j["id"];
-    path.user = j["user"];
+    path.runID = j["runID"];
+    path.loginID = j["loginID"];
     path.startdate = json2date(j["startdate"]);
     path.enddate = json2date(j["enddate"]);
     path.startloc = json2loc(j["startloc"]);
@@ -91,7 +93,8 @@ json server_newpath(path_t* path)
 {
     return {{"cmd", "new_path"},
             {"path", {
-                {"user", path->user},
+                {"runID", path->runID},
+                {"loginID", path->loginID},
                 {"id", path->id},
                 {"startdate", date2json(path->startdate)},
                 {"enddate", date2json(path->enddate)},
@@ -103,7 +106,8 @@ json server_sendpts(path_t* path, int last_step, int step)
 {
     json j = {
         {"cmd", "pts"},
-        {"user", path->user},
+        {"runID", path->runID},
+        {"loginID", path->loginID},
         {"id", path->id},
         {"step", last_step},
         {"date", json::array()},
@@ -130,7 +134,8 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         uint32_t id = Session::new_path();
         path_t* path = &Session::paths[id];
         path->id         = id;
-        path->user       = j["user"];
+        path->runID      = j["runID"];
+        path->loginID    = j["loginID"];
         path->startdate  = json2date(j["startdate"]);
         path->enddate    = json2date(j["enddate"]);
         path->startloc   = json2loc(j["startloc"]);
@@ -176,8 +181,9 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
     else if (j["cmd"] == "delete")
     {
         uint32_t id = j["id"];
-        uint32_t user = j["user"];
-        if (Session::paths[id].user == user)
+        uint32_t runID = j["runID"];
+        std::string loginID = j["loginID"];
+        if (Session::paths[id].runID == runID && Session::paths[id].loginID == loginID)
         {
             Session::paths.erase(id);
             server_pushall(json::to_cbor({{"cmd", "delete"},{"id", id}}));

@@ -1,5 +1,6 @@
 <div id="info">
-    <div>使用者ID:<span id="user"></span></div>
+    <div>課程ID:<span id="runID"></span></div>
+    <div>使用者ID:<span id="loginID"></span></div>
 </div>
 
 <style>
@@ -18,5 +19,6 @@
 </style>
 
 <script>
-$("#user")[0].innerText = Session.user;
+$("#runID")[0].innerText = Session.runID;
+$("#loginID")[0].innerText = Session.loginID;
 </script>
