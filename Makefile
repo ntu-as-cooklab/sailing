@@ -34,11 +34,13 @@ build/%.c.o: %.c
 clean:
 	rm -rf build/ bin/
 
+DATA_DIR ?= ./data/
+
 MONTHS := $(shell d="1979-01-02"; until [[ $$d > 2011-12-31 ]]; do echo "$$(date +%Y%m -d $$d)"; d=$$(date -I -d "$$d + 1 month"); done)
 FIELDS := ocnu5 ocnv5
 
 .PHONY: grb2 nc
-grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),data/$(field).gdas.$(month).%))
+grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(DATA_DIR)/$(field).gdas.$(month).%))
 
 %.grb2:
 	-mkdir -p $(@D); \
@@ -51,3 +53,4 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),data/$(field).gd
 .PHONY: install
 install:
 	cd www; npm i
+
