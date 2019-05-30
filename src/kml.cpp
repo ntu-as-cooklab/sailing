@@ -1,9 +1,10 @@
 #include "kml.hpp"
 #include <iomanip> // for std::setprecision
+#include <sstream>
 
-void KML::writeHeader()
+void kml_writeHeader(std::stringstream &s)
 {
-	file <<
+	s <<
    	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 	"<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
 	"	<Document>\n"
@@ -21,9 +22,9 @@ void KML::writeHeader()
 	"		        <coordinates>\n";
 }
 
-void KML::writeFooter()
+void kml_writeFooter(std::stringstream &s)
 {
-	file <<
+	s <<
 	"				</coordinates>\n"
 	"	        </LineString>\n"
 	"	    </Placemark>\n"
@@ -31,7 +32,7 @@ void KML::writeFooter()
 	"</kml>";
 }
 
-void KML::writeLatLon(LatLon latlon, float altitude)
+void kml_writeLatLon(std::stringstream &s, latlon_t latlon, double altitude)
 {
-	file << std::fixed << std::setprecision(6) << latlon.lon() << "," << latlon.lat() << "," << altitude << "\n";
+	s << std::fixed << std::setprecision(6) << latlon.lon << "," << latlon.lat << "," << altitude << "\n";
 }
