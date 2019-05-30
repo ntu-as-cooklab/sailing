@@ -9,5 +9,4 @@
 14. UI adjustment & mobile UI
 17. Send velocity vectors to UI
 18. Wrap around longitude
-19. favicon
 20. Add help and project info
