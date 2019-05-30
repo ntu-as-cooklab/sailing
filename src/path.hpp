@@ -23,7 +23,7 @@ typedef struct pathpt_t
 typedef struct path_t
 {
     uint32_t id;
-    uint32_t runID;
+    uint32_t runId;
     std::string loginID;
     struct tm startdate;
     struct tm enddate;

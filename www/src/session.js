@@ -4,7 +4,7 @@ const DATE_MIN = new Date(1979, 0,  1, 0);
 const DATE_MAX = new Date(2011, 11, 31, 0);
 
 var Session = {
-    runID: 0,
+    runId: 0,
     loginID: "guest",
     token: "",
     startdate:  DATE_MIN,
@@ -15,11 +15,11 @@ var Session = {
 };
 
 var url = new URL(window.location.href);
-Session.runID  = Number(url.searchParams.get("runID"));
+Session.runId  = Number(url.searchParams.get("runId"));
 Session.loginID  = url.searchParams.get("loginID");
 if(!Session.loginID) Session.loginID = "guest";
 Session.token = String(url.searchParams.get("token"));
-console.log("runID:", Session.runID);
+console.log("runId:", Session.runId);
 console.log("loginID:", Session.loginID);
 console.log("token:", Session.token);
 

@@ -4,7 +4,7 @@ function path_request()
 {
     var msg = {
 		cmd:        "new_path",
-		runID:      Session.runID,
+		runId:      Session.runId,
         loginID:    Session.loginID,
         token:      Session.token,
         startdate:  date2array(Session.startdate),
@@ -40,7 +40,7 @@ function path_popup(path)
 function path_new(msg)
 {
 	var path = msg["path"];
-	if (path.runID != Session.runID) return;
+	if (path.runId != Session.runId) return;
 	Session.paths[path.id] = path;
 	path.date = [];
 	path.loc = [];
@@ -62,7 +62,7 @@ function path_color(path)
 
 function path_update(msg)
 {
-	if (msg.runID != Session.runID) return;
+	if (msg.runId != Session.runId) return;
 	var id = msg["id"];
 	var step = msg["step"];
 	var path = Session.paths[id];
@@ -94,7 +94,7 @@ function path_update(msg)
 
 function path_collision(msg)
 {
-	if (msg.runID != Session.runID) return;
+	if (msg.runId != Session.runId) return;
 	var id = msg["id"];
 	//console.log("collision", id);
 	var path = Session.paths[id];
@@ -139,7 +139,7 @@ function path_request_delete(id)
 {
 	var msg = {
 		cmd:        "delete",
-		runID:      Session.runID,
+		runId:      Session.runId,
         loginID:    Session.loginID,
         token:      Session.token,
         id: 		id,
