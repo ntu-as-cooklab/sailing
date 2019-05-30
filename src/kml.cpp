@@ -1,6 +1,7 @@
 #include "kml.hpp"
 #include <iomanip> // for std::setprecision
 #include <sstream>
+#include "path.hpp"
 
 void kml_writeHeader(std::stringstream &s)
 {
@@ -35,4 +36,14 @@ void kml_writeFooter(std::stringstream &s)
 void kml_writeLatLon(std::stringstream &s, latlon_t latlon, double altitude)
 {
 	s << std::fixed << std::setprecision(6) << latlon.lon << "," << latlon.lat << "," << altitude << "\n";
+}
+
+std::stringstream kml_fromPath(path_t* path)
+{
+	std::stringstream s;
+	kml_writeHeader(s);
+	for (int i = 0; i < path->pts.size(); i++)
+		kml_writeLatLon(s, path->pts[i].loc, 0);
+	kml_writeFooter(s);
+	return s;
 }

@@ -8,6 +8,9 @@
 #include <queue>
 #include <memory>
 #include <thread>
+#include "session.hpp"
+#include "kml.hpp"
+#include <iostream>
 
 #define LWS_PLUGIN_STATIC
 
@@ -31,11 +34,8 @@ typedef struct my_vhd_t {
 
 typedef struct http_pss_t {
 	char path[128];
-
-	int times;
-	int budget;
-
-	int content_lines;
+    std::string content;
+    const char* pointer;
 } http_pss_t;
 
 static struct lws_context *context;
@@ -207,7 +207,8 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
             lws_snprintf(pss->path, sizeof(pss->path), "%s", (const char *)in);
             std::string path(pss->path);
             std::string ext = path.substr(path.find_last_of(".") + 1);
-            //printf("Http request: %s ext %s\n", pss->path, ext.c_str());
+            uint32_t id = std::atoi(path.substr(1, path.find_last_of(".")).c_str());
+            printf("Http request: %s id %d ext %s\n", pss->path, id, ext.c_str());
 
             /*
             * prepare and write http headers... with regards to content-
@@ -238,6 +239,12 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
             else if(ext == "kml")
             {
                 mime = "application/vnd.google-earth.kml+xml";
+                //try {
+                    pss->content = kml_fromPath(&Session::paths[id]).str();
+                    //std::cout << pss->content;
+                    pss->pointer = pss->content.c_str();
+                    //printf("kml size %d\n", pss->content.size());
+                //} catch(...) return -1;
             }
             else
             {
@@ -286,11 +293,17 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 		 * this transaction.
 		 */
 
-        uint8_t* p = start;
-		p += lws_snprintf((char*)p, end - p, "this is some content... ");
+        const char* content_end = pss->content.c_str() + pss->content.size();
 
-        lws_write_protocol n = LWS_WRITE_HTTP_FINAL;
-		//if (/* content remaining */) n = LWS_WRITE_HTTP_FINAL;
+        uint8_t* p = start;
+        size_t len = std::min(end - p, content_end - pss->pointer);
+        //int l = lws_snprintf((char*)p, len, pss->pointer);
+        memcpy(p, pss->pointer, len);
+		p += len;
+        pss->pointer += len;
+
+        lws_write_protocol n = LWS_WRITE_HTTP;
+		if (pss->pointer >= content_end) n = LWS_WRITE_HTTP_FINAL;
 
 		if (lws_write(wsi, (uint8_t*)start, lws_ptr_diff(p, start), n) != lws_ptr_diff(p, start))
 			return 1;
