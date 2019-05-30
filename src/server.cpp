@@ -10,6 +10,7 @@
 #include <thread>
 #include "session.hpp"
 #include "kml.hpp"
+#include "csv.hpp"
 #include <iostream>
 
 #define LWS_PLUGIN_STATIC
@@ -235,6 +236,8 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
             if     (ext == "csv")
             {
                 mime = "text/csv";
+                pss->content = csv_fromPath(&Session::paths[id]).str();
+                pss->pointer = pss->content.c_str();
             }
             else if(ext == "kml")
             {
@@ -315,6 +318,8 @@ static int callback_dynamic_http(struct lws *wsi, enum lws_callback_reasons reas
 		 */
 		if (n == LWS_WRITE_HTTP_FINAL) {
 		    if (lws_http_transaction_completed(wsi))
+            pss->pointer = NULL;
+            pss->content = std::string("");
 			return -1;
 		} else
 			lws_callback_on_writable(wsi);
