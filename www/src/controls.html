@@ -1,6 +1,15 @@
 <div id="controls-wrapper">
     <div id="controls" class="leaflet-popup-content-wrapper" style="position:absolute">
         <table class="leaflet-popup-content">
+            <tr><td>模式: </td>
+                <td><select id="mode">
+                    <option value="0">無風帆 (瓶中信)</option>
+                    <option value="1">風帆: 順風漂流</option>
+                    <option value="2">風帆: 固定目的地</option>
+                    <option value="3">風帆: 固定航向</option>
+                </select>
+                <span id="destdir_wrapper" hidden>方向<input id="destdir" style="width:3.5em" type="number" min="0" max="360">度</span></td>
+            </tr>
             <tr>
                 <td>起始時間: </td>
                 <td>
@@ -123,6 +132,12 @@ controls.init = function()
     $("#show-other")[0].oninput =
     function(e){ 
         $("#show-other")[0].checked ? path_show_other() : path_hide_other();
+    };
+
+    $("#mode")[0].oninput =
+    function(e){ 
+        var mode = $("#mode")[0].value;
+        (mode == 3) ? $("#destdir_wrapper").show() : $("#destdir_wrapper").hide();
     };
 }
 
