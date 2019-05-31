@@ -13,6 +13,7 @@ var Session = {
 	paths: [],
     color: 'red',
     mode: 0,
+    dataset: 0,
     destloc: [-14.000, 188.500],
     destheading: 0,
     altitude: 2,
