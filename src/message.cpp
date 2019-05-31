@@ -58,6 +58,17 @@ json path2json(path_t* path)
     j["startloc"] = loc2json(path->startloc);
     j["land_collision"] = path->land_collision;
 
+    j["dataset"] = path->dataset;
+    j["mode"] = path->mode;
+    j["color"] = path->color;
+    j["destloc"] = loc2json(path->destloc);
+    j["destheading"] = path->destheading;
+    j["altitude"] = path->altitude;
+    j["windlimit"] = path->windlimit;
+    j["sailstarthour"] = path->sailstarthour;
+    j["sailendhour"] = path->sailendhour;
+    j["alpha"] = path->alpha;
+
     j["date"] = json::array();
     j["loc"]  = json::array();
     for (int i = 0; i < path->pts.size(); i++)
@@ -79,6 +90,17 @@ path_t json2path(json j)
     path.startloc = json2loc(j["startloc"]);
     path.land_collision = j["land_collision"];
 
+    path.dataset = j["dataset"];
+    path.mode = j["mode"];
+    path.color = j["color"];
+    path.destloc   = json2loc(j["destloc"]);
+    path.destheading = j["destheading"];
+    path.altitude = j["altitude"];
+    path.windlimit = j["windlimit"];
+    path.sailstarthour = j["sailstarthour"];
+    path.sailendhour = j["sailendhour"];
+    path.alpha = j["alpha"];
+
     for (json::iterator date = j["date"].begin(), loc = j["loc"].begin(); date != j["date"].end(); ++date, ++loc) {
         pathpt_t pt = {.date = json2date(*date), .loc = json2loc(*loc)};
         //printpt(pt);
@@ -96,9 +118,19 @@ json server_newpath(path_t* path)
                 {"runId", path->runId},
                 {"loginID", path->loginID},
                 {"id", path->id},
+                {"dataset", path->dataset},
+                {"mode", path->mode},
                 {"startdate", date2json(path->startdate)},
                 {"enddate", date2json(path->enddate)},
-                {"startloc", loc2json(path->startloc)}
+                {"startloc", loc2json(path->startloc)},
+                {"color", path->color},
+                {"destloc", loc2json(path->destloc)},
+                {"destheading", path->destheading},
+                {"altitude", path->altitude},
+                {"windlimit", path->windlimit},
+                {"sailstarthour", path->sailstarthour},
+                {"sailendhour", path->sailendhour},
+                {"alpha", path->alpha},
             }}};
 }
 
@@ -141,7 +173,10 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             path->startloc   = json2loc(j["startloc"]);
             path->land_collision = false;
 
+            path->dataset = j["dataset"];
+            path->mode = j["mode"];
             path->color = j["color"];
+            path->destloc   = json2loc(j["destloc"]);
             path->destheading = j["destheading"];
             path->altitude = j["altitude"];
             path->windlimit = j["windlimit"];
