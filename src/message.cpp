@@ -126,77 +126,79 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
     json j;
     try {
         j = json::from_cbor(mymsg_t(in, in + len));
-    } catch (...) { return -1; }
-    cout << "Message: " << j << "\n";
+    
+        cout << "Message: " << j << "\n";
 
-    if (j["cmd"] == "new_path")
-    {
-        uint32_t id = Session::new_path();
-        path_t* path = &Session::paths[id];
-        path->id         = id;
-        path->runId      = j["runId"];
-        path->loginID    = j["loginID"];
-        path->startdate  = json2date(j["startdate"]);
-        path->enddate    = json2date(j["enddate"]);
-        path->startloc   = json2loc(j["startloc"]);
-        path->land_collision = false;
+        if (j["cmd"] == "new_path")
+        {
+            uint32_t id = Session::new_path();
+            path_t* path = &Session::paths[id];
+            path->id         = id;
+            path->runId      = j["runId"];
+            path->loginID    = j["loginID"];
+            path->startdate  = json2date(j["startdate"]);
+            path->enddate    = json2date(j["enddate"]);
+            path->startloc   = json2loc(j["startloc"]);
+            path->land_collision = false;
 
-        path->color = j["color"];
-        path->destheading = j["destheading"];
-        path->altitude = j["altitude"];
-        path->windlimit = j["windlimit"];
-        path->sailstarthour = j["sailstarthour"];
-        path->sailendhour = j["sailendhour"];
-        path->alpha = j["alpha"];
+            path->color = j["color"];
+            path->destheading = j["destheading"];
+            path->altitude = j["altitude"];
+            path->windlimit = j["windlimit"];
+            path->sailstarthour = j["sailstarthour"];
+            path->sailendhour = j["sailendhour"];
+            path->alpha = j["alpha"];
 
-        server_pushall(json::to_cbor(server_newpath(path)));
+            server_pushall(json::to_cbor(server_newpath(path)));
 
-        int step = 0;
-        int last_step = 0;
-        path->pts.push_back({path->startdate, path->startloc});
-        while(mktime(&path->pts.back().date) < mktime(&path->enddate)) {
-            if (sail_step(path) != 0) { printf("Land collision!\n"); path->land_collision = true; path->enddate = path->pts.back().date; }
-            else {
-                step++;
-                if (step%(24*5) == 0) {
-                    // printf("id=%d ", path->id); printpt(path->pts.back());
-                    // send incrementally
-                    server_pushall(json::to_cbor(server_sendpts(path, last_step, step)));
-                    last_step = step;
+            int step = 0;
+            int last_step = 0;
+            path->pts.push_back({path->startdate, path->startloc});
+            while(mktime(&path->pts.back().date) < mktime(&path->enddate)) {
+                if (sail_step(path) != 0) { printf("Land collision!\n"); path->land_collision = true; path->enddate = path->pts.back().date; }
+                else {
+                    step++;
+                    if (step%(24*5) == 0) {
+                        // printf("id=%d ", path->id); printpt(path->pts.back());
+                        // send incrementally
+                        server_pushall(json::to_cbor(server_sendpts(path, last_step, step)));
+                        last_step = step;
+                    }
                 }
             }
+            printf("id=%d ", path->id); printpt(path->pts.back());
+            if (last_step < step) {
+                // printf("send remaining data %d %d\n", last_step, step);
+                server_pushall(json::to_cbor(server_sendpts(path, last_step, step))); // send remaining data here
+            }
+            if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"id", path->id}}));
         }
-        printf("id=%d ", path->id); printpt(path->pts.back());
-        if (last_step < step) {
-            // printf("send remaining data %d %d\n", last_step, step);
-            server_pushall(json::to_cbor(server_sendpts(path, last_step, step))); // send remaining data here
-        }
-        if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"id", path->id}}));
-    }
-    else if (j["cmd"] == "restore")
-    {
-        printf("restore 0x%x\n", pss);
+        else if (j["cmd"] == "restore")
+        {
+            printf("restore 0x%x\n", pss);
 
-        map<uint32_t, path_t>::iterator it;
-        for (it = Session::paths.begin(); it != Session::paths.end(); it++)
-        {
-            path_t* path = &it->second;
-            server_pushto(pss, json::to_cbor(server_newpath(path)));
-            server_pushto(pss, json::to_cbor(server_sendpts(path, 0, path->pts.size()-1)));
+            map<uint32_t, path_t>::iterator it;
+            for (it = Session::paths.begin(); it != Session::paths.end(); it++)
+            {
+                path_t* path = &it->second;
+                server_pushto(pss, json::to_cbor(server_newpath(path)));
+                server_pushto(pss, json::to_cbor(server_sendpts(path, 0, path->pts.size()-1)));
+            }
+            server_pushto(pss, json::to_cbor({{"cmd", "ready"}}));
         }
-        server_pushto(pss, json::to_cbor({{"cmd", "ready"}}));
-    }
-    else if (j["cmd"] == "delete")
-    {
-        uint32_t id = j["id"];
-        uint32_t runId = j["runId"];
-        std::string loginID = j["loginID"];
-        if (Session::paths[id].runId == runId && Session::paths[id].loginID == loginID)
+        else if (j["cmd"] == "delete")
         {
-            Session::paths.erase(id);
-            server_pushall(json::to_cbor({{"cmd", "delete"},{"id", id}}));
+            uint32_t id = j["id"];
+            uint32_t runId = j["runId"];
+            std::string loginID = j["loginID"];
+            if (Session::paths[id].runId == runId && Session::paths[id].loginID == loginID)
+            {
+                Session::paths.erase(id);
+                server_pushall(json::to_cbor({{"cmd", "delete"},{"id", id}}));
+            }
         }
-    }
+
+    } catch (...) { printf("json error\n"); return -1; }
 
     return 0;
 }
