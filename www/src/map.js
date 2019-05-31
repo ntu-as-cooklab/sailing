@@ -74,10 +74,10 @@ function initMap()
 
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 			attribution: `Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, 
-						Imagery © <a href="http://mapbox.com">Mapbox</a>,
+						Imagery © <a href="http://mapbox.com">Mapbox</a>
 						<p>Flat Icons by <a href="/resources/free-icons/">WhoIsHostingThis.com</a></p>
-						Author: Videoplasty.com Target Flat Icon.svg from Wikimedia Commons License: Creative Commons Attribution-ShareAlike 4.0
-						©臺大大氣系—林博雄教授實驗室、臺師大科教所—許瑛玿教授實驗室、麗山高中—萬義昞老師
+						<p>Author: Videoplasty.com Target Flat Icon.svg from Wikimedia Commons License: Creative Commons Attribution-ShareAlike 4.0</p>
+						<p>©臺大大氣系—林博雄教授實驗室、臺師大科教所—許瑛玿教授實驗室、麗山高中—萬義昞老師</p>
 						`,
 			id: 'seanstone5923.phlaakpk',
 			accessToken: 'pk.eyJ1Ijoic2VhbnN0b25lNTkyMyIsImEiOiJjaW1kOTJrZGYwMDUxdHNra2wwOGN0cTY1In0.n0m5Euk9SWbiNt4RZi8vkQ',
