@@ -39,39 +39,36 @@ int* cfsr_ncid(cfsr_nc_dataset_t* dataset, struct tm date)
     return &dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon];
 }
 
+int cfsr_nc_open(cfsr_nc_dataset_t* dataset, struct tm date)
+{
+    const char* dirs[] = {"data", "/data"};
+    char* filename;
+    for (int i = 0; i < sizeof(dirs)/sizeof(char*); i++) {
+        filename = cfsr_nc_filename(dirs[i], dataset, date);
+        if (nc_open(filename, NC_NOWRITE, cfsr_ncid(dataset, date)) == 0)
+            return 0;
+    }
+    printf("cfsr_nc_load: failed to load file %s\n", filename);
+    return -1;
+}
+
 int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 {
-    int err;
-    char* filename = cfsr_nc_filename("data", dataset, date);
-    if ((err = nc_open(filename, NC_NOWRITE, cfsr_ncid(dataset, date)))) {
-        filename = cfsr_nc_filename("/data", dataset, date);
-        if ((err = nc_open(filename, NC_NOWRITE, cfsr_ncid(dataset, date)))) {
-            printf("cfsr_nc_load: failed to load file %s\n", filename);
-            return err;
-        }
-    }
-
+    if (cfsr_nc_open(dataset, date) < 0) return -1;
     int ncid = *cfsr_ncid(dataset, date);
-
-    int ndims, nvars, natts, unlimdimid;
-    nc_inq(ncid, &ndims, &nvars, &natts, &unlimdimid);
+    // int ndims, nvars, natts, unlimdimid;
+    // nc_inq(ncid, &ndims, &nvars, &natts, &unlimdimid);
 
     if (dataset == CFSR_NC_OCNU5 || dataset == CFSR_NC_OCNV5)
-    {
         dataset->varid = 5;
-    }
     else if (dataset == CFSR_NC_WNDU10)
-    {
-
-    }
+        dataset->varid = 5;
+    else if (dataset == CFSR_NC_WNDV10)
+        dataset->varid = 6;
 
     nc_get_att_double(ncid, dataset->varid, "scale_factor", &dataset->scale_factor);
     nc_get_att_double(ncid, dataset->varid, "add_offset", &dataset->add_offset);
     nc_get_att_short(ncid, dataset->varid, "missing_value", &dataset->missing_value);
-
-    printf("scale_factor: %f\n", dataset->scale_factor);
-    printf("add_offset: %f\n", dataset->add_offset);
-    printf("missing_value: %d\n", dataset->missing_value);
 
     dataset->Ni = 720;
     dataset->Nj = 360;
@@ -99,7 +96,7 @@ int cfsr_nc_free(cfsr_nc_dataset_t* dataset)
     nc_close(dataset->ncid[i][j]);
 }
 
-double bilinear(double* v, double di, double dj)
+static double bilinear(double* v, double di, double dj)
 {
     int nan_count = 0;
     for (int i = 0; i < 4; i++)
