@@ -11,7 +11,7 @@ var Session = {
     enddate:    new Date(1979, 3, 1, 0),
     startloc:   [-10.000, 160.000],
 	paths: [],
-    color: 'red',
+    color: '#FF0000',
     mode: 0,
     dataset: 0,
     destloc: [-14.000, 188.500],

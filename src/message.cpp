@@ -113,6 +113,7 @@ mymsg_t msg;
 
 json server_newpath(path_t* path)
 {
+    //std::cout << "color:" << path->color << "\n";
     return {{"cmd", "new_path"},
             {"path", {
                 {"runId", path->runId},

@@ -66,7 +66,6 @@ function path_new(msg)
 	path.startdate = array2date(path.startdate);
 	path.enddate = array2date(path.enddate);
 	path.land_collision = false;
-	path.color = Session.color;
 
 	var options = {color: path_color(path), opacity: 0.2, weight: 5};
 	path.polyline = L.polyline([[]], options);

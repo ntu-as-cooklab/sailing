@@ -34,6 +34,7 @@
                     </td>
                 </tr>
                 <tr><td>起始地點: </td><td id="startloc"></td></tr>
+                <tr><td>顏色: </td><td><input type="color" id="color" value="#ff0000"></td></tr>
                 <tr>
                     <td><button onclick="path_request()" class="button" style="margin-top:1ex">產生路徑</button></td>
                     <td>
@@ -193,6 +194,12 @@ controls.init = function()
     $("#sailendhour")[0].oninput =
     function(e){ 
         Session.sailendhour = $("#sailendhour")[0].value;
+    };
+
+    $("#color")[0].value = Session.color;
+    $("#color")[0].oninput =
+    function(e){ 
+        Session.color = $("#color")[0].value;
     };
 }
 
