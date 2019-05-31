@@ -52,7 +52,16 @@ int cfsr_nc_open(cfsr_nc_dataset_t* dataset, struct tm date)
 
 int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 {
-    if (cfsr_nc_open(dataset, date) < 0) return -1;
+    if (dataset == CFSR_NC_OCNU5 || dataset == CFSR_NC_OCNV5 || dataset == CFSR_NC_WNDU10) {
+        dataset->varid = 5;
+        if (cfsr_nc_open(dataset, date) < 0) return -1;
+    }   
+    else if (dataset == CFSR_NC_WNDV10) {
+        dataset->varid = 6;
+        *cfsr_ncid(dataset, date) = *cfsr_ncid(CFSR_NC_WNDU10, date);
+    }
+    else return -1;
+        
     int ncid = *cfsr_ncid(dataset, date);
 
     // int ndims, nvars, natts, unlimdimid;
@@ -62,11 +71,6 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
     //     nc_inq_varname(ncid, i, name);
     //     printf("name: %s\n", name);
     // }
-
-    if (dataset == CFSR_NC_OCNU5 || dataset == CFSR_NC_OCNV5 || dataset == CFSR_NC_WNDU10)
-        dataset->varid = 5;
-    else if (dataset == CFSR_NC_WNDV10)
-        dataset->varid = 6;
 
     nc_get_att_double(ncid, dataset->varid, "scale_factor", &dataset->scale_factor);
     nc_get_att_double(ncid, dataset->varid, "add_offset", &dataset->add_offset);

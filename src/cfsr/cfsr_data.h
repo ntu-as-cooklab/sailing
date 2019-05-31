@@ -10,6 +10,7 @@ extern  "C" {
 #endif
 
 vec2 cfsr_ocn(struct tm date, latlon_t loc);
+vec2 cfsr_wnd(struct tm date, latlon_t loc);
 
 #ifdef  __cplusplus
 }
