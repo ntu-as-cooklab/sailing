@@ -29,32 +29,39 @@ cfsr_nc_dataset_t cfsr_nc_ocnu5 = {.str = "ocnu5"},
 cfsr_nc_dataset_t *CFSR_NC_OCNU5 = &cfsr_nc_ocnu5;
 cfsr_nc_dataset_t *CFSR_NC_OCNV5 = &cfsr_nc_ocnv5;
 
+int* cfsr_ncid(cfsr_nc_dataset_t* dataset, struct tm date)
+{
+    return &dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon];
+}
+
 int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 {
     int err;
     char* filename = cfsr_nc_filename("data", dataset, date);
-    if ((err = nc_open(filename, NC_NOWRITE, &dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon]))) {
+    if ((err = nc_open(filename, NC_NOWRITE, cfsr_ncid(dataset, date)))) {
         filename = cfsr_nc_filename("/data", dataset, date);
-        if ((err = nc_open(filename, NC_NOWRITE, &dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon]))) {
+        if ((err = nc_open(filename, NC_NOWRITE, cfsr_ncid(dataset, date)))) {
             printf("cfsr_nc_load: failed to load file %s\n", filename);
             return err;
         }
     }
-    //printf("cfsr_nc_load: loaded %s\n", filename);
 
-    dataset->Ni = 720;
-    dataset->Nj = 360;
-    dataset->lat0 = 89.750000;
-    dataset->lon0 = 0.250000;
-    dataset->lat1 = -89.750000;
-    dataset->lon1 = 359.750000;
-    dataset->dy = -0.500000;
-    dataset->dx = 0.500000;
+    if (dataset == CFSR_NC_OCNU5 || dataset == CFSR_NC_OCNV5)
+    {
+        dataset->Ni = 720;
+        dataset->Nj = 360;
+        dataset->lat0 = 89.750000;
+        dataset->lon0 = 0.250000;
+        dataset->lat1 = -89.750000;
+        dataset->lon1 = 359.750000;
+        dataset->dy = -0.500000;
+        dataset->dx = 0.500000;
 
-    dataset->scale_factor = 5.6536401507637375E-5;
-    dataset->add_offset = 0.03947173179924627;
+        dataset->scale_factor = 5.6536401507637375E-5;
+        dataset->add_offset = 0.03947173179924627;
 
-    dataset->missing_value = -32767;
+        dataset->missing_value = -32767;
+    }
 
     return 0;
 }
@@ -94,13 +101,14 @@ double bilinear(double* v, double di, double dj)
 
 double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc)
 {
-    int ncid = dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon];
+    int ncid = *cfsr_ncid(dataset, date);
     if (!ncid) {
         if (cfsr_nc_load(dataset, date) < 0) return NAN;
-        ncid = dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon];
+        ncid = *cfsr_ncid(dataset, date);
     }
     double i = mod((loc.lon-dataset->lon0)/dataset->dx, dataset->Ni);
     double j = mod((loc.lat-dataset->lat0)/dataset->dy, dataset->Nj);
+    
     double i0 = floor(i);
     double j0 = floor(j);
     double i1 = mod(i0+1, dataset->Ni);
@@ -115,10 +123,10 @@ double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc
         { date.tm_mday-1, date.tm_hour/6, date.tm_hour%6, j1, i1 },
     };
     double v[4];
-    for (int i = 0; i < 4; i++) {
+    for (int p = 0; p < 4; p++) {
         int16_t s;
-        nc_get_var1_short(ncid, 5, dim[i], &s);
-        v[i] = (s == dataset->missing_value) ? NAN : (dataset->add_offset + s * dataset->scale_factor);
+        nc_get_var1_short(ncid, 5, dim[p], &s);
+        v[p] = (s == dataset->missing_value) ? NAN : (dataset->add_offset + s * dataset->scale_factor);
     }
 
     return bilinear(v, di, dj);
