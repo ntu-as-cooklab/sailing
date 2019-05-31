@@ -11,7 +11,15 @@ var Session = {
     enddate:    new Date(1979, 3, 1, 0),
     startloc:   [-10.000, 160.000],
 	paths: [],
-	color: 'red',
+    color: 'red',
+    mode: 0,
+    destloc: [-14.000, 188.500],
+    destdir: 0,
+    altitude: 2,
+    windlimit: 8,
+    sailstarthour: 6,
+    sailendhour: 18,
+    alpha: 0.11,
 };
 
 var url = new URL(window.location.href);

@@ -39,10 +39,10 @@
                 </tr>
             </table></td>
             <td><table id="sail" hidden>
-                <tr><td>風帆高度</td><td><input style="width:3.5em" min="0" step="1" type="number">m</td></tr>
-                <tr><td>張帆極限風速</td><td><input style="width:3.5em" min="0" step="1" type="number">m/s</td></tr>
-                <tr><td>張帆時刻</td><td><input style="width:3.5em" type="number" step="1" min="0" max="23">時</td></tr>
-                <tr><td>收帆時刻</td><td><input style="width:3.5em" type="number" step="1" min="0" max="23">時</td></tr>
+                <tr><td>風帆高度</td><td><input id="altitude" style="width:3.5em" min="0" step="1" type="number">m</td></tr>
+                <tr><td>張帆極限風速</td><td><input id="windlimit" style="width:3.5em" min="0" step="1" type="number">m/s</td></tr>
+                <tr><td>張帆時刻</td><td><input id="sailstarthour" style="width:3.5em" type="number" step="1" min="0" max="23">時</td></tr>
+                <tr><td>收帆時刻</td><td><input id="sailendhour" style="width:3.5em" type="number" step="1" min="0" max="23">時</td></tr>
             </table></td>
         </tr></table>
     </div>
@@ -142,11 +142,42 @@ controls.init = function()
         $("#show-other")[0].checked ? path_show_other() : path_hide_other();
     };
 
+    $("#mode")[0].value = Session.mode;
     $("#mode")[0].oninput =
     function(e){ 
-        var mode = $("#mode")[0].value;
-        (mode == 3) ? $("#destdir_wrapper").show() : $("#destdir_wrapper").hide();
-        (mode == 0) ? $("#sail").hide() : $("#sail").show();
+        Session.mode = $("#mode")[0].value;
+        (Session.mode == 3) ? $("#destdir_wrapper").show() : $("#destdir_wrapper").hide();
+        (Session.mode == 0) ? $("#sail").hide() : $("#sail").show();
+    };
+
+    $("#destdir")[0].value = Session.destdir;
+    $("#destdir")[0].oninput =
+    function(e){ 
+        Session.destdir = $("#destdir")[0].value;
+    };
+
+    $("#altitude")[0].value = Session.altitude;
+    $("#altitude")[0].oninput =
+    function(e){ 
+        Session.altitude = $("#altitude")[0].value;
+    };
+
+    $("#windlimit")[0].value = Session.windlimit;
+    $("#windlimit")[0].oninput =
+    function(e){ 
+        Session.windlimit = $("#windlimit")[0].value;
+    };
+
+    $("#sailstarthour")[0].value = Session.sailstarthour;
+    $("#sailstarthour")[0].oninput =
+    function(e){ 
+        Session.sailstarthour = $("#sailstarthour")[0].value;
+    };
+
+    $("#sailendhour")[0].value = Session.sailendhour;
+    $("#sailendhour")[0].oninput =
+    function(e){ 
+        Session.sailendhour = $("#sailendhour")[0].value;
     };
 }
 
