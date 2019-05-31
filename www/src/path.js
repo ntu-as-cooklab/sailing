@@ -25,12 +25,21 @@ function path_request()
 	ws.send(CBOR.encode(msg));
 }
 
+const MODE_STR = ["無風帆 (瓶中信)", "風帆: 順風漂流", "風帆: 固定目的地", "風帆: 固定航向"];
+
 function path_popup(path)
 {
 	return `<div class="popup">
 		<table>
 			<tr><td>路徑ID:</td><td>${path.id}</td></tr>
 			<tr><td>建立者ID:</td><td>${path.loginID}</td></tr>
+			<tr><td>模式:</td><td>${MODE_STR[path.mode]}</td></tr>
+			${(path.mode==2) ? "<tr><td>目標地點:</td><td>" + loc2str(path.destloc) + "</td></tr>" : ""}
+			${(path.mode==3) ? "<tr><td>航向:</td><td>" + path.destheading + "度" + "</td></tr>" : ""}
+			${(path.mode!=0) ? "<tr><td>風帆高度:</td><td>" + path.altitude + "m" + "</td></tr>" : ""}
+			${(path.mode!=0) ? "<tr><td>張帆極限風速:</td><td>" + path.windlimit + "m/s" + "</td></tr>" : ""}
+			${(path.mode!=0) ? "<tr><td>張帆時刻:</td><td>" + path.sailstarthour + "時" + "</td></tr>" : ""}
+			${(path.mode!=0) ? "<tr><td>收帆時刻:</td><td>" + path.sailendhour + "時" + "</td></tr>" : ""}
 			<tr><td>起始時間:</td><td>${date2str(path.startdate) + " " + time2str(path.startdate)}</td></tr>
 			<tr><td>結束時間:</td><td>${date2str(path.enddate) + " " + time2str(path.enddate)}</td></tr>
 			<tr><td>時間長度:</td><td>${dates2intervalstr(path.startdate,path.enddate)}</td></tr>
