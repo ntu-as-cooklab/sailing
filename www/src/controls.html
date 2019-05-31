@@ -35,7 +35,12 @@
                 <tr><td>起始地點: </td><td id="startloc"></td></tr>
                 <tr>
                     <td><button onclick="path_request()" class="button" style="margin-top:1ex">產生路徑</button></td>
-                    <td><label style="margin-left:3em"><input id="show-other" type="checkbox"/>顯示其他使用者的路徑</label></td>
+                    <td>
+                        <table style="margin-left:3em">
+                            <tr><td><label><input id="show-other" type="checkbox"/>顯示其他使用者的路徑</label></td></tr>
+                            <tr><td><label><input id="show-grid" type="checkbox"/>顯示經緯線</label></td></tr>
+                        </table>
+                    </td>
                 </tr>
             </table></td>
             <td><table id="sail" hidden>
@@ -140,6 +145,12 @@ controls.init = function()
     $("#show-other")[0].oninput =
     function(e){ 
         $("#show-other")[0].checked ? path_show_other() : path_hide_other();
+    };
+
+    $("#show-grid")[0].checked = true;
+    $("#show-grid")[0].oninput =
+    function(e){ 
+        $("#show-grid")[0].checked ? grid_show() : grid_hide();
     };
 
     $("#mode")[0].value = Session.mode;

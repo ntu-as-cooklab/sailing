@@ -2,9 +2,7 @@
 
 var map;
 var startloc_marker;
-
-var mainlatlonlines;
-var latlonlines;
+var mainlatlonlines, latlonlines;
 
 function startloc_input(e)
 {
@@ -66,34 +64,39 @@ function initMap()
 
 	startloc_init();
 
-	// L.easyButton('fa-globe', function(btn, map){
-	// 	var antarctica = [-77,70];
-	// 	map.setView(antarctica);
-	// }, "New").addTo(map);
-
-	/** Events **/
-	//map.on('contextmenu', onMapClick);
+	grid_show();
 }
 
-function toggleLatLonLines()
+function grid_show()
 {
-	var showLatLonLines = document.getElementById("showLatLonLines");
-	if(showLatLonLines.checked)
-	{
-		// Specify divisions every 10 degrees
-		latlonlines = L.graticule({ interval: 10 }).addTo(map);
+	latlonlines = L.latlngGraticule({
+        showLabel: true,
+        zoomInterval: [
+            {start: 2, end: 3, interval: 30},
+            {start: 4, end: 4, interval: 10},
+            {start: 5, end: 7, interval: 5},
+            {start: 8, end: 10, interval: 1}
+		],
+		color: "#666",
+		fontColor: "#666"
+    }).addTo(map);
 
-		// Specify bold red lines instead of thin grey lines
-		mainlatlonlines = L.graticule({
-		style: {
-	        	color: '#f00',
-	        	weight: 1
-	    	}
-		}).addTo(map);
-	}
-   	else
-	{
-        map.removeLayer(latlonlines);
-		map.removeLayer(mainlatlonlines);
-	}
+	mainlatlonlines = L.latlngGraticule({	
+		color: '#f00',
+		weight: 2,
+		zoomInterval: {
+			latitude: [
+			  {start: 1, end: 20, interval: 90},
+			],
+			longitude: [
+			  {start: 1, end: 20, interval: 180},
+			]
+		  }
+	}).addTo(map);
+}
+
+function grid_hide()
+{
+	map.removeLayer(latlonlines);
+	map.removeLayer(mainlatlonlines);
 }
