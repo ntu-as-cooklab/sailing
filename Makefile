@@ -7,8 +7,10 @@ ifneq (, $(shell which g++-8))
 CXX := g++-8
 endif
 
-LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor -lmongoc-1.0 -lbson-1.0 -lpthread
-CPPFLAGS += -O3 -Isrc -fms-extensions -I/usr/include/libmongoc-1.0/ -I/usr/include/libbson-1.0/
+LDLIBS += -lcurl -lm -leccodes -lnetcdf -lwebsockets -lcbor -lpthread
+CPPFLAGS += -O3 -Isrc -fms-extensions
+# LDLIBS += -lmongoc-1.0 -lbson-1.0
+# CPPFLAGS += -I/usr/include/libmongoc-1.0/ -I/usr/include/libbson-1.0/
 CPPFLAGS += -MMD -MP -MF $@.d
 CFLAGS 	+= -std=gnu11 -fplan9-extensions
 CXXFLAGS += -std=c++14
