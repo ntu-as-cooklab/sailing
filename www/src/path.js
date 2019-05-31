@@ -9,7 +9,16 @@ function path_request()
         token:      Session.token,
         startdate:  date2array(Session.startdate),
         enddate:    date2array(Session.enddate),
-        startloc:   Session.startloc,
+		startloc:   Session.startloc,
+		color:		Session.color,
+		mode: 		Session.color,
+		destloc: 	Session.destloc,
+		destdir: 	Session.destdir,
+		altitude: 	Session.altitude,
+		windlimit: 	Session.windlimit,
+		sailstarthour: Session.sailstarthour,
+		sailendhour:   Session.sailendhour,
+		alpha: 		Session.alpha,
     };
     //console.log(msg);
 	ws.send(CBOR.encode(msg));
@@ -47,6 +56,7 @@ function path_new(msg)
 	path.startdate = array2date(path.startdate);
 	path.enddate = array2date(path.enddate);
 	path.land_collision = false;
+	path.color = Session.color;
 
 	var options = {color: path_color(path), opacity: 0.2, weight: 5};
 	path.polyline = L.polyline([[]], options);
@@ -57,7 +67,7 @@ function path_new(msg)
 
 function path_color(path)
 {
-	return path.loginID == Session.loginID ? Session.color:'grey';
+	return path.loginID == Session.loginID ? path.color:'grey';
 }
 
 function path_update(msg)
