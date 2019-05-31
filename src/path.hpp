@@ -22,26 +22,30 @@ typedef struct pathpt_t
 
 typedef struct path_t
 {
+    /* Identification */
     uint32_t id;
     uint32_t runId;
     std::string loginID;
+
+    /* Basic parameters */
+    DATASET dataset;
+    MODE mode;
     struct tm startdate;
     struct tm enddate;
     latlon_t startloc;
-    bool land_collision;
-    DATASET dataset;
-    MODE mode;
 
-    /* Sailing */
+    /* Sailing parameters */
     latlon_t destloc;
     vec2 destdir;
-    /* Sailing parameters */
     float 	altitude 		= 2;
 	float 	windlimit 		= 8;
-	int 	sailopenhours 	= 12;
-	float 	alpha 			= 0.11;				// parameter for wind profile power law
+	int 	sailstarthour 	= 6;
+    int 	sailendhour 	= 18;
+	float 	alpha 			= 0.11; // parameter for wind profile power law
     
-    std::vector<pathpt_t> pts;	
+    /* Generated data */
+    std::vector<pathpt_t> pts;
+    bool land_collision;
 } path_t;
 
 #endif

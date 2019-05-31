@@ -37,8 +37,10 @@ int sail_step(path_t* path)
 	vec2 gain = ocean;
 
 	// Sailing
-	if (path->mode != MODE_DRFT)
-	//if (sailopen)
+	if (path->mode != MODE_DRFT && 
+			((path->sailstarthour < path->sailendhour && pt.date.tm_hour > path->sailstarthour && pt.date.tm_hour < path->sailendhour) 
+			|| (path->sailstarthour > path->sailendhour && pt.date.tm_hour > path->sailstarthour) 
+		))
 	{
 		vec2 wind = cfsr_wnd(pt.date, pt.loc); // * pow(altitude/10.0bu,alpha); // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
 		if (!isnan(norm2(wind)))
