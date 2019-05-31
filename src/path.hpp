@@ -31,13 +31,17 @@ typedef struct path_t
     bool land_collision;
     DATASET dataset;
     MODE mode;
-    std::vector<pathpt_t> pts;
 
-    /* Parameters */
-	float 	altitude 		= 2;
+    /* Sailing */
+    latlon_t destloc;
+    vec2 destdir;
+    /* Sailing parameters */
+    float 	altitude 		= 2;
 	float 	windlimit 		= 8;
 	int 	sailopenhours 	= 12;
 	float 	alpha 			= 0.11;				// parameter for wind profile power law
+    
+    std::vector<pathpt_t> pts;	
 } path_t;
 
 #endif

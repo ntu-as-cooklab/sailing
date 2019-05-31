@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include "model.hpp"
 #include <cmath>
+#include "sailing.h"
+
+using namespace std;
 
 void sail(path_t* path)
 {
@@ -26,37 +29,32 @@ latlon_t calc_next_place(latlon_t loc, vec2 speed)
 
 int sail_step(path_t* path)
 {
-	// Ocean current:
-
 	pathpt_t pt = path->pts.back();
 
+	// Ocean current
 	vec2 ocean = cfsr_ocn(pt.date, pt.loc);
-	//printf("ocean: %f %f (%f) %f\n", ocean.x, ocean.y, norm(ocean), norm2(ocean));
-	if (std::isnan(norm2(ocean)) || norm2(ocean) < 0 || (norm2(ocean) > 1e3)) {
-		//printf("Land collision!\n");
-		return -1;
+	if (isnan(norm2(ocean))) return -1;
+	vec2 gain = ocean;
+
+	// Sailing
+	if (path->mode != MODE_DRFT)
+	//if (sailopen)
+	{
+		vec2 wind = cfsr_wnd(pt.date, pt.loc); // * pow(altitude/10.0bu,alpha); // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
+		if (!isnan(norm2(wind)))
+		{
+			// adjust boat direction and calculate boat speed gain due to wind
+			vec2 sail_dir = {0, 0};
+			switch (path->mode)
+			{
+				case MODE_WIND: sail_dir = normalize(wind); break;
+				case MODE_DIRN: sail_dir = normalize(path->destdir); break;
+				case MODE_DEST: sail_dir = normalize(adj_direction(pt.loc, path->destloc)); break;
+			}
+			vec2 sail_gain = calc_sail_gain(wind, sail_dir); // boat speed gain due to wind
+			gain.x += sail_gain.x; gain.y += sail_gain.y;
+		}
 	}
-
-	// vec2 wind = {0, 0};
-	// vec2 sail_gain = {0, 0};
-
-	// if (sailopen)
-	// {
-	// 	wind = cfsr_wind(date, loc) // * pow(altitude/10.0bu,alpha); // calculate wind speed at (2m) from wind speed at 10m using wind profile power law
-	// 	if (norm(wind) > 1e3) return;
-
-	// 	// adjust boat direction and calculate boat speed gain due to wind
-	// 	sail_dir = normalize(
-	// 					mode == WIND ? wind :
-	// 					mode == DIRN ? dir :
-	// 					mode == DEST ? adj_direction(curr, dest) :
-	// 					0
-	// 				);
-	// 	sail_gain = calc_sail_gain(wind, sail_dir); // boat speed gain due to wind
-	// }
-
-	// total speed
-	vec2 gain = ocean; // + sail_gain;
 
 	// calculate next place
 	struct tm next_date = pt.date;
