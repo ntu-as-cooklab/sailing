@@ -4,12 +4,13 @@
             <td><table style="display:inline-block">
                 <tr><td>模式: </td>
                     <td><select id="mode">
-                        <option value="0">無風帆 (瓶中信)</option>
-                        <option value="1">風帆: 順風漂流</option>
-                        <option value="2">風帆: 固定目的地</option>
-                        <option value="3">風帆: 固定航向</option>
-                    </select>
-                    <span id="destheading_wrapper" hidden>方向<input id="destheading" style="width:3.5em" type="number" min="0" max="360">度</span></td>
+                            <option value="0">無風帆 (瓶中信)</option>
+                            <option value="1">風帆: 順風漂流</option>
+                            <option value="2">風帆: 固定目的地</option>
+                            <option value="3">風帆: 固定航向</option>
+                        </select>
+                    <span id="destheading_wrapper" hidden>方向<input id="destheading" style="width:3.5em" type="number" min="0" max="360">度</span>
+                    <div id="destloc_wrapper" hidden>目的地: <span id="destloc"></span></div></td>
                 </tr>
                 <tr>
                     <td>起始時間: </td>
@@ -157,6 +158,7 @@ controls.init = function()
     $("#mode")[0].oninput =
     function(e){ 
         Session.mode = Number($("#mode")[0].value);
+        (Session.mode == 2) ? ($("#destloc_wrapper").show(),destloc_show()) : ($("#destloc_wrapper").hide(),destloc_hide());
         (Session.mode == 3) ? $("#destheading_wrapper").show() : $("#destheading_wrapper").hide();
         (Session.mode == 0) ? $("#sail").hide() : $("#sail").show();
     };
@@ -166,6 +168,8 @@ controls.init = function()
     function(e){ 
         Session.destheading = $("#destheading")[0].value;
     };
+
+    $("#destloc")[0].innerText = Session.destloc;
 
     $("#altitude")[0].value = Session.altitude;
     $("#altitude")[0].oninput =
