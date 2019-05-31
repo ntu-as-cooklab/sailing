@@ -73,6 +73,25 @@ int cfsr_nc_free(cfsr_nc_dataset_t* dataset)
     nc_close(dataset->ncid[i][j]);
 }
 
+double bilinear(double* v, double di, double dj)
+{
+    int nan_count = 0;
+    for (int i = 0; i < 4; i++)
+        if (v[i] == NAN)
+            nan_count++;
+
+    switch (nan_count)
+    {
+        case 0: return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
+        case 1:
+            if (v[0] == NAN) return v[1]*(1-di) + v[2]*(1-dj) + v[3]*di*dj;
+            if (v[1] == NAN) return v[0]*(1-di) + v[2]*di*(1-dj) + v[3]*dj;
+            if (v[2] == NAN) return v[0]*(1-dj) + v[1]*(1-di)*dj + v[3]*di;
+            if (v[3] == NAN) return v[0]*(1-di-dj) + v[1]*dj + v[2]*di;
+        default: return NAN;
+    }
+}
+
 double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc)
 {
     int ncid = dataset->ncid[1900+date.tm_year-CFSR_START_YEAR][date.tm_mon];
@@ -95,7 +114,6 @@ double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc
         { date.tm_mday-1, date.tm_hour/6, date.tm_hour%6, j0, i1 },
         { date.tm_mday-1, date.tm_hour/6, date.tm_hour%6, j1, i1 },
     };
-
     double v[4];
     for (int i = 0; i < 4; i++) {
         int16_t s;
@@ -103,20 +121,6 @@ double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc
         v[i] = (s == dataset->missing_value) ? NAN : (dataset->add_offset + s * dataset->scale_factor);
     }
 
-    int nan_count = 0;
-    for (int i = 0; i < 4; i++)
-        if (v[i] == NAN)
-            nan_count++;
-
-    switch (nan_count)
-    {
-        case 0: return v[0]*(1-di)*(1-dj) + v[1]*(1-di)*dj + v[2]*di*(1-dj) + v[3]*di*dj;
-        case 1:
-            if (v[0] == NAN) return v[1]*(1-di) + v[2]*(1-dj) + v[3]*di*dj;
-            if (v[1] == NAN) return v[0]*(1-di) + v[2]*di*(1-dj) + v[3]*dj;
-            if (v[2] == NAN) return v[0]*(1-dj) + v[1]*(1-di)*dj + v[3]*di;
-            if (v[3] == NAN) return v[0]*(1-di-dj) + v[1]*dj + v[2]*di;
-        default: return NAN;
-    }
+    return bilinear(v, di, dj);
 }
 
