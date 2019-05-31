@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include <mongoc/mongoc.h>
 
 std::map<uint32_t, path_t> Session::paths;
 static uint32_t next_pathid = 0;
