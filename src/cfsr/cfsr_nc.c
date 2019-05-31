@@ -20,7 +20,7 @@ typedef struct cfsr_nc_dataset_t
     double dy;
     double scale_factor;
     double add_offset;
-    uint16_t missing_value;
+    int16_t missing_value;
 } cfsr_nc_dataset_t;
 
 cfsr_nc_dataset_t cfsr_nc_ocnu5 = {.str = "ocnu5"},
