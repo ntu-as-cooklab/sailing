@@ -8,15 +8,6 @@
 
 using namespace std;
 
-void sail(path_t* path)
-{
-    // path->pts.push_back((pathpt_t){path->startdate, path->startloc});
-	// printpt(path->pts.back());
-	// while(mktime(&path->pts.back().date) < mktime(&path->enddate))
-	// 	sail_step(path);
-	// printpt(path->pts.back());
-}
-
 int movement_factor = 1;
 int timestep = 3600; 		// size of timestep = 1 hr = 3600 sec
 latlon_t calc_next_place(latlon_t loc, vec2 speed)
