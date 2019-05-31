@@ -14,10 +14,8 @@ typedef struct cfsr_nc_dataset_t
     char* str;
     long Ni;
     long Nj;
-    double lon0;
-    double lat0;
-    double lon1;
-    double lat1;
+    float lon0;
+    float lat0;
     double dx;
     double dy;
     double scale_factor;
@@ -59,14 +57,13 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 
     // int ndims, nvars, natts, unlimdimid;
     // nc_inq(ncid, &ndims, &nvars, &natts, &unlimdimid);
-    // for (int i = 0; i < ndims; i++) {
+    // for (int i = 0; i < nvars; i++) {
     //     char name[NC_MAX_NAME+1];
-    //     nc_inq_dimname(ncid, i, name);
+    //     nc_inq_varname(ncid, i, name);
+    //     printf("name: %s\n", name);
     // }
 
-    if (dataset == CFSR_NC_OCNU5 || dataset == CFSR_NC_OCNV5)
-        dataset->varid = 5;
-    else if (dataset == CFSR_NC_WNDU10)
+    if (dataset == CFSR_NC_OCNU5 || dataset == CFSR_NC_OCNV5 || dataset == CFSR_NC_WNDU10)
         dataset->varid = 5;
     else if (dataset == CFSR_NC_WNDV10)
         dataset->varid = 6;
@@ -74,16 +71,19 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
     nc_get_att_double(ncid, dataset->varid, "scale_factor", &dataset->scale_factor);
     nc_get_att_double(ncid, dataset->varid, "add_offset", &dataset->add_offset);
     nc_get_att_short(ncid, dataset->varid, "missing_value", &dataset->missing_value);
-    nc_inq_dimlen(ncid, 0, &dataset->Ni); // longitude
-    nc_inq_dimlen(ncid, 1, &dataset->Nj); // latitude
-    //printf("Ni %d Nj %d\n", dataset->Ni, dataset->Nj);
+    nc_inq_dimlen(ncid, CFSR_LON_ID, &dataset->Ni); // longitude
+    nc_inq_dimlen(ncid, CFSR_LAT_ID, &dataset->Nj); // latitude
 
-    dataset->lat0 = 89.750000;
-    dataset->lon0 = 0.250000;
-    dataset->lat1 = -89.750000;
-    dataset->lon1 = 359.750000;
-    dataset->dy = -0.500000;
-    dataset->dx = 0.500000;
+    size_t dim = 0;
+    nc_get_var1_float(ncid, CFSR_LON_ID, &dim, &dataset->lon0);
+    nc_get_var1_float(ncid, CFSR_LAT_ID, &dim, &dataset->lat0);
+
+    dim = 1;
+    float lat1, lon1;
+    nc_get_var1_float(ncid, CFSR_LON_ID, &dim, &lon1);
+    nc_get_var1_float(ncid, CFSR_LAT_ID, &dim, &lat1);
+    dataset->dx = lon1 - dataset->lon0;
+    dataset->dy = lat1 - dataset->lat0;
 
     return 0;
 }

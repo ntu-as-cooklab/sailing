@@ -8,6 +8,9 @@
 extern  "C" {
 #endif
 
+#define CFSR_LON_ID 0
+#define CFSR_LAT_ID 1
+
 typedef struct cfsr_nc_dataset_t cfsr_nc_dataset_t;
 
 int* cfsr_ncid(cfsr_nc_dataset_t* dataset, struct tm date);
