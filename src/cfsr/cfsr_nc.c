@@ -56,8 +56,13 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
 {
     if (cfsr_nc_open(dataset, date) < 0) return -1;
     int ncid = *cfsr_ncid(dataset, date);
+
     // int ndims, nvars, natts, unlimdimid;
     // nc_inq(ncid, &ndims, &nvars, &natts, &unlimdimid);
+    // for (int i = 0; i < ndims; i++) {
+    //     char name[NC_MAX_NAME+1];
+    //     nc_inq_dimname(ncid, i, name);
+    // }
 
     if (dataset == CFSR_NC_OCNU5 || dataset == CFSR_NC_OCNV5)
         dataset->varid = 5;
@@ -69,9 +74,10 @@ int cfsr_nc_load(cfsr_nc_dataset_t* dataset, struct tm date)
     nc_get_att_double(ncid, dataset->varid, "scale_factor", &dataset->scale_factor);
     nc_get_att_double(ncid, dataset->varid, "add_offset", &dataset->add_offset);
     nc_get_att_short(ncid, dataset->varid, "missing_value", &dataset->missing_value);
+    nc_inq_dimlen(ncid, 0, &dataset->Ni); // longitude
+    nc_inq_dimlen(ncid, 1, &dataset->Nj); // latitude
+    //printf("Ni %d Nj %d\n", dataset->Ni, dataset->Nj);
 
-    dataset->Ni = 720;
-    dataset->Nj = 360;
     dataset->lat0 = 89.750000;
     dataset->lon0 = 0.250000;
     dataset->lat1 = -89.750000;
