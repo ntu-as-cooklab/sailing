@@ -15,7 +15,7 @@ char* cfsr_nc_filename(const char* root, cfsr_nc_dataset_t* dataset, struct tm d
 int cfsr_nc_free(cfsr_nc_dataset_t* dataset);
 double cfsr_nc_bilinear(cfsr_nc_dataset_t* dataset, struct tm date, latlon_t loc);
 
-extern cfsr_nc_dataset_t *CFSR_NC_OCNU5, *CFSR_NC_OCNV5;
+extern cfsr_nc_dataset_t *CFSR_NC_OCNU5, *CFSR_NC_OCNV5, *CFSR_NC_WNDU10, *CFSR_NC_WNDV10;
 
 #ifdef  __cplusplus
 }
