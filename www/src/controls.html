@@ -9,7 +9,7 @@
                         <option value="2">風帆: 固定目的地</option>
                         <option value="3">風帆: 固定航向</option>
                     </select>
-                    <span id="destdir_wrapper" hidden>方向<input id="destdir" style="width:3.5em" type="number" min="0" max="360">度</span></td>
+                    <span id="destheading_wrapper" hidden>方向<input id="destheading" style="width:3.5em" type="number" min="0" max="360">度</span></td>
                 </tr>
                 <tr>
                     <td>起始時間: </td>
@@ -157,14 +157,14 @@ controls.init = function()
     $("#mode")[0].oninput =
     function(e){ 
         Session.mode = $("#mode")[0].value;
-        (Session.mode == 3) ? $("#destdir_wrapper").show() : $("#destdir_wrapper").hide();
+        (Session.mode == 3) ? $("#destheading_wrapper").show() : $("#destheading_wrapper").hide();
         (Session.mode == 0) ? $("#sail").hide() : $("#sail").show();
     };
 
-    $("#destdir")[0].value = Session.destdir;
-    $("#destdir")[0].oninput =
+    $("#destheading")[0].value = Session.destheading;
+    $("#destheading")[0].oninput =
     function(e){ 
-        Session.destdir = $("#destdir")[0].value;
+        Session.destheading = $("#destheading")[0].value;
     };
 
     $("#altitude")[0].value = Session.altitude;

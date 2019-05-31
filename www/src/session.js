@@ -14,7 +14,7 @@ var Session = {
     color: 'red',
     mode: 0,
     destloc: [-14.000, 188.500],
-    destdir: 0,
+    destheading: 0,
     altitude: 2,
     windlimit: 8,
     sailstarthour: 6,

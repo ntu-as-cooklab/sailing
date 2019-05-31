@@ -141,6 +141,14 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         path->startloc   = json2loc(j["startloc"]);
         path->land_collision = false;
 
+        path->color = j["color"];
+        path->destheading = j["destheading"];
+        path->altitude = j["altitude"];
+        path->windlimit = j["windlimit"];
+        path->sailstarthour = j["sailstarthour"];
+        path->sailendhour = j["sailendhour"];
+        path->alpha = j["alpha"];
+
         server_pushall(json::to_cbor(server_newpath(path)));
 
         int step = 0;

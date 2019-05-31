@@ -8,6 +8,7 @@
 extern  "C" {
 #endif
 
+vec2 heading2dir(double heading);
 double heading(vec2 a);
 double anglediff(vec2 dir1, vec2 dir2); // 計算兩角度間的夾角
 

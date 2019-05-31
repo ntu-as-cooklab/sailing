@@ -41,7 +41,7 @@ int sail_step(path_t* path)
 			switch (path->mode)
 			{
 				case MODE_WIND: sail_dir = normalize(wind); break;
-				case MODE_DIRN: sail_dir = normalize(path->destdir); break;
+				case MODE_DIRN: sail_dir = normalize(heading2dir(path->destheading)); break;
 				case MODE_DEST: sail_dir = normalize(adj_direction(pt.loc, path->destloc)); break;
 			}
 			vec2 sail_gain = calc_sail_gain(wind, sail_dir); // boat speed gain due to wind

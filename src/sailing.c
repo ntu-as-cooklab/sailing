@@ -10,6 +10,12 @@ double heading(vec2 a)
 	return norm(a) > 0 ? (h < 0 ? h+360 : h) : 0;
 }
 
+vec2 heading2dir(double heading)
+{
+	double rad = (90-heading) * M_PI / 180.;
+	return (vec2){cos(rad), sin(rad)};
+}
+
 // 計算兩角度間的夾角
 double anglediff(vec2 dir1, vec2 dir2)
 { 

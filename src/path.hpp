@@ -26,6 +26,7 @@ typedef struct path_t
     uint32_t id;
     uint32_t runId;
     std::string loginID;
+    std::string color;
 
     /* Basic parameters */
     DATASET dataset;
@@ -36,7 +37,7 @@ typedef struct path_t
 
     /* Sailing parameters */
     latlon_t destloc;
-    vec2 destdir;
+    double  destheading;
     float 	altitude 		= 2;
 	float 	windlimit 		= 8;
 	int 	sailstarthour 	= 6;
