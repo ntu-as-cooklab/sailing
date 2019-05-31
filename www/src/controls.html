@@ -156,7 +156,7 @@ controls.init = function()
     $("#mode")[0].value = Session.mode;
     $("#mode")[0].oninput =
     function(e){ 
-        Session.mode = $("#mode")[0].value;
+        Session.mode = Number($("#mode")[0].value);
         (Session.mode == 3) ? $("#destheading_wrapper").show() : $("#destheading_wrapper").hide();
         (Session.mode == 0) ? $("#sail").hide() : $("#sail").show();
     };
