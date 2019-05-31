@@ -1,10 +1,7 @@
-11. Restore sailing ship models
 22. Fix error when multiple lines at once
-21. json error handling
 4. Persistent database
 5. List of paths in side bar
 23. Organize runID code
-
 8. User token authentication
 20. Add help and project info
 13. User info
