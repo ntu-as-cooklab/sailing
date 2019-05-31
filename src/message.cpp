@@ -206,7 +206,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
                 // printf("send remaining data %d %d\n", last_step, step);
                 server_pushall(json::to_cbor(server_sendpts(path, last_step, step))); // send remaining data here
             }
-            if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"id", path->id}}));
+            if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"runId", path->runId},{"id", path->id}}));
         }
         else if (j["cmd"] == "restore")
         {
@@ -229,7 +229,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             if (Session::paths[id].runId == runId && Session::paths[id].loginID == loginID)
             {
                 Session::paths.erase(id);
-                server_pushall(json::to_cbor({{"cmd", "delete"},{"id", id}}));
+                server_pushall(json::to_cbor({{"cmd", "delete"},{"runId", runId},{"id", id}}));
             }
         }
 
