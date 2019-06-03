@@ -15,7 +15,7 @@ function startloc_init()
 {
 	var iconsize = 32;
 	startloc_marker = L.marker(Session.startloc, { icon: L.icon({
-			iconUrl: 	'res/Celtic-style_crossed_circle.svg.png',
+			iconUrl: 	'res/orig.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
 			popupAnchor:  [0, -iconsize/2] // point from which the popup should open relative to the iconAnchor
@@ -36,7 +36,7 @@ function destloc_show()
 {
 	var iconsize = 32;
 	destloc_marker = L.marker(Session.destloc, { icon: L.icon({
-			iconUrl: 	'res/768px-Target_Flat_Icon.svg.png',
+			iconUrl: 	'res/dest.png',
 			iconSize:     [iconsize, iconsize], // size of the icon
 			iconAnchor:   [iconsize/2, iconsize/2], // point of the icon which will correspond to marker's location
 			popupAnchor:  [0, -iconsize/2] // point from which the popup should open relative to the iconAnchor
@@ -76,7 +76,6 @@ function initMap()
 			attribution: `Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, 
 						Imagery © <a href="http://mapbox.com">Mapbox</a>
 						<p>Flat Icons by <a href="/resources/free-icons/">WhoIsHostingThis.com</a></p>
-						<p>Author: Videoplasty.com Target Flat Icon.svg from Wikimedia Commons License: Creative Commons Attribution-ShareAlike 4.0</p>
 						<p>©臺大大氣系—林博雄教授實驗室、臺師大科教所—許瑛玿教授實驗室、麗山高中—萬義昞老師</p>
 						`,
 			id: 'seanstone5923.phlaakpk',
