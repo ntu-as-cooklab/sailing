@@ -39,7 +39,7 @@ int* cfsr_ncid(cfsr_nc_dataset_t* dataset, struct tm date)
 
 int cfsr_nc_open(cfsr_nc_dataset_t* dataset, struct tm date)
 {
-    const char* dirs[] = {"data", "/data"};
+    const char* dirs[] = {"data", "/data", "/data2"};
     char* filename;
     for (int i = 0; i < sizeof(dirs)/sizeof(char*); i++) {
         filename = cfsr_nc_filename(dirs[i], dataset, date);
