@@ -12,7 +12,6 @@
 using namespace std;
 using namespace nlohmann;
 
-// should use shared pointer
 mymsg_t response_cbor;
 
 struct tm json2date(json& j)
@@ -49,28 +48,27 @@ void printpt(pathpt_t pt)
 
 json path2json(path_t* path)
 {
-    json j;
-    j["id"]     = path->id;
-    j["runId"]    = path->runId;
-    j["loginID"]   = path->loginID;
-    j["startdate"] = date2json(path->startdate);
-    j["enddate"] = date2json(path->enddate);
-    j["startloc"] = loc2json(path->startloc);
-    j["land_collision"] = path->land_collision;
-
-    j["dataset"] = path->dataset;
-    j["mode"] = path->mode;
-    j["color"] = path->color;
-    j["destloc"] = loc2json(path->destloc);
-    j["destheading"] = path->destheading;
-    j["altitude"] = path->altitude;
-    j["windlimit"] = path->windlimit;
-    j["sailstarthour"] = path->sailstarthour;
-    j["sailendhour"] = path->sailendhour;
-    j["alpha"] = path->alpha;
-
-    j["date"] = json::array();
-    j["loc"]  = json::array();
+    json j = {
+        {"id", path->id},
+        {"runId", path->runId},
+        {"loginID", path->loginID},
+        {"startdate", date2json(path->startdate)},
+        {"enddate", date2json(path->enddate)},
+        {"startloc", loc2json(path->startloc)},
+        {"land_collision", path->land_collision},
+        {"dataset", path->dataset},
+        {"mode", path->mode},
+        {"color", path->color},
+        {"destloc", loc2json(path->destloc)},
+        {"destheading", path->destheading},
+        {"altitude", path->altitude},
+        {"windlimit", path->windlimit},
+        {"sailstarthour", path->sailstarthour},
+        {"sailendhour", path->sailendhour},
+        {"alpha", path->alpha},
+        {"date", json::array()},
+        {"loc", json::array()},
+    };
     for (int i = 0; i < path->pts.size(); i++)
     {
         j["date"].push_back(date2json(path->pts[i].date));
@@ -81,31 +79,31 @@ json path2json(path_t* path)
 
 path_t json2path(json j)
 {
-    path_t path;
-    path.id = j["id"];
-    path.runId = j["runId"];
-    path.loginID = j["loginID"];
-    path.startdate = json2date(j["startdate"]);
-    path.enddate = json2date(j["enddate"]);
-    path.startloc = json2loc(j["startloc"]);
-    path.land_collision = j["land_collision"];
+    path_t path = {};
+    if (!j["id"].is_null())             path.id = j["id"];
+    if (!j["runId"].is_null())          path.runId = j["runId"];
+    if (!j["loginID"].is_null())        path.loginID = j["loginID"];
+    if (!j["startdate"].is_null())      path.startdate = json2date(j["startdate"]);
+    if (!j["enddate"].is_null())        path.enddate = json2date(j["enddate"]);
+    if (!j["startloc"].is_null())       path.startloc = json2loc(j["startloc"]);
+    if (!j["land_collision"].is_null()) path.land_collision = j["land_collision"];
 
-    path.dataset = j["dataset"];
-    path.mode = j["mode"];
-    path.color = j["color"];
-    path.destloc   = json2loc(j["destloc"]);
-    path.destheading = j["destheading"];
-    path.altitude = j["altitude"];
-    path.windlimit = j["windlimit"];
-    path.sailstarthour = j["sailstarthour"];
-    path.sailendhour = j["sailendhour"];
-    path.alpha = j["alpha"];
+    if (!j["dataset"].is_null())        path.dataset = j["dataset"];
+    if (!j["mode"].is_null())           path.mode = j["mode"];
+    if (!j["color"].is_null())          path.color = j["color"];
+    if (!j["destloc"].is_null())        path.destloc   = json2loc(j["destloc"]);
+    if (!j["destheading"].is_null())    path.destheading = j["destheading"];
+    if (!j["altitude"].is_null())       path.altitude = j["altitude"];
+    if (!j["windlimit"].is_null())      path.windlimit = j["windlimit"];
+    if (!j["sailstarthour"].is_null())  path.sailstarthour = j["sailstarthour"];
+    if (!j["sailendhour"].is_null())    path.sailendhour = j["sailendhour"];
+    if (!j["alpha"].is_null())          path.alpha = j["alpha"];
 
-    for (json::iterator date = j["date"].begin(), loc = j["loc"].begin(); date != j["date"].end(); ++date, ++loc) {
-        pathpt_t pt = {.date = json2date(*date), .loc = json2loc(*loc)};
-        //printpt(pt);
-        path.pts.push_back(pt);
-    }
+    if (!j["date"].is_null() && !j["loc"].is_null())
+        for (json::iterator date = j["date"].begin(), loc = j["loc"].begin(); date != j["date"].end(); ++date, ++loc) {
+            pathpt_t pt = {.date = json2date(*date), .loc = json2loc(*loc)};
+            path.pts.push_back(pt);
+        }
     return path;
 }
 
@@ -113,26 +111,8 @@ mymsg_t msg;
 
 json server_newpath(path_t* path)
 {
-    //std::cout << "color:" << path->color << "\n";
     return {{"cmd", "new_path"},
-            {"path", {
-                {"runId", path->runId},
-                {"loginID", path->loginID},
-                {"id", path->id},
-                {"dataset", path->dataset},
-                {"mode", path->mode},
-                {"startdate", date2json(path->startdate)},
-                {"enddate", date2json(path->enddate)},
-                {"startloc", loc2json(path->startloc)},
-                {"color", path->color},
-                {"destloc", loc2json(path->destloc)},
-                {"destheading", path->destheading},
-                {"altitude", path->altitude},
-                {"windlimit", path->windlimit},
-                {"sailstarthour", path->sailstarthour},
-                {"sailendhour", path->sailendhour},
-                {"alpha", path->alpha},
-            }}};
+            {"path", path2json(path)}};
 }
 
 json server_sendpts(path_t* path, int last_step, int step)
@@ -155,10 +135,8 @@ json server_sendpts(path_t* path, int last_step, int step)
 
 int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
 {
-    //printf("server_decode\n");
-    json j;
     try {
-        j = json::from_cbor(mymsg_t(in, in + len));
+        json j = json::from_cbor(mymsg_t(in, in + len));
     
         cout << "Message: " << j << "\n";
 
@@ -166,24 +144,8 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
         {
             uint32_t id = Session::new_path();
             path_t* path = &Session::paths[id];
-            path->id         = id;
-            path->runId      = j["runId"];
-            path->loginID    = j["loginID"];
-            path->startdate  = json2date(j["startdate"]);
-            path->enddate    = json2date(j["enddate"]);
-            path->startloc   = json2loc(j["startloc"]);
-            path->land_collision = false;
-
-            path->dataset = j["dataset"];
-            path->mode = j["mode"];
-            path->color = j["color"];
-            path->destloc   = json2loc(j["destloc"]);
-            path->destheading = j["destheading"];
-            path->altitude = j["altitude"];
-            path->windlimit = j["windlimit"];
-            path->sailstarthour = j["sailstarthour"];
-            path->sailendhour = j["sailendhour"];
-            path->alpha = j["alpha"];
+            *path = json2path(j);
+            path->id = id;
 
             server_pushall(json::to_cbor(server_newpath(path)));
 
@@ -195,7 +157,6 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
                 else {
                     step++;
                     if (step%(24*5) == 0) {
-                        // printf("id=%d ", path->id); printpt(path->pts.back());
                         // send incrementally
                         server_pushall(json::to_cbor(server_sendpts(path, last_step, step)));
                         last_step = step;
@@ -204,7 +165,6 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             }
             printf("id=%d ", path->id); printpt(path->pts.back());
             if (last_step < step) {
-                // printf("send remaining data %d %d\n", last_step, step);
                 server_pushall(json::to_cbor(server_sendpts(path, last_step, step))); // send remaining data here
             }
             if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"runId", path->runId},{"id", path->id}}));
@@ -237,12 +197,12 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
     }
     catch(const std::runtime_error& re)
     {
-        // speciffic handling for runtime_error
+        // specific handling for runtime_error
         std::cerr << "Runtime error: " << re.what() << std::endl;
     }
     catch(const std::exception& ex)
     {
-        // speciffic handling for all exceptions extending std::exception, except
+        // specific handling for all exceptions extending std::exception, except
         // std::runtime_error which is handled explicitly
         std::cerr << "Error occurred: " << ex.what() << std::endl;
     }
