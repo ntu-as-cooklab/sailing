@@ -29,6 +29,11 @@ To build,
 $ make
 ```
 
+Download data:
+```console
+$ make DATA_DIR=/data2 nc
+```
+
 To run,
 ```console
 $ sudo bin/sailing
