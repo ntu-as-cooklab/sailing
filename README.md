@@ -47,11 +47,13 @@ $ sudo ldconfig
 
 ## Instructions
 
+Install prerequisites:
+```console
+$ make install
+```
+
 To build,
 ```console
-$ git submodule init
-$ git submodule update
-$ make npm
 $ make
 ```
 
