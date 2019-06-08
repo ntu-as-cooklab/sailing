@@ -73,11 +73,11 @@ install:
 
 .PHONY: libwebsockets
 libwebsockets:
-	mkdir build; cd build; \
+	mkdir -p build; cd build; \
 	git clone https://github.com/warmcat/libwebsockets; \
 	cd libwebsockets; \
 	git checkout v3.1.0; \
-	mkdir build; cd build; \
+	mkdir -p build; cd build; \
 	cmake ..; \
 	make -j8; \
 	sudo make install; \
@@ -85,11 +85,11 @@ libwebsockets:
 
 .PHONY: nlohmann-json
 nlohmann-json:
-	mkdir build; cd build; \
+	mkdir -p build; cd build; \
 	git clone https://github.com/nlohmann/json; \
 	cd json; \
 	git checkout v3.6.1; \
-	mkdir build; cd build; \
+	mkdir -p build; cd build; \
 	cmake ..; \
 	make -j8; \
 	sudo make install; \
