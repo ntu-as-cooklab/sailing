@@ -67,7 +67,7 @@ npm:
 
 .PHONY: install
 install:
-	sudo apt-get install gcc-8 g++-8 libcurl4-openssl-dev libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev cmake libssl1.0-dev nodejs-dev npm
+	sudo apt-get install gcc-8 g++-8 libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev cmake libssl1.0-dev nodejs-dev npm
 	$(MAKE) libwebsockets
 	$(MAKE) nlohmann-json
 
