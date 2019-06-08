@@ -61,5 +61,5 @@ $ sudo bin/sailing
 ```
 
 ## Project directory structure
-* src: Source files for main application
-* www: Source files for browser frontend
+* [src](src): Source files for main application
+* [www](www): Source files for browser frontend
