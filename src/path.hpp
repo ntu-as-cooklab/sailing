@@ -18,6 +18,7 @@ typedef struct pathpt_t
     vec2 ocean;
     vec2 wind;
     vec2 wind_gain;
+    vec2 gain;
 } pathpt_t;
 
 typedef struct path_t
