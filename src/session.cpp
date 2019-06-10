@@ -32,9 +32,9 @@ int Session::writeBson(path_t* path)
 
     std::vector<std::uint8_t> v_bson = json::to_bson(path2json(path));
     FILE *write_ptr;
-    char filepath[256];
-    snprintf(filepath, sizeof(filepath), "session/%04d.bson", path->id);
-    write_ptr = fopen(filepath,"wb");
+    char filename[512];
+    snprintf(filename, sizeof(filename), "session/%04d.bson", path->id);
+    write_ptr = fopen(filename,"wb");
     fwrite(v_bson.data(), 1, v_bson.size(), write_ptr);
     return 0;
 }
@@ -51,7 +51,7 @@ int Session::loadBson()
     while ((dp = readdir(dfd)) != NULL)
     {
         struct stat stbuf;
-        char filename[100];
+        char filename[512];
         sprintf(filename, "session/%s", dp->d_name);
 
         char *dot = strrchr(filename, '.');
@@ -84,8 +84,8 @@ int Session::loadBson()
 
 int Session::removeBson(uint32_t id)
 {
-    char filepath[256];
-    snprintf(filepath, sizeof(filepath), "session/%04d.bson", id);
-    printf("Remove %s\n", filepath);
-    return remove(filepath);
+    char filename[512];
+    snprintf(filename, sizeof(filename), "session/%04d.bson", id);
+    printf("Remove %s\n", filename);
+    return remove(filename);
 }
