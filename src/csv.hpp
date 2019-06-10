@@ -5,7 +5,7 @@
 #include "latlon.h"
 #include "path.hpp"
 
-void csv_writeHeader(std::stringstream &s);
+void csv_writeHeader(std::stringstream &s, path_t* path);
 void csv_writePt(std::stringstream &s, int step, pathpt_t pt);
 std::stringstream csv_fromPath(path_t* path);
 

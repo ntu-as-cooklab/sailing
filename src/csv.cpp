@@ -3,8 +3,28 @@
 #include <sstream>
 #include "path.hpp"
 
-void csv_writeHeader(std::stringstream &s)
+void csv_writeHeader(std::stringstream &s, path_t* path)
 {
+	s
+	<< "Path ID," << path->id << "\n"
+	<< "Run ID," << path->runId << "\n"
+	<< "Login ID," << path->loginID << "\n"
+	<< "Mode," << path->mode << "\n";
+
+	if (path->mode != 0)
+	{
+		s
+		<< "Sail height (m)," << path->altitude << "\n"
+		<< "Wind limit (ms)," << path->windlimit << "\n"
+		<< "Sail start hr," << path->sailstarthour << "\n"
+		<< "Sail end hr," << path->sailendhour << "\n"
+		<< "Alpha," << path->alpha << "\n";
+		if (path->mode == 2) s << "Dest. Loc.," << path->destloc.lat << "," << path->destloc.lon << "\n";
+		if (path->mode == 3) s << "Dest. Heading," << path->destheading << "\n";
+	}
+
+	s << "\n";
+
 	s
 	<< "Step#,"
 	<< "Year,"
@@ -73,7 +93,7 @@ void csv_writePt(std::stringstream &s, int step, pathpt_t pt)
 std::stringstream csv_fromPath(path_t* path)
 {
 	std::stringstream s;
-	csv_writeHeader(s);
+	csv_writeHeader(s, path);
 	for (int i = 0; i < path->pts.size(); i++)
 		csv_writePt(s, i, path->pts[i]);
 	return s;
