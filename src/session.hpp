@@ -10,6 +10,7 @@ namespace Session {
     int new_path();
     int writeBson(path_t* path);
     int loadBson();
+    int removeBson(uint32_t id);
 }
 
 #endif

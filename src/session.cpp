@@ -81,3 +81,11 @@ int Session::loadBson()
 
     return 0;
 };
+
+int Session::removeBson(uint32_t id)
+{
+    char filepath[256];
+    snprintf(filepath, sizeof(filepath), "session/%04d.bson", id);
+    printf("Remove %s\n", filepath);
+    return remove(filepath);
+}

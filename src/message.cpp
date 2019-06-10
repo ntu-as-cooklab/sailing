@@ -193,6 +193,7 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
             {
                 Session::paths.erase(id);
                 server_pushall(json::to_cbor({{"cmd", "delete"},{"runId", runId},{"id", id}}));
+                Session::removeBson(id);
             }
         }
 
