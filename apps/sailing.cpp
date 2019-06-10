@@ -6,8 +6,6 @@
 static void sigint_handler(int sig)
 {
     server_stop();
-	printf("Saving session\n");
-	Session::writeBson();
 }
 
 int main(void)

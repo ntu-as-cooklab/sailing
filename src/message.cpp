@@ -168,6 +168,8 @@ int server_decode(my_pss_t *pss, uint8_t *in, size_t len)
                 server_pushall(json::to_cbor(server_sendpts(path, last_step, step))); // send remaining data here
             }
             if (path->land_collision) server_pushall(json::to_cbor({{"cmd", "land_collision"},{"runId", path->runId},{"id", path->id}}));
+
+            Session::writeBson(path);
         }
         else if (j["cmd"] == "restore")
         {
