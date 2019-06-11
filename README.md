@@ -36,7 +36,7 @@ $ make DATA_DIR=/data2 nc
 
 To run,
 ```console
-$ sudo bin/sailing
+$ sudo systemctl start sailing
 ```
 
 ## Project directory structure
