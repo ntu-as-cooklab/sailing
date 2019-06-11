@@ -1,0 +1,10 @@
+[Unit]
+Description=Sailing
+
+[Service]
+Type=simple
+PIDFile=/run/sailing.pid
+ExecStart=sailing
+
+[Install]
+WantedBy=multi-user.target

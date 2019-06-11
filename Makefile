@@ -65,12 +65,17 @@ grb2 nc: %: $(foreach month,$(MONTHS),$(foreach field,$(FIELDS),$(DATA_DIR)/$(fi
 npm:
 	cd www; npm i
 
-.PHONY: install
-install:
+.PHONY: deps
+deps:
 	sudo apt-get install gcc-8 g++-8 libeccodes-dev libeccodes-tools libnetcdf-dev libcbor-dev cmake libssl1.0-dev nodejs-dev npm
 	$(MAKE) libwebsockets
 	$(MAKE) nlohmann-json
 	$(MAKE) npm
+
+.PHONY: install
+install: all
+	sudo cp bin/sailing /usr/bin/
+	sudo cp sailing.serivce /etc/systemd/system/
 
 .PHONY: libwebsockets
 libwebsockets:
