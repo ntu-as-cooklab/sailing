@@ -4,7 +4,7 @@ Description=Sailing
 [Service]
 Type=simple
 PIDFile=/run/sailing.pid
-ExecStart=sailing
+ExecStart=/usr/bin/sailing
 
 [Install]
 WantedBy=multi-user.target
