@@ -75,7 +75,6 @@ deps:
 .PHONY: install
 install: all
 	sudo cp bin/sailing /usr/bin/
-	sudo cp sailing.service /etc/systemd/system/
 
 .PHONY: libwebsockets
 libwebsockets:
