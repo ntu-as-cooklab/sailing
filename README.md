@@ -21,12 +21,12 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 
 Install prerequisites (on Ubuntu 18.04):
 ```console
-$ make install
+$ make deps
 ```
 
-To build,
+To build & install,
 ```console
-$ make
+$ make install
 ```
 
 Download data:
