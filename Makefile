@@ -45,7 +45,7 @@ clean:
 
 DATA_DIR ?= ./data/
 
-MONTHS := $(shell d="1979-01-02"; until [[ $$d > 2011-3-31 ]]; do echo "$$(date +%Y%m -d $$d)"; d=$$(date -I -d "$$d + 1 month"); done)
+MONTHS := $(shell d="1979-01-02"; until [[ $$d > "2011-04-01" ]]; do echo "$$(date +%Y%m -d $$d)"; d=$$(date -I -d "$$d + 1 month"); done)
 FIELDS := ocnu5 ocnv5 wnd10m.l
 
 .PHONY: grb2 nc
