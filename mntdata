@@ -1,0 +1,6 @@
+#!/bin/bash
+iscsiadm -m node --targetname "iqn.2000-01.com.synology:sailing.300g.5373a50c1d" --portal "192.168.146.200:3260" --login
+iscsiadm -m node --targetname "iqn.2000-01.com.synology:sailing2.600g.4.5373a50c1d" --portal "192.168.146.200:3260" --login
+sleep 1
+mount /dev/sdb1 /data
+mount /dev/sdc1 /data2
