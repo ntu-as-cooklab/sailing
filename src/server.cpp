@@ -74,21 +74,20 @@ static const struct lws_http_mount mount = {
     .mountpoint_len         = 1, /* char count */
 };
 
-static struct lws_context_creation_info info =
-{
-    .port = 80,
-    .protocols = protocols,
-    .options = LWS_SERVER_OPTION_DISABLE_IPV6,
-    .vhost_name = "localhost",
-    .mounts = &mount,
-    .ws_ping_pong_interval = 10,
-};
-
 int server_init(void)
 {
     lws_set_log_level(LLL_USER | LLL_ERR | LLL_WARN | LLL_NOTICE, NULL);
 
+    struct lws_context_creation_info info = {0};
+
     lwsl_user("LWS server starting on port %u\n", info.port);
+    info.port = 80;
+    info.options = LWS_SERVER_OPTION_DISABLE_IPV6;
+    info.vhost_name = "localhost";
+    info.mounts = &mount;
+    info.protocols = protocols;
+    //.ws_ping_pong_interval = 10;
+
     context = lws_create_context(&info);
     if (!context) {
         lwsl_err("lws init failed\n");
