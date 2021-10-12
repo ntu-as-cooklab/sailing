@@ -19,7 +19,7 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 
 ## Instructions
 
-Install prerequisites:
+Install prerequisites (on Ubuntu):
 ```console
 $ make deps
 ```
