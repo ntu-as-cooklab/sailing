@@ -12,14 +12,14 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 * [netcdf](https://www.unidata.ucar.edu/software/netcdf/)
 * [libcbor](https://github.com/PJK/libcbor)
 * [nlohmann-json](https://github.com/nlohmann/json) (v3.6.1)
-* GCC 8 (gcc/g++)
+* GCC >= 8
 * CMake
 * nodejs
 * npm
 
 ## Instructions
 
-Install prerequisites (on Ubuntu 18.04):
+Install prerequisites:
 ```console
 $ make deps
 ```
