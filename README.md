@@ -8,7 +8,7 @@ This is a sailing simulation based on [CFSR wind and ocean current data](https:/
 
 * [libcurl](https://curl.haxx.se/libcurl/)
 * [ecCodes](https://confluence.ecmwf.int//display/ECC/ecCodes+Home)
-* [libwebsockets](https://libwebsockets.org/) (v3.1.0)
+* [libwebsockets](https://libwebsockets.org/) (v4.3)
 * [netcdf](https://www.unidata.ucar.edu/software/netcdf/)
 * [libcbor](https://github.com/PJK/libcbor)
 * [nlohmann-json](https://github.com/nlohmann/json) (v3.6.1)
